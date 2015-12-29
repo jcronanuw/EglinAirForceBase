@@ -133,15 +133,18 @@ aa29 <- vector(length = 0, mode = 'numeric')
 ####################################################################################
 ####################################################################################
 #STEP 1: Administrative Information
+# Accept arguments from Rscript/command line
+args <- commandArgs(TRUE)
+
 rows <- 1771#1 #544
 cols <- 3491#2 #671
 tx <- 4#3
-Years <- 25#4
+Years <- 1#4
 fh.adj <- 6#NEW
 sh.adj <- 6#NEW
 bh.adj <- 6#NEW
 lh.adj <- 6#NEW
-run <- 1000# 
+run <- args[1] 
 #Trying to generate errors from runs 1028 and 1030.
 
 fire.cut <- 10
@@ -175,7 +178,7 @@ c.scale <- 0.1#9
 #When wildfires are burned by the block and burn method flammability of fuels is based on
 #probability. The meaning of the scale.factor and dist.curve are flipped and corresponding
 #values are randomly selected from each dataset
-NFR <- c(54.38,457.39)#c(5000,10000)#Natural fire rotation in years for Eglin, Buffer, and Combined.
+NFR <- c(9954.38,99457.39)#c(5000,10000)#Natural fire rotation in years for Eglin, Buffer, and Combined.
 MFS <- c(103.65,5.23)#c(1000,200)#Mean fire size in acres for Eglin, Buffer, and Combined.
 DFS <- c(361.12,13.98)#c(20,10)#Standard deviation of mean fire size for Eglin and Buffer and Combined.
 Truncate.AAB <- c(50000,25000)#Maximum annual area burned
@@ -232,8 +235,7 @@ shape2 <- c(5,5,2.5)#shape 2 parameter
 #Average annual area treated for thinning, herbicide, and prescribed fire.
 
 #Read in third meanTAP parameter from file
-args <- commandArgs(TRUE)
-meanTAP <- c(5000, 5000, args[1])
+meanTAP <- c(1000, 1000, as.numeric(args[3]))
 
 #Proportion of available cells within a treatment unit to seed treatment.
 seed.cells <- c(0.50,0.50,0.10)#thinning, herbicide, prescribed fire
@@ -241,24 +243,24 @@ seed.cells <- c(0.50,0.50,0.10)#thinning, herbicide, prescribed fire
 ####################################################################################
 ####################################################################################
 #STEP 3: Import Spatial Database (Raster Subset)
-f.map <- matrix(scan(paste("c:\\usfs_sef_data_ascii\\sef_fmap_v2_",rows,"x",cols,".txt",
+f.map <- matrix(scan(paste("sef_fmap_v2_",rows,"x",cols,".txt",
                            sep = ""),skip = fh.adj),ncol=cols,byrow=T)#16
 
-s.map <- matrix(scan(paste("c:\\usfs_sef_data_ascii\\sef_smap_092715_",rows,"x",cols,".txt",
+s.map <- matrix(scan(paste("sef_smap_092715_",rows,"x",cols,".txt",
                            sep = ""),skip = sh.adj),ncol=cols,byrow=T)#17
 
-b.map <- matrix(scan(paste("c:\\usfs_sef_data_ascii\\sef_bmap_",rows,"x",cols,".txt",
+b.map <- matrix(scan(paste("sef_bmap_",rows,"x",cols,".txt",
                            sep = ""),skip = bh.adj),ncol=cols,byrow=T)#18
 #Need to create a burn unit map
 
-l.map <- matrix(scan(paste("c:\\usfs_sef_data_ascii\\sef_lmap_",rows,"x",cols,".txt",
+l.map <- matrix(scan(paste("sef_lmap_",rows,"x",cols,".txt",
                            sep = ""),skip = lh.adj),ncol=cols,byrow=T)#20
 
 ####################################################################################
 ####################################################################################
 #STEP 4: Import Spatial Database (Pseudo-vector Subset)
 Stand.List <- read.table(paste(
-  "c:\\usfs_sef_data_ascii\\sef_StandList_",rows,"x",cols,".txt",
+  "sef_StandList_",rows,"x",cols,".txt",
   sep = ""), header=TRUE, 
   sep=",", na.strings="NA", dec=".", strip.white=TRUE)
 Stand.List <- cleanup.import(Stand.List)
@@ -266,7 +268,7 @@ Stand.List <- as.vector(Stand.List[,2], mode = "numeric")#20
 Stand.List <- Stand.List[-1]
 
 Fuelbed.List <- read.table(paste(
-  "c:\\usfs_sef_data_ascii\\sef_FuelbedList_",rows,"x",cols,".txt",
+  "sef_FuelbedList_",rows,"x",cols,".txt",
   sep = ""), header=TRUE, 
   sep=",", na.strings="NA", dec=".", strip.white=TRUE)
 Fuelbed.List <- cleanup.import(Fuelbed.List)
@@ -274,7 +276,7 @@ Fuelbed.List <- as.vector(Fuelbed.List[,2], mode = "numeric")#21
 Fuelbed.List <- Fuelbed.List[-1]
 
 Coord.List <- read.table(paste(
-  "c:\\usfs_sef_data_ascii\\sef_CoordList_",rows,"x",cols,".txt",
+  "sef_CoordList_",rows,"x",cols,".txt",
   sep = ""), header=TRUE, 
   sep=",", na.strings="NA", dec=".", strip.white=TRUE)
 Coord.List <- cleanup.import(Coord.List)
@@ -282,7 +284,7 @@ Coord.List <- as.vector(Coord.List[,2], mode = "numeric")#21
 Coord.List <- Coord.List[-1]
 
 Age.List <- read.table(paste(
-  "c:\\usfs_sef_data_ascii\\sef_AgeList_",rows,"x",cols,".txt",
+  "sef_AgeList_",rows,"x",cols,".txt",
   sep = ""), header=TRUE, 
   sep=",", na.strings="NA", dec=".", strip.white=TRUE)
 Age.List <- cleanup.import(Age.List)
@@ -290,7 +292,7 @@ Age.List <- as.vector(Age.List[,2], mode = "numeric")#22
 Age.List <- Age.List[-1]
 
 Area.List <- read.table(paste(
-  "c:\\usfs_sef_data_ascii\\sef_AreaList_",rows,"x",cols,".txt",
+  "sef_AreaList_",rows,"x",cols,".txt",
   sep = ""), header=TRUE, 
   sep=",", na.strings="NA", dec=".", strip.white=TRUE)
 Area.List <- cleanup.import(Area.List)
@@ -298,7 +300,7 @@ Area.List <- as.vector(Area.List[,2], mode = "numeric")#23
 Area.List <- Area.List[-1]
 
 mfri.List <- read.table(paste(
-  "c:\\usfs_sef_data_ascii\\sef_mfriList_",rows,"x",cols,".txt",
+  "sef_mfriList_",rows,"x",cols,".txt",
   sep = ""), header=TRUE, 
   sep=",", na.strings="NA", dec=".", strip.white=TRUE)
 mfri.List <- cleanup.import(mfri.List)
@@ -306,7 +308,7 @@ mfri.List <- as.vector(mfri.List[,2], mode = "numeric")#23
 mfri.List <- mfri.List[-1]
 
 T1E.List <- read.table(paste(
-  "c:\\usfs_sef_data_ascii\\sef_T1EList_",rows,"x",cols,".txt",
+  "sef_T1EList_",rows,"x",cols,".txt",
   sep = ""), header=TRUE, 
   sep=",", na.strings="NA", dec=".", strip.white=TRUE)
 T1E.List <- cleanup.import(T1E.List)
@@ -314,7 +316,7 @@ T1E.List <- as.vector(T1E.List[,2], mode = "numeric")#24
 T1E.List <- T1E.List[-1]
 
 T2E.List <- read.table(paste(
-  "c:\\usfs_sef_data_ascii\\sef_T2EList_",rows,"x",cols,".txt",
+  "sef_T2EList_",rows,"x",cols,".txt",
   sep = ""), header=TRUE, 
   sep=",", na.strings="NA", dec=".", strip.white=TRUE)
 T2E.List <- cleanup.import(T2E.List)
@@ -322,7 +324,7 @@ T2E.List <- as.vector(T2E.List[,2], mode = "numeric")#24
 T2E.List <- T2E.List[-1]
 
 D1E.List <- read.table(paste(
-  "c:\\usfs_sef_data_ascii\\sef_D1EList_",rows,"x",cols,".txt",
+  "sef_D1EList_",rows,"x",cols,".txt",
   sep = ""), header=TRUE, 
   sep=",", na.strings="NA", dec=".", strip.white=TRUE)
 D1E.List <- cleanup.import(D1E.List)
@@ -330,7 +332,7 @@ D1E.List <- as.vector(D1E.List[,2], mode = "numeric")#25
 D1E.List <- D1E.List[-1]
 
 D2E.List <- read.table(paste(
-  "c:\\usfs_sef_data_ascii\\sef_D2EList_",rows,"x",cols,".txt",
+  "sef_D2EList_",rows,"x",cols,".txt",
   sep = ""), header=TRUE, 
   sep=",", na.strings="NA", dec=".", strip.white=TRUE)
 D2E.List <- cleanup.import(D2E.List)
@@ -338,7 +340,7 @@ D2E.List <- as.vector(D2E.List[,2], mode = "numeric")#25
 D2E.List <- D2E.List[-1]
 
 MU.List <- read.table(paste(
-  "c:\\usfs_sef_data_ascii\\sef_MUList_",rows,"x",cols,".txt",
+  "sef_MUList_",rows,"x",cols,".txt",
   sep = ""), header=TRUE, 
   sep=",", na.strings="NA", dec=".", strip.white=TRUE)
 MU.List <- cleanup.import(MU.List)
@@ -351,46 +353,47 @@ MU.List <- MU.List[-1]
 ####################################################################################
 ####################################################################################
 #STEP 5: Import Conditional Database
-f.path <- read.table("C:/usfs_sef_data_csv/sef_lut_pathways_succession.csv", header=TRUE, 
+f.path <- read.table("sef_lut_pathways_succession.csv", header=TRUE, 
                      sep=",", na.strings="NA", dec=".", strip.white=TRUE)
 f.path <- cleanup.import(f.path)#26
 
-f.treatments <- read.table("C:/usfs_sef_data_csv/sef_lut_menu_treatment.csv", header=TRUE, 
+f.treatments <- read.table("sef_lut_menu_treatment.csv", header=TRUE, 
                            sep=",", na.strings="NA", dec=".", strip.white=TRUE, stringsAsFactors = F)
 f.treatments <- cleanup.import(f.treatments)#27
 
-f.disturbances <- read.table("C:/usfs_sef_data_csv/sef_lut_menu_disturbance.csv", header=TRUE, 
+f.disturbances <- read.table("sef_lut_menu_disturbance.csv", header=TRUE, 
                              sep=",", na.strings="NA", dec=".", strip.white=TRUE, stringsAsFactors = F)
 f.disturbances <- cleanup.import(f.disturbances)#28
 
-t.post <- read.table("C:/usfs_sef_data_csv/sef_lut_pathways_silviculture.csv", header=TRUE, 
+t.post <- read.table("sef_lut_pathways_silviculture.csv", header=TRUE, 
                      sep=",", na.strings="NA", dec=".", strip.white=TRUE)
 t.post <- cleanup.import(t.post)#29
 
-d.post <- read.table("C:/usfs_sef_data_csv/sef_lut_pathways_fire.csv", header=TRUE, 
+d.post <- read.table("sef_lut_pathways_fire.csv", header=TRUE, 
                      sep=",", na.strings="NA", dec=".", strip.white=TRUE)
 d.post <- cleanup.import(d.post)#30
 
-pda <- read.table("C:/usfs_sef_data_csv/sef_lut_thresholds_disturbances.csv", header=TRUE, 
+pda <- read.table("sef_lut_thresholds_disturbances.csv", header=TRUE, 
                   sep=",", na.strings="NA", dec=".", strip.white=TRUE)
 pda <- cleanup.import(pda)#31
 
-f.probability <- read.table("C:/usfs_sef_data_csv/sef_lut_prob_burning.csv", header=TRUE, 
+f.probability <- read.table("sef_lut_prob_burning.csv", header=TRUE, 
                             sep=",", na.strings="NA", dec=".", strip.white=TRUE, stringsAsFactors = F)
 f.probability <- cleanup.import(f.probability)#32
 
-f.wind <- read.table("C:/usfs_sef_data_csv/sef_lut_prob_wind.csv", header=TRUE, 
+f.wind <- read.table("sef_lut_prob_wind.csv", header=TRUE, 
                      sep=",", na.strings="NA", dec=".", strip.white=TRUE)
 f.wind <- cleanup.import(f.wind)
 
-b.unit <- read.table("C:/usfs_sef_data_csv/sef_lut_burn_units.txt", header=TRUE, 
+b.unit <- read.table("sef_lut_burn_units.txt", header=TRUE, 
                      sep=",", na.strings="NA", dec=".", strip.white=TRUE)
 b.unit <- cleanup.import(b.unit)
 b.unit <- data.frame(unit = b.unit[,2], area_ac = b.unit[,3], thin= b.unit[,4], 
                      herb = b.unit[,5], fire = b.unit[,6])#remove col 1 and rename cols 2-6.
 
-b.block <- read.table("C:/usfs_sef_data_csv/sef_lut_pathways_burnBlocks.csv", header=F, 
-           sep=",", na.strings="NA", dec=".", strip.white=TRUE)
+#TODO: Add burn blocks in later. 
+#b.block <- read.table("sef_lut_pathways_burnBlocks.csv", header=F, 
+#           sep=",", na.strings="NA", dec=".", strip.white=TRUE)
 
 ####################################################################################
 ####################################################################################
