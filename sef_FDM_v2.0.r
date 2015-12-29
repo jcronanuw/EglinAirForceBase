@@ -1,11 +1,12 @@
 ###START FDM####
-rm(list=ls())
-dev.off()
-memory.limit(size=4095)
+install.packages("Hmisc", repos="http://cran.fhcrc.org/")
+install.packages("GenKern", repos="http://cran.fhcrc.org/")
+install.packages("SDMTools", repos="http://cran.fhcrc.org/")
+install.packages("gtools", repos="http://cran.fhcrc.org/")
 library(Hmisc)
 library(GenKern)
 library(SDMTools)
-library(gtools)#for combinations()
+library(gtools)  #for combinations()
 
 aa <- system.time({
 
@@ -229,7 +230,10 @@ shape2 <- c(5,5,2.5)#shape 2 parameter
 #range(test)
 
 #Average annual area treated for thinning, herbicide, and prescribed fire.
-meanTAP <- c(5000, 5000, 10000)
+
+#Read in third meanTAP parameter from file
+args <- commandArgs(TRUE)
+meanTAP <- c(5000, 5000, args[1])
 
 #Proportion of available cells within a treatment unit to seed treatment.
 seed.cells <- c(0.50,0.50,0.10)#thinning, herbicide, prescribed fire
