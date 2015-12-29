@@ -149,6 +149,11 @@ run <- args[1]
 
 fire.cut <- 10
 
+#Create files to pass information about model run status.
+file.create("run_iterations")
+file.create("disturbance_summary")
+file.create("annual_summary")
+
 #Temporary tracking items to figure out why MU.List is being corrupted.
 Loop.track <- list()
 MU.track <- list()
@@ -165,7 +170,7 @@ g <- 0
 ####################################################################################
 #STEP 2: Operational Parameters
 MapRes <- 0.22239#The number of acres per pixel
-Interval <- 1#6
+Interval <- 5#6
 r.max <- 1000#7
 c.shape <- 1.5#8
 c.scale <- 0.1#9
@@ -1234,11 +1239,10 @@ ad10[length(ad10) + 1] <- d10[3]
 dt <- Sys.Date()
 tm <- format(Sys.time(), format = "%H.%M.%S", 
              tz = "", usetz = FALSE)
-write.table(c(tbma,tbsa), file = paste("C:\\usfs_sef_outputs_FDM\\run_", run, "iterations","\\sef_run", run,"_",
-                                       dt,"_",tm,"_year_",a,"__", f.treatments$TreatmentName[t.code], "_",b, 
-                                       "__block_",cc,"__expansion_" , "_",d,"__.txt",sep = ""),
-            append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA",
-            dec = ".", row.names = FALSE,col.names = TRUE, qmethod = c("escape", "double"))#
+
+cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__", f.treatments$TreatmentName[t.code], 
+          "_",b, "__block_",cc,"__expansion_" , "_",d,"__.txt",sep = ""), 
+    file = "run_iterations", append = T)#
 
   break
 } #4.2.2 ---------------------------------------------------------------------------
@@ -1264,11 +1268,9 @@ ad11[length(ad11) + 1] <- d11[3]
 dt <- Sys.Date()
 tm <- format(Sys.time(), format = "%H.%M.%S", 
              tz = "", usetz = FALSE)
-write.table(c(tbma,tbsa), file = paste("C:\\usfs_sef_outputs_FDM\\run_", run, "iterations","\\sef_run", run,"_",
-                                       dt,"_",tm,"_year_",a,"__", f.treatments$TreatmentName[t.code], "_",b, 
-                                       "__block_",cc,"__expansion_" , "_",d,"__.txt",sep = ""),
-            append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA",
-            dec = ".", row.names = FALSE,col.names = TRUE, qmethod = c("escape", "double"))#
+cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__", f.treatments$TreatmentName[t.code], 
+          "_",b, "__block_",cc,"__expansion_" , "_",d,"__.txt",sep = ""), 
+    file = "run_iterations", append = T)#
 
   break
 } #4.1.2 ---------------------------------------------------------------------------
@@ -1289,12 +1291,9 @@ ad9[length(ad9) + 1] <- d9[3]
 dt <- Sys.Date()
 tm <- format(Sys.time(), format = "%H.%M.%S", 
              tz = "", usetz = FALSE)
-write.table(c(tbma,tbsa), file = paste("C:\\usfs_sef_outputs_FDM\\run_", run, "iterations","\\sef_run", run,"_",
-                                       dt,"_",tm,"_year_",a,"__", f.treatments$TreatmentName[t.code], "_",b, 
-                                       "__block_",cc,"__expansion_" 
-                                       , "_",d,"__.txt",sep = ""), append = FALSE, quote = TRUE, sep = " ", 
-            eol = "\n", na = "NA", dec = ".", row.names = FALSE,col.names = TRUE, qmethod = c("escape", "double"))#
-
+cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__", f.treatments$TreatmentName[t.code], 
+          "_",b, "__block_",cc,"__expansion_" , "_",d,"__.txt",sep = ""), 
+    file = "run_iterations", append = T)#
                 } #4.0.0 ---------------------------------------------------------------------------
 
 c4 <- system.time({
@@ -1445,8 +1444,15 @@ b5 <- system.time({
   #Area tracking
   meanTAA[t.code] <- sum(meanTAA[t.code], tbsa)
   
+  #Date and time
+  dt <- Sys.Date()
+  tm <- format(Sys.time(), format = "%H.%M.%S", 
+               tz = "", usetz = FALSE)
+  
   #Tracking device
-  t.summary <- data.frame( 
+  t.summary <- data.frame(
+    Date = dt, 
+    Time = tm, 
     Year = a, 
     Disturbance_No = b,
     PercentComplete = round(((sum(meanTAA)/sum(meanTAP))*100),0), 
@@ -1454,22 +1460,12 @@ b5 <- system.time({
     Area_Actual = tbma, 
     Area_Expected = tbsa, 
     Blocks = cc, 
-    Expansions = d.d,
-    IA_Ratio = round(((cc*d.d)/tbma),2)) 
-  #  Time = round(aa[3],0))
+    Expansions = d.d) 
   
 e.summary <- rbind(e.summary, t.summary)
 
 #Save run data.
-dt <- Sys.Date()
-tm <- format(Sys.time(), format = "%H.%M.%S", 
-             tz = "", usetz = FALSE)
-
-write.table(t.summary, file = paste("C:\\usfs_sef_outputs_FDM\\run_", run,"\\sef_run", run,"_",
-                                    dt,"_",tm,"_year_",a, "_", f.treatments$TreatmentName[t.code], 
-                                    "_",b,".txt",sep = ""), append = FALSE, quote = TRUE, sep = " ", 
-            eol = "\n", na = "NA", dec = ".", row.names = FALSE,col.names = TRUE, 
-            qmethod = c("escape", "double"))#
+cat(t.summary, file = "disturbance_summary", append = T)#
 })#b5
 
 
@@ -2405,14 +2401,8 @@ ag10[length(ag10) + 1] <- g10[3]
 dt <- Sys.Date()
 tm <- format(Sys.time(), format = "%H.%M.%S", 
              tz = "", usetz = FALSE)
-write.table(data.frame(Name = c("check", "prior_break", "current_break", "desa", "a.bun", "dema", "ocod", 
-                                "total_new", "selected_new", "prior_st", "current_st"), 
-                       Data = c(check, breaks, 1022, desa, a.bun, dema, length(ocod), length(pr.5), 
-                                length(new.cells), sts, spread.type)), 
-            file = paste("C:\\usfs_sef_outputs_FDM\\run_", run, "iterations","\\sef_run", run,"_",
-                         dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",cc,"__free_", g,"__.txt", 
-                         sep = ""), append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
-            dec = ".", row.names = FALSE,col.names = TRUE, qmethod = c("escape", "double"))#
+cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__free_",
+          g,"__.txt",sep = ""), file = "run_iterations", append = T)#
 breaks <- 1022
  break
 }#10.2.2 --------------------------------------------------------------------------
@@ -2439,14 +2429,9 @@ ag11[length(ag11) + 1] <- g11[3]
 dt <- Sys.Date()
 tm <- format(Sys.time(), format = "%H.%M.%S", 
              tz = "", usetz = FALSE)
-write.table(data.frame(Name = c("check", "prior_break", "current_break", "desa", "a.bun", "dema", "ocod", 
-                                "total_new", "selected_new", "prior_st", "current_st"), 
-                       Data = c(check, breaks, 1031, desa, a.bun, dema, length(ocod), length(pr.5), 
-                                length(new.cells), sts, spread.type)), 
-            file = paste("C:\\usfs_sef_outputs_FDM\\run_", run, "iterations","\\sef_run", run,"_",
-                         dt,"_",tm,"_year_",a,"__wildfire_",e,"__block_",cc,"__free_",g,"__.txt", 
-                         sep = ""), append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA",
-            dec = ".", row.names = FALSE,col.names = TRUE, qmethod = c("escape", "double"))#
+cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__free_",
+          g,"__.txt",sep = ""), file = "run_iterations", append = T)#
+
 breaks <- 1031
  break
 } else #10.3.1 ---------------------------------------------------------------------
@@ -2522,14 +2507,9 @@ g17 <- system.time({
   dt <- Sys.Date()
   tm <- format(Sys.time(), format = "%H.%M.%S", 
                tz = "", usetz = FALSE)
-  write.table(data.frame(Name = c("check", "prior_break", "current_break", "desa", "a.bun", "dema", "ocod", 
-                                  "total_new", "selected_new", "prior_st", "current_st"), 
-                         Data = c(check, breaks, 1012, desa, a.bun, dema, length(ocod), length(pr.5), 
-                                  length(new.cells), sts, spread.type)), 
-              file = paste("C:\\usfs_sef_outputs_FDM\\run_", run, "iterations","\\sef_run", run,"_",
-                           dt,"_",tm,"_year_",a,"__wildfire_",e,"__block_",cc,"__free_",g,"__.txt",
-                           sep = ""), append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA",
-              dec = ".", row.names = FALSE,col.names = TRUE, qmethod = c("escape", "double"))#
+  cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__free_",
+            g,"__.txt",sep = ""), file = "run_iterations", append = T)#
+  
   breaks <- 1012
   break
 } #10.1.2 --------------------------------------------------------------------------
@@ -2571,14 +2551,9 @@ if(spread.type == 12)
   dt <- Sys.Date()
   tm <- format(Sys.time(), format = "%H.%M.%S", 
                tz = "", usetz = FALSE)
-  write.table(data.frame(Name = c("check", "prior_break", "current_break", "desa", "a.bun", "dema", "ocod", 
-                                  "total_new", "selected_new", "prior_st", "current_st"), 
-                         Data = c(check, breaks, 1041, desa, a.bun, dema, length(ocod), length(pr.5), 
-                                  length(new.cells), sts, spread.type)), 
-              file = paste("C:\\usfs_sef_outputs_FDM\\run_", run, "iterations","\\sef_run", run,"_",
-                           dt,"_",tm,"_year_",a,"__wildfire_",e,"__block_",cc,"__free_",g,"__.txt", 
-                           sep = ""),append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
-              dec = ".", row.names = FALSE,col.names = TRUE, qmethod = c("escape", "double"))#
+  cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__free_",
+            g,"__.txt",sep = ""), file = "run_iterations", append = T)#
+  
   breaks <- 1041
   break
 } else#10.4.1
@@ -2618,14 +2593,8 @@ PrctDist.Mapped[(length(PrctDist.Mapped)+1)] <- round((((dema + length(ocod))/de
 dt <- Sys.Date()
 tm <- format(Sys.time(), format = "%H.%M.%S", 
              tz = "", usetz = FALSE)
-write.table(data.frame(Name = c("check", "prior_break", "current_break", "desa", "a.bun", "dema", "ocod", 
-                                "total_new", "selected_new", "prior_st", "current_st"), 
-                       Data = c(check, breaks, 1042, desa, a.bun, dema, length(ocod), length(pr.5), 
-                                length(new.cells), sts, spread.type)), 
-            file = paste("C:\\usfs_sef_outputs_FDM\\run_", run, "iterations","\\sef_run", run,"_",
-                         dt,"_",tm,"_year_",a,"__wildfire_",e,"__block_",cc,"__free_",g,"__.txt", 
-                         sep = ""),append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA",
-            dec = ".", row.names = FALSE,col.names = TRUE, qmethod = c("escape", "double"))#
+cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__free_",
+          g,"__.txt",sep = ""), file = "run_iterations", append = T)#
 breaks <- 1042
 }#10.4.2
 
@@ -2797,14 +2766,8 @@ breaks <- 1042
   dt <- Sys.Date()
   tm <- format(Sys.time(), format = "%H.%M.%S", 
                tz = "", usetz = FALSE)
-  write.table(data.frame(Name = c("check", "prior_break", "current_break", "desa", "a.bun", "dema", "ocod", 
-                                  "total_new", "selected_new", "prior_st", "current_st"), 
-                         Data = c(check, breaks, 1122, desa, a.bun, dema, length(ocod), length(avlo), 
-                                  length(new.cells), sts, spread.type)), 
-              file = paste("C:\\usfs_sef_outputs_FDM\\run_", run, "iterations","\\sef_run", run,"_",
-                           dt,"_",tm,"_year_",a,"__wildfire_",e,"__block_",cc,"__block_",h,"__.txt", 
-                           sep = ""),append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA",
-              dec = ".", row.names = FALSE,col.names = TRUE, qmethod = c("escape", "double"))#
+  cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__blocked_",
+            h,"__.txt",sep = ""), file = "run_iterations", append = T)#
 
 #NOTE (12/6/2015)
 #Fire has burned out and must be reassigned to a new area. Use spread.type = 0 to
@@ -2837,14 +2800,8 @@ breaks <- 1042
   dt <- Sys.Date()
   tm <- format(Sys.time(), format = "%H.%M.%S", 
                tz = "", usetz = FALSE)
-  write.table(data.frame(Name = c("check", "prior_break", "current_break", "desa", "a.bun", "dema", "ocod", 
-                                  "total_new", "selected_new", "prior_st", "current_st"), 
-                         Data = c(check, breaks, 1112, desa, a.bun, dema, length(ocod), length(avlo), 
-                                  length(new.cells), sts, spread.type)), 
-              file = paste("C:\\usfs_sef_outputs_FDM\\run_", run, "iterations","\\sef_run", run,"_",
-                           dt,"_",tm,"_year_",a,"__wildfire_",e,"__block_",cc,"__block_",h,"__.txt", 
-                           sep = ""),append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA",
-              dec = ".", row.names = FALSE,col.names = TRUE, qmethod = c("escape", "double"))#
+  cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__blocked_",
+            h,"__.txt",sep = ""), file = "run_iterations", append = T)#
   breaks <- 1112
   break
 } #11.1.2 ---------------------------------------------------------------------------
@@ -2889,14 +2846,8 @@ if(spread.type == 11)
   dt <- Sys.Date()
   tm <- format(Sys.time(), format = "%H.%M.%S", 
                tz = "", usetz = FALSE)
-  write.table(data.frame(Name = c("check", "prior_break", "current_break", "desa", "a.bun", "dema", "ocod", 
-                                  "total_new", "selected_new", "prior_st", "current_st"), 
-                         Data = c(check, breaks, 1131, desa, a.bun, dema, length(ocod), length(avlo), 
-                                  length(new.cells), sts, spread.type)), 
-              file = paste("C:\\usfs_sef_outputs_FDM\\run_", run, "iterations","\\sef_run", run,"_",
-                           dt,"_",tm,"_year_",a,"__wildfire_",e,"__block_",cc,"__block_",h,"__.txt", 
-                           sep = ""),append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA",
-              dec = ".", row.names = FALSE,col.names = TRUE, qmethod = c("escape", "double"))#
+  cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__blocked_",
+            h,"__.txt",sep = ""), file = "run_iterations", append = T)#
   breaks < - 1131
   break
 } else #11.3.1
@@ -2937,14 +2888,8 @@ dt <- Sys.Date()
 tm <- format(Sys.time(), format = "%H.%M.%S", 
              tz = "", usetz = FALSE)
 
-write.table(data.frame(Name = c("check", "prior_break", "current_break", "desa", "a.bun", "dema", "ocod", 
-                                "total_new", "selected_new", "prior_st", "current_st"), 
-                       Data = c(check, breaks, 1132, desa, a.bun, dema, length(ocod), length(avlo), 
-                                length(new.cells), sts, spread.type)), 
-            file = paste("C:\\usfs_sef_outputs_FDM\\run_", run, "iterations","\\sef_run", run,"_",
-                         dt,"_",tm,"_year_",a,"__wildfire_",e,"__block_",cc,"__block_",h,"__.txt", 
-                         sep = ""),append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA",
-            dec = ".", row.names = FALSE,col.names = TRUE, qmethod = c("escape", "double"))#
+cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__blocked_",
+          h,"__.txt",sep = ""), file = "run_iterations", append = T)#
 
 breaks <- 1132
 }#11.3.2
@@ -3363,8 +3308,16 @@ loopE <- loopE[order(loopE$ReplacedStand),]
   })#e4
 } #8.1.2 ---------------------------------------------------------------------------
 e5 <- system.time({
+
+  #Record date and time.
+  dt <- Sys.Date()
+  tm <- format(Sys.time(), format = "%H.%M.%S", 
+               tz = "", usetz = FALSE)
+  
   #Tracking device
   d.summary <- data.frame(
+    Date = dt, 
+    Time = tm, 
     Year = a, 
     Disturbance_No = e, 
     PercentComplete = round(((e/length(tdn[tdy == a]))*100),), 
@@ -3372,20 +3325,11 @@ e5 <- system.time({
     Area_Actual = dema, 
     Area_Expected = desa, 
     Blocks = f, 
-    Expansions = g.g,
-    IA_Ratio = round(((f*g.g)/dema),2))
+    Expansions = g.g)
   e.summary <- rbind(e.summary, d.summary)
   
 #Save run data.
-dt <- Sys.Date()
-tm <- format(Sys.time(), format = "%H.%M.%S", 
-             tz = "", usetz = FALSE)
-
-write.table(d.summary, file = paste("C:\\usfs_sef_outputs_FDM\\run_", run,"\\sef_run", run,"_",
-                                    dt,"_",tm,"_year",a,"_wildfire_",e,".txt",sep = ""),
-            append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA",
-            dec = ".", row.names = FALSE,col.names = TRUE, qmethod = 
-              c("escape", "double"))#
+cat(d.summary, file = "disturbance_summary", append = T)#
 })#e5
 
 ae1[length(ae1) + 1] <- e1[3]
@@ -3767,38 +3711,35 @@ dt <- Sys.Date()
 tm <- format(Sys.time(), format = "%H.%M.%S", 
              tz = "", usetz = FALSE)
 
-write.table(e.summary, file = paste("C:\\usfs_sef_outputs_FDM\\run_", run,"\\sef_run", run,"_",
-                                    dt,"_",tm,"_year_",a,".txt",sep = ""),
-            append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA",
-            dec = ".", row.names = FALSE,col.names = TRUE, qmethod = 
-              c("escape", "double"))#
+#Save run data.
+cat(e.summary, file = "annual_summary", append = T)#
 
 })#a28
 
 a29 <- system.time({
 
 #Create maps for interval years.
-#if((a %% Interval) == 0)
-#{
+if((a %% Interval) == 0)
+{
 
 #  #Save Fuelbed Map (f.map).
 dt <- Sys.Date()
 tm <- format(Sys.time(), format = "%H.%M.%S", 
              tz = "", usetz = FALSE)
 
-write.table(s.map, file = paste("C:\\usfs_sef_outputs_FDM\\run_", run,"maps\\sef_smap_",
+#write.table(s.map, file = paste("C:\\usfs_sef_outputs_FDM\\run_", run,"maps\\sef_smap_",
+#                                dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
+#            append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
+#            dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
+#              c("escape", "double"))#
+
+write.table(f.map, file = paste("run_", run,"maps/sef_fmap_",
                                 dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
             append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
             dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
               c("escape", "double"))#
 
-write.table(f.map, file = paste("C:\\usfs_sef_outputs_FDM\\run_", run,"maps\\sef_fmap_",
-                                dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
-            append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
-            dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
-              c("escape", "double"))#
-
-#}
+}
 
 #Log treatment and disturbance mapping data for year[a].
 Map.History[[a]] <- c(Treatment.History,Disturbance.History)
