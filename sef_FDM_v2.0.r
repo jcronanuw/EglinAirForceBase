@@ -140,7 +140,7 @@ fh.adj <- 6#NEW
 sh.adj <- 6#NEW
 bh.adj <- 6#NEW
 lh.adj <- 6#NEW
-run <- 1036# 
+run <- 1000# 
 #Trying to generate errors from runs 1028 and 1030.
 
 fire.cut <- 10
@@ -218,10 +218,6 @@ fire.stand <- 8000000
 
 #Values to guide stochastic generation of treatments. Order is thinning, herbicide, and
 #prescribed fire.
-meanTreatments <-  c(10,10,200)#c(1,1,1)# enter the mean number of treatments per year.
-#The current regime is 270 rx fires because the average unit size is 384 acres.
-#260 treatments x 384 acres = 99,840 acres burned.
-sdTreatments <- c(1,1,1)#corresponding standard deviation for treatments.
 minSize <- c(5,20,1)#minimum treated stand size within a treatment unit
 #Shape parameters are used to inform the beta distribution function that determines
 #The percentage of a treatment unit to be effected for each treatment.
@@ -231,6 +227,9 @@ shape2 <- c(5,5,2.5)#shape 2 parameter
 #test <- rbeta(10000,10,2.5)#rbeta(number of observations, shape 1, shape 2)
 #hist(test, breaks = seq(0,1,0.01))
 #range(test)
+
+#Average annual area treated for thinning, herbicide, and prescribed fire.
+meanTAP <- c(5000, 5000, 10000)
 
 #Proportion of available cells within a treatment unit to seed treatment.
 seed.cells <- c(0.50,0.50,0.10)#thinning, herbicide, prescribed fire
@@ -696,24 +695,9 @@ for(a in 1:Years)#a <- 1
   
   a1 <- system.time({
   
-  #Thinning
-  trno.t <- round(min(rnorm(1,meanTreatments[1],sdTreatments[1]),
-                      Truncate.Number[3]),0)  
-  trno.t <- ifelse(trno.t < 0, 0, trno.t)
-  
-  
-  #Herbicide
-  trno.h <- round(min(rnorm(1,meanTreatments[2],sdTreatments[2]),
-                      Truncate.Number[4]),0)
-  trno.h <- ifelse(trno.h < 0, 0, trno.h)
-  
-  #Prescribed fire
-  trno.r <- round(min(rnorm(1,meanTreatments[3],sdTreatments[3]),
-                      Truncate.Number[5]),0)
-  trno.r <- ifelse(trno.r < 0, 0, trno.r)  
-  
-  trco <- c(rep(trls[1],trno.t),rep(trls[2],trno.h),rep(trls[3],trno.r))
- 
+    #Objects to record annual area for thinning, herbicide, and prescribed fire treatments.
+    meanTAA <- c(0, 0, 0)
+
   })#a1
 
   a2 <- system.time({
@@ -757,12 +741,15 @@ for(a in 1:Years)#a <- 1
   
   
   pri <- data.frame(thin = pri.thin, herb = pri.herb, fire = pri.fire)
+  
   })#a2
-  a3 <- system.time({
+  
+
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>TREATMENTS>>>>>>>>
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>TREATMENTS>>>>>>>>
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>TREATMENTS>>>>>>>>
   
+  a3 <- system.time({
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>FIRES>>>>>>>>>>>>>>>
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>FIRES>>>>>>>>>>>>>>>
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>FIRES>>>>>>>>>>>>>>>
@@ -933,27 +920,27 @@ a5 <- system.time({
   #ALSO, YOU NEED SOME WAY OF KEEPING TREATMENTS OUT OF UNITS THAT HAVE ALREADY BEEN TREATED
 })#a5
 
-  if(length(trco) == 0)
+if(sum(meanTAP) <= 0)
   {
-    tbsa <- 0
-    Treatment.Area <- 0
-    PrctTrmt.Mapped <- 0
-    #Log treatment run data for treatment[b].
-    Treatment.History[[(length(Treatment.History)+1)]] <- paste(
-      "No treatments planned for this year", collapse = "")
-    
-    #Add header to list.
-    names(Treatment.History)[[length(Treatment.History)]] <- paste(c(
-      "Treatment Number: ",b," ### Treatment Type: ", 
-      f.treatments$TreatmentTitle[trco[b]]," ### Treatment Area: ", 
-      tbsa, " ### Area Mapped: ", Treatment.Area[length(Treatment.Area)], 
-      " ### Completed: ", PrctTrmt.Mapped[length(PrctTrmt.Mapped)], "% ###"), 
-      collapse = "")
+  tbsa <- 0
+  Treatment.Area <- 0
+  PrctTrmt.Mapped <- 0
+  #Log treatment run data for treatment[b].
+  Treatment.History[[(length(Treatment.History)+1)]] <- paste(
+    "No treatments planned for this year", collapse = "")
+  
+  #Add header to list.
+  names(Treatment.History)[[length(Treatment.History)]] <- paste(c(
+    "Treatment Number: ",b," ### Treatment Type: ", 
+    f.treatments$TreatmentTitle[t.code]," ### Treatment Area: ", 
+    tbsa, " ### Area Mapped: ", Treatment.Area[length(Treatment.Area)], 
+    " ### Completed: ", PrctTrmt.Mapped[length(PrctTrmt.Mapped)], "% ###"), 
+    collapse = "")
   } else
   {
     #LOOP 222222222222222222222222222222222222222222222222222222222222222222222222222222
     #Loop 2 (by treatments within year[a]). This loop runs all treatments for year[a].
-    for (b in 1:length(trco))#b <- 1
+    for (b in 1:r.max)#b <- 1
     { #2.0.0 ---------------------------------------------------------------------------
       #TESTING ONLY
       b1 <- 0
@@ -961,6 +948,15 @@ a5 <- system.time({
       b3 <- 0
       b4 <- 0
       b5 <- 0
+      
+      #Lists treatment code for current treatment
+      t.code <- ifelse(length(which(meanTAA < meanTAP)) == 0,4,min(which(meanTAA < meanTAP)))
+      
+      if(t.code == 4)
+      { #2.1.1-----------------------------------------------------------------------------
+        break
+      } else #2.1.1------------------------------------------------------------------------
+{ #2.1.2-----------------------------------------------------------------------------
       
       b1 <- system.time({
         d.d <- vector(length = 1, mode = 'numeric')#tracks expansions
@@ -1008,7 +1004,7 @@ a5 <- system.time({
       b2 <- system.time({
         
         #Determine available fuelbeds.
-        avfb <- fbls[ttxm[,trco[b]+3] == 2]
+        avfb <- fbls[ttxm[,t.code + 3] == 2]
         
         #Find eligible stands with eligible fuelbeds
         elst <- sort(unique(s.map[!b.map %in% c(NoData.Unit, Buffer.Unit, 
@@ -1018,23 +1014,23 @@ a5 <- system.time({
         #Determine the burn unit for treatment
         #Only consider management units where over 50% of the unit is available for treatment.
         #For units that are use percent of unit available for treatment as prob arg for selection.
-        bun <- resample(b.unit$unit[pri[,trco[b]] > 0.50],
+        bun <- resample(b.unit$unit[pri[,t.code] > 0.50],
                         size = 1,
-                        prob = pri[,trco[b]][pri[,trco[b]] > 0.50])
+                        prob = pri[,t.code][pri[,t.code] > 0.50])
         
         #Determine the treatment area. This is governed by the available fuelbeds, minimum stand
         #area, and fraction of available area treated (beta distribution).
         tbsa <- round(((length(b.map[b.map == bun & s.map %in% elst])) * 
-                         rbeta(1,shape1[trco[b]],shape2[trco[b]])),0)
+                         rbeta(1,shape1[t.code],shape2[t.code])),0)
         
         #Initiate treatment in the proportion of available pixels specified in step 1 (cuts)
         sct <- vector(mode = "numeric", length = 0)
         sct <- resample(l.map[b.map == bun & s.map %in% elst], 
-                        round(max((tbsa * seed.cells[trco[b]]),1),0))
+                        round(max((tbsa * seed.cells[t.code]),1),0))
       })#b2
       
         if(tbsa >= 1)
-        { #2.1.1 ---------------------------------------------------------------------------
+        { #2.2.1 ---------------------------------------------------------------------------
           
           #LOOP 3333333333333333333333333333333333333333333333333333333333333333333333
           #Loop 3 (by treatment[b] by block). This loop keeps running until treatment
@@ -1085,25 +1081,8 @@ c1 <- system.time({
               #treatment within the designated burn unit boundaries.
               if(cc > 1)
               {
-                
-                #Note, should no longer be a need for loop 2 b/c management unit is selected
-                #based on available area.
-                #Find eligible stands with eligible fuelbeds
-                #elst <- sort(unique(s.map[!b.map %in% c(NoData.Unit, Buffer.Unit, 
-                #                                        Unmanaged.Unit) & 
-                #                            f.map %in% avfb & s.map %in% loopA.snO]))
-                
-                #Determine the burn unit for treatment
-                #Only consider management units where over 50% of the unit is available for treatment.
-                #For units that are use percent of unit available for treatment as prob arg for selection.
-                #bun <- resample(b.unit$unit[pri[,trco[b]] > 0.50],
-                #                size = 1,
-                #                prob = pri[,trco[b]][pri[,trco[b]] > 0.50])
-                
                 #Initiate treatment in the proportion of available pixels specified in step 1 (cuts)
                 sct <- vector(mode = "numeric", length = 0)
-                #sct <- resample(l.map[b.map == bun & s.map %in% elst], 
-                #                round(max(((tbsa-tbma) * seed.cells[trco[b]]),1),0))
               } else
               {
                 #No, initial block
@@ -1249,10 +1228,10 @@ dt <- Sys.Date()
 tm <- format(Sys.time(), format = "%H.%M.%S", 
              tz = "", usetz = FALSE)
 write.table(c(tbma,tbsa), file = paste("C:\\usfs_sef_outputs_FDM\\run_", run, "iterations","\\sef_run", run,"_",
-                                       dt,"_",tm,"_Year_",a,"__Fire_",b,"__Block_",cc,"__RxBurn_",d,"__.txt",sep = ""),
+                                       dt,"_",tm,"_year_",a,"__", f.treatments$TreatmentName[t.code], "_",b, 
+                                       "__block_",cc,"__expansion_" , "_",d,"__.txt",sep = ""),
             append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA",
-            dec = ".", row.names = FALSE,col.names = TRUE, qmethod = 
-              c("escape", "double"))#
+            dec = ".", row.names = FALSE,col.names = TRUE, qmethod = c("escape", "double"))#
 
   break
 } #4.2.2 ---------------------------------------------------------------------------
@@ -1279,10 +1258,10 @@ dt <- Sys.Date()
 tm <- format(Sys.time(), format = "%H.%M.%S", 
              tz = "", usetz = FALSE)
 write.table(c(tbma,tbsa), file = paste("C:\\usfs_sef_outputs_FDM\\run_", run, "iterations","\\sef_run", run,"_",
-                                       dt,"_",tm,"_Year_",a,"__Fire_",b,"__Block_",cc,"__RxBurn_",d,"__.txt",sep = ""),
+                                       dt,"_",tm,"_year_",a,"__", f.treatments$TreatmentName[t.code], "_",b, 
+                                       "__block_",cc,"__expansion_" , "_",d,"__.txt",sep = ""),
             append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA",
-            dec = ".", row.names = FALSE,col.names = TRUE, qmethod = 
-              c("escape", "double"))#
+            dec = ".", row.names = FALSE,col.names = TRUE, qmethod = c("escape", "double"))#
 
   break
 } #4.1.2 ---------------------------------------------------------------------------
@@ -1304,20 +1283,15 @@ dt <- Sys.Date()
 tm <- format(Sys.time(), format = "%H.%M.%S", 
              tz = "", usetz = FALSE)
 write.table(c(tbma,tbsa), file = paste("C:\\usfs_sef_outputs_FDM\\run_", run, "iterations","\\sef_run", run,"_",
-                                       dt,"_",tm,"_Year_",a,"__Fire_",b,"__Block_",cc,"__RxBurn_",d,"__.txt",sep = ""),
-            append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA",
-            dec = ".", row.names = FALSE,col.names = TRUE, qmethod = 
-              c("escape", "double"))#
+                                       dt,"_",tm,"_year_",a,"__", f.treatments$TreatmentName[t.code], "_",b, 
+                                       "__block_",cc,"__expansion_" 
+                                       , "_",d,"__.txt",sep = ""), append = FALSE, quote = TRUE, sep = " ", 
+            eol = "\n", na = "NA", dec = ".", row.names = FALSE,col.names = TRUE, qmethod = c("escape", "double"))#
 
                 } #4.0.0 ---------------------------------------------------------------------------
 
 c4 <- system.time({
 #Find unique fuelbeds in each management unit
-
-#This is an autonomous error checking mechanism, it is not used, or updated elsehere in FDM.
-#It should always have one management unit per [[i]].
-#nobu <- list()
-#nobu[[length(nobu) +1]] <- sort(unique(as.vector(b.map[s.map %in% tesn])))
 
 #Unique old stands
 osto <- sort(unique(tesn))
@@ -1337,13 +1311,9 @@ tn.b <- tn[order(tn$ocot),]
 v.nebc <- nebc[match(tn.b$osnt, osto)]
 s.map[l.map %in% tn.b$ocot] <- v.nebc
 
-
-#for(i in 1:nobc)
-#{s.map[s.map == osto[i]] <- nebc[i]}
-
 #Log new stand numbers and associated treatments when they have been added to s.map.
 loopC.new_stand <- c(loopC.new_stand,nebc)
-loopC.treat_type <- c(loopC.treat_type,rep(trco[b],nobc))
+loopC.treat_type <- c(loopC.treat_type,rep(t.code,nobc))
 loopC.new_mgmtUnit <- c(loopC.new_mgmtUnit,rep(bun, length(nebc)))
 #loopC.new_area <- c(loopC.new_area,mapply(function(x) length(s.map[s.map == x]),nebc))
 l.nebc <- rep(1,length(v.nebc))
@@ -1411,7 +1381,7 @@ if(length(Iteration.cc) > 1)
 #Add header to list.
 names(Treatment.History)[[length(Treatment.History)]] <- paste(c(
   "Treatment Number: ",b," ### Treatment Type: ", 
-  f.treatments$TreatmentTitle[trco[b]]," ### Treatment Area: ", 
+  f.treatments$TreatmentTitle[t.code]," ### Treatment Area: ", 
   tbsa, " ### Area Mapped: ", Treatment.Area[length(Treatment.Area)], 
   " ### Completed: ",PrctTrmt.Mapped[length(PrctTrmt.Mapped)], "% ###"), 
   collapse = "")
@@ -1444,7 +1414,7 @@ loopB <- loopB[order(loopB$old_stand),]
   #Add header to list.
   names(Treatment.History)[[length(Treatment.History)]] <- paste(c(
     "Treatment Number: ",b," ### Treatment Type: ", 
-    f.treatments$TreatmentTitle[trco[b]]," ### Treatment Area: ", 
+    f.treatments$TreatmentTitle[t.code]," ### Treatment Area: ", 
     tbsa, " ### Area Mapped: ", Treatment.Area[length(Treatment.Area)], 
     " ### Completed: ", PrctTrmt.Mapped[length(PrctTrmt.Mapped)], "% ###"), 
     collapse = "")
@@ -1464,19 +1434,23 @@ loopB <- loopB[order(loopB$old_stand),]
   })#b4
 } #2.1.2 ---------------------------------------------------------------------------
 b5 <- system.time({
-#Tracking device
-t.summary <- data.frame( 
-  Year = a, 
-  Treatment = b,
-  of = length(trco), 
-  Name = f.treatments$TreatmentTitle[trco[b]], 
-  Area_Planned = tbsa, 
-  Area_Treated = tbma, 
-  Blocks = cc, 
-  Expansions = d.d,
-  IA_Ratio = round(((cc*d.d)/tbma),2)) 
-#  Time = round(aa[3],0))
 
+  #Area tracking
+  meanTAA[t.code] <- sum(meanTAA[t.code], tbsa)
+  
+  #Tracking device
+  t.summary <- data.frame( 
+    Year = a, 
+    Disturbance_No = b,
+    PercentComplete = round(((sum(meanTAA)/sum(meanTAP))*100),0), 
+    Name = f.treatments$TreatmentTitle[t.code], 
+    Area_Actual = tbma, 
+    Area_Expected = tbsa, 
+    Blocks = cc, 
+    Expansions = d.d,
+    IA_Ratio = round(((cc*d.d)/tbma),2)) 
+  #  Time = round(aa[3],0))
+  
 e.summary <- rbind(e.summary, t.summary)
 
 #Save run data.
@@ -1485,10 +1459,10 @@ tm <- format(Sys.time(), format = "%H.%M.%S",
              tz = "", usetz = FALSE)
 
 write.table(t.summary, file = paste("C:\\usfs_sef_outputs_FDM\\run_", run,"\\sef_run", run,"_",
-                                    dt,"_",tm,"_Year",a,"Treatment",b,".txt",sep = ""), 
-            append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
-            dec = ".", row.names = FALSE,col.names = TRUE, qmethod = 
-              c("escape", "double"))#
+                                    dt,"_",tm,"_year_",a, "_", f.treatments$TreatmentName[t.code], 
+                                    "_",b,".txt",sep = ""), append = FALSE, quote = TRUE, sep = " ", 
+            eol = "\n", na = "NA", dec = ".", row.names = FALSE,col.names = TRUE, 
+            qmethod = c("escape", "double"))#
 })#b5
 
 
@@ -1497,9 +1471,9 @@ ab2[length(ab2) + 1] <- b2[3]
 ab3[length(ab3) + 1] <- b3[3]
 ab4[length(ab4) + 1] <- b4[3]
 ab5[length(ab5) + 1] <- b5[3]
-
+} #2.1.2-----------------------------------------------------------------------------
     } #2.0.0 ---------------------------------------------------------------------------
-  }
+  } #1.3.2-----------------------------------------------------------------------------
 
 #Post run step 1>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 #Update files if there were treatments in year[a].
@@ -1518,30 +1492,6 @@ a6 <- system.time({
 
 
 a7 <- system.time({
-  #Storage for fuelbeds and ages of new stands.
-  #sfubes <- vector()
-  #sagess <- vector()
-  
-  #Update portion of f.map affected by treatments for year[a]. 
-  #for(i in 1:length(loopB.new_stand))
-  #{
-    
-    #Updates f.map.
-    #f.map[s.map == loopB.new_stand[i]] <- ttxm[fblo[t.post$fuelbed == ufxTa[i]], 
-    #                                           loopB.treat_type[i]]
-    
-    #Forms a list of the new fuelbeds.
-    #sfubes[i] <- ttxm[fblo[t.post$fuelbed == ufxTa[i]], loopB.treat_type[i]]
-    #now newFB_a7    
-
-    #Forms a list of the new ages. Changed code, ages do not change (10/21/15)
-    #sagess[i] <- (f.path$start[f.path$pre == ttxm[
-    # fblo[t.post$fuelbed == ufxTa[i]], loopB.treat_type[i]]] - 1)   
-    #sagess[i] <- Age.List[Stand.List == (loopB.old_stand*-1)[i]]
-    #now newAGE_a7
-  #}
-
-#Code below replaces loop, vene though there are more lines it should run way faster.
 
 #Add ufxTa to loopB data frame
 loopB <- data.frame(loopB, ufxTa = ufxTa)
@@ -2452,11 +2402,10 @@ write.table(data.frame(Name = c("check", "prior_break", "current_break", "desa",
                                 "total_new", "selected_new", "prior_st", "current_st"), 
                        Data = c(check, breaks, 1022, desa, a.bun, dema, length(ocod), length(pr.5), 
                                 length(new.cells), sts, spread.type)), 
-            file = paste("C:\\usfs_sef_outputs_FDM\\run_", run, "iterations","\\sef_run", run,"_", 
-                         dt,"_",tm,"_Year_",a,"__Fire_",e,"__Block_",f,"__Wildfire_",g,"__.txt",sep = ""),
-            append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA",
-            dec = ".", row.names = FALSE,col.names = TRUE, qmethod = 
-              c("escape", "double"))#
+            file = paste("C:\\usfs_sef_outputs_FDM\\run_", run, "iterations","\\sef_run", run,"_",
+                         dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",cc,"__free_", g,"__.txt", 
+                         sep = ""), append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
+            dec = ".", row.names = FALSE,col.names = TRUE, qmethod = c("escape", "double"))#
 breaks <- 1022
  break
 }#10.2.2 --------------------------------------------------------------------------
@@ -2487,11 +2436,10 @@ write.table(data.frame(Name = c("check", "prior_break", "current_break", "desa",
                                 "total_new", "selected_new", "prior_st", "current_st"), 
                        Data = c(check, breaks, 1031, desa, a.bun, dema, length(ocod), length(pr.5), 
                                 length(new.cells), sts, spread.type)), 
-            file = paste("C:\\usfs_sef_outputs_FDM\\run_", run, "iterations","\\sef_run", run,"_", 
-                         dt,"_",tm,"_Year_",a,"__Fire_",e,"__Block_",f,"__Wildfire_",g,"__.txt",sep = ""),
-            append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA",
-            dec = ".", row.names = FALSE,col.names = TRUE, qmethod = 
-              c("escape", "double"))#
+            file = paste("C:\\usfs_sef_outputs_FDM\\run_", run, "iterations","\\sef_run", run,"_",
+                         dt,"_",tm,"_year_",a,"__wildfire_",e,"__block_",cc,"__free_",g,"__.txt", 
+                         sep = ""), append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA",
+            dec = ".", row.names = FALSE,col.names = TRUE, qmethod = c("escape", "double"))#
 breaks <- 1031
  break
 } else #10.3.1 ---------------------------------------------------------------------
@@ -2571,11 +2519,10 @@ g17 <- system.time({
                                   "total_new", "selected_new", "prior_st", "current_st"), 
                          Data = c(check, breaks, 1012, desa, a.bun, dema, length(ocod), length(pr.5), 
                                   length(new.cells), sts, spread.type)), 
-              file = paste("C:\\usfs_sef_outputs_FDM\\run_", run, "iterations","\\sef_run", run,"_",  
-                           dt,"_",tm,"_Year_",a,"__Fire_",e,"__Block_",f,"__Wildfire_",g,"__.txt",sep = ""),
-              append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA",
-              dec = ".", row.names = FALSE,col.names = TRUE, qmethod = 
-                c("escape", "double"))#
+              file = paste("C:\\usfs_sef_outputs_FDM\\run_", run, "iterations","\\sef_run", run,"_",
+                           dt,"_",tm,"_year_",a,"__wildfire_",e,"__block_",cc,"__free_",g,"__.txt",
+                           sep = ""), append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA",
+              dec = ".", row.names = FALSE,col.names = TRUE, qmethod = c("escape", "double"))#
   breaks <- 1012
   break
 } #10.1.2 --------------------------------------------------------------------------
@@ -2621,11 +2568,10 @@ if(spread.type == 12)
                                   "total_new", "selected_new", "prior_st", "current_st"), 
                          Data = c(check, breaks, 1041, desa, a.bun, dema, length(ocod), length(pr.5), 
                                   length(new.cells), sts, spread.type)), 
-              file = paste("C:\\usfs_sef_outputs_FDM\\run_", run, "iterations","\\sef_run", run,"_",  
-                           dt,"_",tm,"_Year_",a,"__Fire_",e,"__Block_",f,"__Wildfire_",g,"__.txt",sep = ""),
-              append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA",
-              dec = ".", row.names = FALSE,col.names = TRUE, qmethod = 
-                c("escape", "double"))#
+              file = paste("C:\\usfs_sef_outputs_FDM\\run_", run, "iterations","\\sef_run", run,"_",
+                           dt,"_",tm,"_year_",a,"__wildfire_",e,"__block_",cc,"__free_",g,"__.txt", 
+                           sep = ""),append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
+              dec = ".", row.names = FALSE,col.names = TRUE, qmethod = c("escape", "double"))#
   breaks <- 1041
   break
 } else#10.4.1
@@ -2669,11 +2615,10 @@ write.table(data.frame(Name = c("check", "prior_break", "current_break", "desa",
                                 "total_new", "selected_new", "prior_st", "current_st"), 
                        Data = c(check, breaks, 1042, desa, a.bun, dema, length(ocod), length(pr.5), 
                                 length(new.cells), sts, spread.type)), 
-            file = paste("C:\\usfs_sef_outputs_FDM\\run_", run, "iterations","\\sef_run", run,"_",  
-                         dt,"_",tm,"_Year_",a,"__Fire_",e,"__Block_",f,"__Wildfire_",g,"__.txt",sep = ""),
-            append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA",
-            dec = ".", row.names = FALSE,col.names = TRUE, qmethod = 
-              c("escape", "double"))#
+            file = paste("C:\\usfs_sef_outputs_FDM\\run_", run, "iterations","\\sef_run", run,"_",
+                         dt,"_",tm,"_year_",a,"__wildfire_",e,"__block_",cc,"__free_",g,"__.txt", 
+                         sep = ""),append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA",
+            dec = ".", row.names = FALSE,col.names = TRUE, qmethod = c("escape", "double"))#
 breaks <- 1042
 }#10.4.2
 
@@ -2849,11 +2794,10 @@ breaks <- 1042
                                   "total_new", "selected_new", "prior_st", "current_st"), 
                          Data = c(check, breaks, 1122, desa, a.bun, dema, length(ocod), length(avlo), 
                                   length(new.cells), sts, spread.type)), 
-              file = paste("C:\\usfs_sef_outputs_FDM\\run_", run, "iterations","\\sef_run", run,"_", 
-                           dt,"_",tm,"_Year_",a,"__Fire_",e,"__Block_",f,"__UnitBurn_",h,"__.txt",sep = ""),
-              append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA",
-             dec = ".", row.names = FALSE,col.names = TRUE, qmethod = 
-                c("escape", "double"))#
+              file = paste("C:\\usfs_sef_outputs_FDM\\run_", run, "iterations","\\sef_run", run,"_",
+                           dt,"_",tm,"_year_",a,"__wildfire_",e,"__block_",cc,"__block_",h,"__.txt", 
+                           sep = ""),append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA",
+              dec = ".", row.names = FALSE,col.names = TRUE, qmethod = c("escape", "double"))#
 
 #NOTE (12/6/2015)
 #Fire has burned out and must be reassigned to a new area. Use spread.type = 0 to
@@ -2890,11 +2834,10 @@ breaks <- 1042
                                   "total_new", "selected_new", "prior_st", "current_st"), 
                          Data = c(check, breaks, 1112, desa, a.bun, dema, length(ocod), length(avlo), 
                                   length(new.cells), sts, spread.type)), 
-              file = paste("C:\\usfs_sef_outputs_FDM\\run_", run, "iterations","\\sef_run", run,"_", 
-                           dt,"_",tm,"_Year_",a,"__Fire_",e,"__Block_",f,"__UnitBurn_",h,"__.txt",sep = ""),
-              append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA",
-              dec = ".", row.names = FALSE,col.names = TRUE, qmethod = 
-                c("escape", "double"))#
+              file = paste("C:\\usfs_sef_outputs_FDM\\run_", run, "iterations","\\sef_run", run,"_",
+                           dt,"_",tm,"_year_",a,"__wildfire_",e,"__block_",cc,"__block_",h,"__.txt", 
+                           sep = ""),append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA",
+              dec = ".", row.names = FALSE,col.names = TRUE, qmethod = c("escape", "double"))#
   breaks <- 1112
   break
 } #11.1.2 ---------------------------------------------------------------------------
@@ -2943,11 +2886,10 @@ if(spread.type == 11)
                                   "total_new", "selected_new", "prior_st", "current_st"), 
                          Data = c(check, breaks, 1131, desa, a.bun, dema, length(ocod), length(avlo), 
                                   length(new.cells), sts, spread.type)), 
-              file = paste("C:\\usfs_sef_outputs_FDM\\run_", run, "iterations","\\sef_run", run,"_", 
-                           dt,"_",tm,"_Year_",a,"__Fire_",e,"__Block_",f,"__UnitBurn_",h,"__.txt",sep = ""),
-              append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA",
-              dec = ".", row.names = FALSE,col.names = TRUE, qmethod = 
-                c("escape", "double"))#
+              file = paste("C:\\usfs_sef_outputs_FDM\\run_", run, "iterations","\\sef_run", run,"_",
+                           dt,"_",tm,"_year_",a,"__wildfire_",e,"__block_",cc,"__block_",h,"__.txt", 
+                           sep = ""),append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA",
+              dec = ".", row.names = FALSE,col.names = TRUE, qmethod = c("escape", "double"))#
   breaks < - 1131
   break
 } else #11.3.1
@@ -2992,12 +2934,10 @@ write.table(data.frame(Name = c("check", "prior_break", "current_break", "desa",
                                 "total_new", "selected_new", "prior_st", "current_st"), 
                        Data = c(check, breaks, 1132, desa, a.bun, dema, length(ocod), length(avlo), 
                                 length(new.cells), sts, spread.type)), 
-            file = paste("C:\\usfs_sef_outputs_FDM\\run_", run, "iterations","\\sef_run", run,"_", 
-                         dt,"_",tm,"_Year_",a,"__Fire_",e,"__Block_",f,"__UnitBurn_",h,"__.txt",sep = ""),
-            append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA",
-            dec = ".", row.names = FALSE,col.names = TRUE, qmethod = 
-              c("escape", "double"))#
-
+            file = paste("C:\\usfs_sef_outputs_FDM\\run_", run, "iterations","\\sef_run", run,"_",
+                         dt,"_",tm,"_year_",a,"__wildfire_",e,"__block_",cc,"__block_",h,"__.txt", 
+                         sep = ""),append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA",
+            dec = ".", row.names = FALSE,col.names = TRUE, qmethod = c("escape", "double"))#
 
 breaks <- 1132
 }#11.3.2
@@ -3416,27 +3356,26 @@ loopE <- loopE[order(loopE$ReplacedStand),]
   })#e4
 } #8.1.2 ---------------------------------------------------------------------------
 e5 <- system.time({
-#Tracking device
-d.summary <- data.frame(
-  Year = a, 
-  Treatment = e, 
-  of = length(tdn[tdy == a]), 
-  Name = f.disturbances$DisturbanceTitle[tdc[e]],
-  Area_Planned = desa, 
-  Area_Treated = dema, 
-  Blocks = f, 
-  Expansions = g.g,
-  IA_Ratio = round(((f*g.g)/dema),2))
-#  Time = round(bb[3],0))
-e.summary <- rbind(e.summary, d.summary)
-
+  #Tracking device
+  d.summary <- data.frame(
+    Year = a, 
+    Disturbance_No = e, 
+    PercentComplete = round(((e/length(tdn[tdy == a]))*100),), 
+    Name = f.disturbances$DisturbanceTitle[tdc[e]],
+    Area_Actual = dema, 
+    Area_Expected = desa, 
+    Blocks = f, 
+    Expansions = g.g,
+    IA_Ratio = round(((f*g.g)/dema),2))
+  e.summary <- rbind(e.summary, d.summary)
+  
 #Save run data.
 dt <- Sys.Date()
 tm <- format(Sys.time(), format = "%H.%M.%S", 
              tz = "", usetz = FALSE)
 
 write.table(d.summary, file = paste("C:\\usfs_sef_outputs_FDM\\run_", run,"\\sef_run", run,"_",
-                                    dt,"_",tm,"_Year",a,"Fire",e,".txt",sep = ""),
+                                    dt,"_",tm,"_year",a,"_wildfire_",e,".txt",sep = ""),
             append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA",
             dec = ".", row.names = FALSE,col.names = TRUE, qmethod = 
               c("escape", "double"))#
@@ -3822,7 +3761,7 @@ tm <- format(Sys.time(), format = "%H.%M.%S",
              tz = "", usetz = FALSE)
 
 write.table(e.summary, file = paste("C:\\usfs_sef_outputs_FDM\\run_", run,"\\sef_run", run,"_",
-                                    dt,"_",tm,"_Year",a,".txt",sep = ""),
+                                    dt,"_",tm,"_year_",a,".txt",sep = ""),
             append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA",
             dec = ".", row.names = FALSE,col.names = TRUE, qmethod = 
               c("escape", "double"))#
