@@ -507,7 +507,7 @@ sn.limit <- function(x,y)
   m2 <- l.map[1,which(array(s.map %in% tesn, dim = c(rows, cols)), arr.ind=TRUE)[,2]]
   m2a <- matrix(data = m2, nrow = length(x), ncol = length(m2), byrow = T) + x
   
-  m3a <- matrix(data = y >= 0, nrow = length(x), ncol = length(m2), byrow = F)
+  m3a <- matrix(data =  rep(y >= 0, length(m2)), nrow = length(x), ncol = length(m2), byrow = F)
   
   ifelse(m3a == T, m1a, m2a)
 }
@@ -2079,6 +2079,7 @@ f6 <- system.time({
     scd <- resample(l.map[b.map == f.bun & s.map %in% ss2], 
                     round(max((a.bun * seed.cells[3]),1),0))
     osnd <- c(osnd,s.map[scd[1]])
+    scd.1 <- s.map[scd[1]]#used if this fire moves directly to unit burn loop H/11.
     ocod <- c(ocod, scd[1])
     s.map[scd[1]] <- tesn
               #Used for measuring area of fire in tracking objects
@@ -2690,9 +2691,19 @@ breaks <- 1042
    s.map[scd] <- s.map[scd] * tesn_t
  } else
  {
-   osnd <- c(osnd,s.map[scd[2:length(scd)]])
-   ocod <- c(ocod, scd[2:length(scd)])
-   s.map[scd] <- s.map[scd] * tesn_t
+   if(spread.type == 0)
+   {
+     osnd <- c(osnd,s.map[scd[2:length(scd)]])
+     ocod <- c(ocod, scd[2:length(scd)])
+     s.map[scd[1]] <- scd.1
+     s.map[scd] <- s.map[scd] * tesn_t
+     tesn <- c(tesn, sort(unique(s.map[scd])))
+   } else
+   {
+     osnd <- c(osnd,s.map[scd[2:length(scd)]])
+     ocod <- c(ocod, scd[2:length(scd)])
+     s.map[scd] <- s.map[scd] * tesn_t
+   }
  }
  
 #LOOP 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 
