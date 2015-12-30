@@ -1,158 +1,53 @@
 ###START FDM####
-install.packages("Hmisc", repos="http://cran.fhcrc.org/")
-install.packages("GenKern", repos="http://cran.fhcrc.org/")
-install.packages("SDMTools", repos="http://cran.fhcrc.org/")
-install.packages("gtools", repos="http://cran.fhcrc.org/")
-library(Hmisc)
+#install.packages("Hmisc", repos="http://cran.fhcrc.org/")
+#install.packages("GenKern", repos="http://cran.fhcrc.org/")
+#install.packages("SDMTools", repos="http://cran.fhcrc.org/")
+#install.packages("gtools", repos="http://cran.fhcrc.org/")
+library(Hmisc) #for summarize()
 library(GenKern)
 library(SDMTools)
 library(gtools)  #for combinations()
-
-aa <- system.time({
-
-aa1 <- vector(length = 0, mode = 'numeric')
-aa2 <- vector(length = 0, mode = 'numeric')
-aa3 <- vector(length = 0, mode = 'numeric')
-aa4 <- vector(length = 0, mode = 'numeric')
-aa5 <- vector(length = 0, mode = 'numeric')
-
-ab1 <- vector(length = 0, mode = 'numeric')
-ab2 <- vector(length = 0, mode = 'numeric')
-
-ac1 <- vector(length = 0, mode = 'numeric')
-ac2 <- vector(length = 0, mode = 'numeric')
-ac3 <- vector(length = 0, mode = 'numeric')
-
-ad1 <- vector(length = 0, mode = 'numeric')
-ad2 <- vector(length = 0, mode = 'numeric')
-ad3 <- vector(length = 0, mode = 'numeric')
-ad4 <- vector(length = 0, mode = 'numeric')
-ad5 <- vector(length = 0, mode = 'numeric')
-ad6 <- vector(length = 0, mode = 'numeric')
-ad7 <- vector(length = 0, mode = 'numeric')
-ad8 <- vector(length = 0, mode = 'numeric')
-ad9 <- vector(length = 0, mode = 'numeric')
-ad10 <- vector(length = 0, mode = 'numeric')
-ad11 <- vector(length = 0, mode = 'numeric')
-
-ac4 <- vector(length = 0, mode = 'numeric')
-ac5 <- vector(length = 0, mode = 'numeric')
-ac6 <- vector(length = 0, mode = 'numeric')
-
-ab3 <- vector(length = 0, mode = 'numeric')
-ab4 <- vector(length = 0, mode = 'numeric')
-ab5 <- vector(length = 0, mode = 'numeric')
-
-aa6 <- vector(length = 0, mode = 'numeric')
-aa7 <- vector(length = 0, mode = 'numeric')
-aa8 <- vector(length = 0, mode = 'numeric')
-aa9 <- vector(length = 0, mode = 'numeric')
-aa10 <- vector(length = 0, mode = 'numeric')
-aa11 <- vector(length = 0, mode = 'numeric')
-aa12 <- vector(length = 0, mode = 'numeric')
-aa13 <- vector(length = 0, mode = 'numeric')
-
-ae1 <- vector(length = 0, mode = 'numeric')
-ae2 <- vector(length = 0, mode = 'numeric')
-
-af1 <- vector(length = 0, mode = 'numeric')
-af2 <- vector(length = 0, mode = 'numeric')
-af3 <- vector(length = 0, mode = 'numeric')
-af4 <- vector(length = 0, mode = 'numeric')
-af5 <- vector(length = 0, mode = 'numeric')
-af6 <- vector(length = 0, mode = 'numeric')
-af7 <- vector(length = 0, mode = 'numeric')
-af8 <- vector(length = 0, mode = 'numeric')
-af9 <- vector(length = 0, mode = 'numeric')
-af10 <- vector(length = 0, mode = 'numeric')
-af11 <- vector(length = 0, mode = 'numeric')
-
-ag1 <- vector(length = 0, mode = 'numeric')
-ag2 <- vector(length = 0, mode = 'numeric')
-ag3 <- vector(length = 0, mode = 'numeric')
-ag4 <- vector(length = 0, mode = 'numeric')
-ag5 <- vector(length = 0, mode = 'numeric')
-ag6 <- vector(length = 0, mode = 'numeric')
-ag7 <- vector(length = 0, mode = 'numeric')
-ag8 <- vector(length = 0, mode = 'numeric')
-ag9 <- vector(length = 0, mode = 'numeric')
-ag10 <- vector(length = 0, mode = 'numeric')
-ag11 <- vector(length = 0, mode = 'numeric')
-ag12 <- vector(length = 0, mode = 'numeric')
-ag13 <- vector(length = 0, mode = 'numeric')
-ag14 <- vector(length = 0, mode = 'numeric')
-ag15 <- vector(length = 0, mode = 'numeric')
-ag16 <- vector(length = 0, mode = 'numeric')
-ag17 <- vector(length = 0, mode = 'numeric')
-ag18 <- vector(length = 0, mode = 'numeric')
-
-ah1 <- vector(length = 0, mode = 'numeric')
-ah2 <- vector(length = 0, mode = 'numeric')
-ah3 <- vector(length = 0, mode = 'numeric')
-ah4 <- vector(length = 0, mode = 'numeric')
-ah5 <- vector(length = 0, mode = 'numeric')
-ah6 <- vector(length = 0, mode = 'numeric')
-ah7 <- vector(length = 0, mode = 'numeric')
-ah8 <- vector(length = 0, mode = 'numeric')
-ah9 <- vector(length = 0, mode = 'numeric')
-ah10 <- vector(length = 0, mode = 'numeric')
-ah11 <- vector(length = 0, mode = 'numeric')
-ah12 <- vector(length = 0, mode = 'numeric')
-ah13 <- vector(length = 0, mode = 'numeric')
-
-af12 <- vector(length = 0, mode = 'numeric')
-af13 <- vector(length = 0, mode = 'numeric')
-af14 <- vector(length = 0, mode = 'numeric')
-af15 <- vector(length = 0, mode = 'numeric')
-af16 <- vector(length = 0, mode = 'numeric')
-af17 <- vector(length = 0, mode = 'numeric')
-af18 <- vector(length = 0, mode = 'numeric')
-
-ae3 <- vector(length = 0, mode = 'numeric')
-ae4 <- vector(length = 0, mode = 'numeric')
-ae5 <- vector(length = 0, mode = 'numeric')
-
-aa14 <- vector(length = 0, mode = 'numeric')
-aa15 <- vector(length = 0, mode = 'numeric')
-aa16 <- vector(length = 0, mode = 'numeric')
-aa17 <- vector(length = 0, mode = 'numeric')
-aa18 <- vector(length = 0, mode = 'numeric')
-aa19 <- vector(length = 0, mode = 'numeric')
-aa20 <- vector(length = 0, mode = 'numeric')
-aa21 <- vector(length = 0, mode = 'numeric')
-aa22 <- vector(length = 0, mode = 'numeric')
-aa23 <- vector(length = 0, mode = 'numeric')
-aa24 <- vector(length = 0, mode = 'numeric')
-aa25 <- vector(length = 0, mode = 'numeric')
-aa26 <- vector(length = 0, mode = 'numeric')
-aa27 <- vector(length = 0, mode = 'numeric')
-aa28 <- vector(length = 0, mode = 'numeric')
-aa29 <- vector(length = 0, mode = 'numeric')
 
 #Version 17e corresponds with model documentation
 ####################################################################################
 ####################################################################################
 #STEP 1: Administrative Information
-# Accept arguments from Rscript/command line
-args <- commandArgs(TRUE)
 
-rows <- 1771#1 #544
-cols <- 3491#2 #671
-tx <- 4#3
-Years <- 1#4
-fh.adj <- 6#NEW
-sh.adj <- 6#NEW
-bh.adj <- 6#NEW
-lh.adj <- 6#NEW
+#Set working directory
+setwd("C:/Users/jcronan/Documents/GitHub/EglinAirForceBase")
+
+#Accept arguments from Rscript/command line
+#args <- commandArgs(TRUE)
+args <- read.table("sef_lut_schedule_treatment.csv", header=TRUE, 
+                   sep=",", na.strings="NA", dec=".", strip.white=TRUE)
+args <- args[1,]
+
+#Number of rows and columns in ascii map files
+rows <- 1771
+cols <- 3491
+
+tx <- 4
+
+#Number of years to run model for:
+Years <- 2
+
+#Number of rows with metadata for each ascii map file
+fh.adj <- 6#fuelbed map (f.map)
+sh.adj <- 6#stand map (s.map)
+bh.adj <- 6#burn unit map (b.map)
+lh.adj <- 6#coordinate map (l.map)
+
+#Unique identifier for this run/simulation --- using id column from treatment schedule
 run <- args[1] 
-#Trying to generate errors from runs 1028 and 1030.
 
+#Do not map fires below this value (in acres). Purpose is to reduce model run time
+#by excluding small fires that do not impact vegetation at the landscape scale.
 fire.cut <- 10
 
 #Create files to pass information about model run status.
-file.create("run_iterations")
-file.create("disturbance_summary")
-file.create("annual_summary")
+file.create(paste("run_", run, "_iterations.txt", sep = ""))
+file.create(paste("run_", run, "_disturbances.txt", sep = ""))
+file.create(paste("run_", run, "_annualSummary.txt", sep = ""))
 
 #Temporary tracking items to figure out why MU.List is being corrupted.
 Loop.track <- list()
@@ -183,7 +78,7 @@ c.scale <- 0.1#9
 #When wildfires are burned by the block and burn method flammability of fuels is based on
 #probability. The meaning of the scale.factor and dist.curve are flipped and corresponding
 #values are randomly selected from each dataset
-NFR <- c(9954.38,99457.39)#c(5000,10000)#Natural fire rotation in years for Eglin, Buffer, and Combined.
+NFR <- c(2954.38,99457.39)#c(5000,10000)#Natural fire rotation in years for Eglin, Buffer, and Combined.
 MFS <- c(103.65,5.23)#c(1000,200)#Mean fire size in acres for Eglin, Buffer, and Combined.
 DFS <- c(361.12,13.98)#c(20,10)#Standard deviation of mean fire size for Eglin and Buffer and Combined.
 Truncate.AAB <- c(50000,25000)#Maximum annual area burned
@@ -232,13 +127,9 @@ minSize <- c(5,20,1)#minimum treated stand size within a treatment unit
 #The percentage of a treatment unit to be effected for each treatment.
 shape1 <- c(30,30,10)#shape 1 parameter
 shape2 <- c(5,5,2.5)#shape 2 parameter
-#Test out the beta distribution.
-#test <- rbeta(10000,10,2.5)#rbeta(number of observations, shape 1, shape 2)
-#hist(test, breaks = seq(0,1,0.01))
-#range(test)
+
 
 #Average annual area treated for thinning, herbicide, and prescribed fire.
-
 #Read in third meanTAP parameter from file
 meanTAP <- c(1000, 1000, as.numeric(args[3]))
 
@@ -256,7 +147,6 @@ s.map <- matrix(scan(paste("sef_smap_092715_",rows,"x",cols,".txt",
 
 b.map <- matrix(scan(paste("sef_bmap_",rows,"x",cols,".txt",
                            sep = ""),skip = bh.adj),ncol=cols,byrow=T)#18
-#Need to create a burn unit map
 
 l.map <- matrix(scan(paste("sef_lmap_",rows,"x",cols,".txt",
                            sep = ""),skip = lh.adj),ncol=cols,byrow=T)#20
@@ -268,7 +158,6 @@ Stand.List <- read.table(paste(
   "sef_StandList_",rows,"x",cols,".txt",
   sep = ""), header=TRUE, 
   sep=",", na.strings="NA", dec=".", strip.white=TRUE)
-Stand.List <- cleanup.import(Stand.List)
 Stand.List <- as.vector(Stand.List[,2], mode = "numeric")#20
 Stand.List <- Stand.List[-1]
 
@@ -276,7 +165,6 @@ Fuelbed.List <- read.table(paste(
   "sef_FuelbedList_",rows,"x",cols,".txt",
   sep = ""), header=TRUE, 
   sep=",", na.strings="NA", dec=".", strip.white=TRUE)
-Fuelbed.List <- cleanup.import(Fuelbed.List)
 Fuelbed.List <- as.vector(Fuelbed.List[,2], mode = "numeric")#21
 Fuelbed.List <- Fuelbed.List[-1]
 
@@ -284,7 +172,6 @@ Coord.List <- read.table(paste(
   "sef_CoordList_",rows,"x",cols,".txt",
   sep = ""), header=TRUE, 
   sep=",", na.strings="NA", dec=".", strip.white=TRUE)
-Coord.List <- cleanup.import(Coord.List)
 Coord.List <- as.vector(Coord.List[,2], mode = "numeric")#21
 Coord.List <- Coord.List[-1]
 
@@ -292,7 +179,6 @@ Age.List <- read.table(paste(
   "sef_AgeList_",rows,"x",cols,".txt",
   sep = ""), header=TRUE, 
   sep=",", na.strings="NA", dec=".", strip.white=TRUE)
-Age.List <- cleanup.import(Age.List)
 Age.List <- as.vector(Age.List[,2], mode = "numeric")#22
 Age.List <- Age.List[-1]
 
@@ -300,7 +186,6 @@ Area.List <- read.table(paste(
   "sef_AreaList_",rows,"x",cols,".txt",
   sep = ""), header=TRUE, 
   sep=",", na.strings="NA", dec=".", strip.white=TRUE)
-Area.List <- cleanup.import(Area.List)
 Area.List <- as.vector(Area.List[,2], mode = "numeric")#23
 Area.List <- Area.List[-1]
 
@@ -308,7 +193,6 @@ mfri.List <- read.table(paste(
   "sef_mfriList_",rows,"x",cols,".txt",
   sep = ""), header=TRUE, 
   sep=",", na.strings="NA", dec=".", strip.white=TRUE)
-mfri.List <- cleanup.import(mfri.List)
 mfri.List <- as.vector(mfri.List[,2], mode = "numeric")#23
 mfri.List <- mfri.List[-1]
 
@@ -316,7 +200,6 @@ T1E.List <- read.table(paste(
   "sef_T1EList_",rows,"x",cols,".txt",
   sep = ""), header=TRUE, 
   sep=",", na.strings="NA", dec=".", strip.white=TRUE)
-T1E.List <- cleanup.import(T1E.List)
 T1E.List <- as.vector(T1E.List[,2], mode = "numeric")#24
 T1E.List <- T1E.List[-1]
 
@@ -324,7 +207,6 @@ T2E.List <- read.table(paste(
   "sef_T2EList_",rows,"x",cols,".txt",
   sep = ""), header=TRUE, 
   sep=",", na.strings="NA", dec=".", strip.white=TRUE)
-T2E.List <- cleanup.import(T2E.List)
 T2E.List <- as.vector(T2E.List[,2], mode = "numeric")#24
 T2E.List <- T2E.List[-1]
 
@@ -332,7 +214,6 @@ D1E.List <- read.table(paste(
   "sef_D1EList_",rows,"x",cols,".txt",
   sep = ""), header=TRUE, 
   sep=",", na.strings="NA", dec=".", strip.white=TRUE)
-D1E.List <- cleanup.import(D1E.List)
 D1E.List <- as.vector(D1E.List[,2], mode = "numeric")#25
 D1E.List <- D1E.List[-1]
 
@@ -340,7 +221,6 @@ D2E.List <- read.table(paste(
   "sef_D2EList_",rows,"x",cols,".txt",
   sep = ""), header=TRUE, 
   sep=",", na.strings="NA", dec=".", strip.white=TRUE)
-D2E.List <- cleanup.import(D2E.List)
 D2E.List <- as.vector(D2E.List[,2], mode = "numeric")#25
 D2E.List <- D2E.List[-1]
 
@@ -348,7 +228,6 @@ MU.List <- read.table(paste(
   "sef_MUList_",rows,"x",cols,".txt",
   sep = ""), header=TRUE, 
   sep=",", na.strings="NA", dec=".", strip.white=TRUE)
-MU.List <- cleanup.import(MU.List)
 MU.List <- as.vector(MU.List[,2], mode = "numeric")#25
 MU.List <- MU.List[-1]
 
@@ -360,39 +239,31 @@ MU.List <- MU.List[-1]
 #STEP 5: Import Conditional Database
 f.path <- read.table("sef_lut_pathways_succession.csv", header=TRUE, 
                      sep=",", na.strings="NA", dec=".", strip.white=TRUE)
-f.path <- cleanup.import(f.path)#26
 
 f.treatments <- read.table("sef_lut_menu_treatment.csv", header=TRUE, 
                            sep=",", na.strings="NA", dec=".", strip.white=TRUE, stringsAsFactors = F)
-f.treatments <- cleanup.import(f.treatments)#27
 
 f.disturbances <- read.table("sef_lut_menu_disturbance.csv", header=TRUE, 
                              sep=",", na.strings="NA", dec=".", strip.white=TRUE, stringsAsFactors = F)
-f.disturbances <- cleanup.import(f.disturbances)#28
 
 t.post <- read.table("sef_lut_pathways_silviculture.csv", header=TRUE, 
                      sep=",", na.strings="NA", dec=".", strip.white=TRUE)
-t.post <- cleanup.import(t.post)#29
 
 d.post <- read.table("sef_lut_pathways_fire.csv", header=TRUE, 
                      sep=",", na.strings="NA", dec=".", strip.white=TRUE)
-d.post <- cleanup.import(d.post)#30
 
 pda <- read.table("sef_lut_thresholds_disturbances.csv", header=TRUE, 
                   sep=",", na.strings="NA", dec=".", strip.white=TRUE)
-pda <- cleanup.import(pda)#31
 
 f.probability <- read.table("sef_lut_prob_burning.csv", header=TRUE, 
                             sep=",", na.strings="NA", dec=".", strip.white=TRUE, stringsAsFactors = F)
-f.probability <- cleanup.import(f.probability)#32
 
 f.wind <- read.table("sef_lut_prob_wind.csv", header=TRUE, 
                      sep=",", na.strings="NA", dec=".", strip.white=TRUE)
-f.wind <- cleanup.import(f.wind)
 
 b.unit <- read.table("sef_lut_burn_units.txt", header=TRUE, 
                      sep=",", na.strings="NA", dec=".", strip.white=TRUE)
-b.unit <- cleanup.import(b.unit)
+
 b.unit <- data.frame(unit = b.unit[,2], area_ac = b.unit[,3], thin= b.unit[,4], 
                      herb = b.unit[,5], fire = b.unit[,6])#remove col 1 and rename cols 2-6.
 
@@ -651,19 +522,9 @@ for(i in 1:length(mfri.List))
   }
 }
 
-
-
-#Testing only (run 93)
-pre.m3 <- mfri.List 
-pre.f3 <- Fuelbed.List
-pre.s3 <- Stand.List
-pre.a3 <- Area.List
-
-
 ####################################################################################
 ####################################################################################
 #STEP 04: RUN MODEL LOOP
-})#aa
 
 #LOOP 111111111111111111111111111111111111111111111111111111111111111111111111111111
 #Loop 1 (by year). This loop encases the entire expression that maps regimes.
@@ -675,44 +536,9 @@ for(a in 1:Years)#a <- 1
   #The number of treatments per year is drawn from the normal distribution.
   #The mean and standard deviation for each treatment type is entered in step 1.
 
-  a1 <- 0
-  a2 <- 0
-  a3 <- 0
-  a4 <- 0
-  a5 <- 0
-  a6 <- 0
-  a7 <- 0
-  a8 <- 0
-  a9 <- 0
-  a10 <- 0
-  a11 <- 0
-  a12 <- 0
-  a13 <- 0
-  a14 <- 0
-  a15 <- 0
-  a16 <- 0
-  a17 <- 0
-  a18 <- 0
-  a19 <- 0
-  a20 <- 0
-  a21 <- 0
-  a22 <- 0
-  a23 <- 0
-  a24 <- 0
-  a25 <- 0
-  a26 <- 0
-  a27 <- 0
-  a28 <- 0
-  a29 <- 0
-  
-  a1 <- system.time({
-  
-    #Objects to record annual area for thinning, herbicide, and prescribed fire treatments.
-    meanTAA <- c(0, 0, 0)
+  #Objects to record annual area for thinning, herbicide, and prescribed fire treatments.
+  meanTAA <- c(0, 0, 0)
 
-  })#a1
-
-  a2 <- system.time({
   #UPDATE PRIORITY FOR EACH MANAGEMENT UNIT
   
   #Determine priority of management units for thinning treatments
@@ -754,14 +580,10 @@ for(a in 1:Years)#a <- 1
   
   pri <- data.frame(thin = pri.thin, herb = pri.herb, fire = pri.fire)
   
-  })#a2
-  
-
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>TREATMENTS>>>>>>>>
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>TREATMENTS>>>>>>>>
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>TREATMENTS>>>>>>>>
   
-  a3 <- system.time({
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>FIRES>>>>>>>>>>>>>>>
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>FIRES>>>>>>>>>>>>>>>
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>FIRES>>>>>>>>>>>>>>>
@@ -851,11 +673,7 @@ for(a in 1:Years)#a <- 1
     fiar.b <- fiar.b[fiar.b > (fire.cut/MapRes)]#removes any fire areas set to zero.
     fino.b <- length(fiar.b)#adjusts number of fires in case any were removed above.
   }
-})#a3
 
-#A4 IS LOCATED BELOW SECTION 9.4.2
-
-a4 <- system.time({
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>FIRES>>>>>>>>>>>>>>>
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>FIRES>>>>>>>>>>>>>>>
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>FIRES>>>>>>>>>>>>>>>
@@ -885,8 +703,7 @@ a4 <- system.time({
   #Parallel object keeps track of the year associated with the disturbance.
   diyr <- rep(a,length(dico))
   tdy <- c(tdy,diyr)
-})#a4
-a5 <- system.time({
+
   #Tracks treatment history.
   Treatment.History <- list()
   #Tracks disturbance history.
@@ -930,7 +747,6 @@ a5 <- system.time({
   #ERROR: CONSIDER USING COORDINATES BECAUSE IN THIS FORM SUBSEQUENT DISTURBANCE CANNOT
   #IMPACT ANY PART OF A STAND THAT HAS BEEN EVEN MINIMALLY AFFECTED BY A PREVIOUS DISTURBANCE.
   #ALSO, YOU NEED SOME WAY OF KEEPING TREATMENTS OUT OF UNITS THAT HAVE ALREADY BEEN TREATED
-})#a5
 
 if(sum(meanTAP) <= 0)
   {
@@ -954,13 +770,7 @@ if(sum(meanTAP) <= 0)
     #Loop 2 (by treatments within year[a]). This loop runs all treatments for year[a].
     for (b in 1:r.max)#b <- 1
     { #2.0.0 ---------------------------------------------------------------------------
-      #TESTING ONLY
-      b1 <- 0
-      b2 <- 0
-      b3 <- 0
-      b4 <- 0
-      b5 <- 0
-      
+
       #Lists treatment code for current treatment
       t.code <- ifelse(length(which(meanTAA < meanTAP)) == 0,4,min(which(meanTAA < meanTAP)))
       
@@ -970,9 +780,8 @@ if(sum(meanTAP) <= 0)
       } else #2.1.1------------------------------------------------------------------------
 { #2.1.2-----------------------------------------------------------------------------
       
-      b1 <- system.time({
-        d.d <- vector(length = 1, mode = 'numeric')#tracks expansions
-        
+  #Tracks expansions
+  d.d <- vector(length = 1, mode = 'numeric')
         
         #Updated here in case any original stands have been completely overwritten
         loopA.snO <- sort(unique(as.vector(s.map[!s.map %in% c(NoData.Unit, loopB.new_stand)])))
@@ -1011,10 +820,6 @@ if(sum(meanTAP) <= 0)
         Treatment.Area[cc+1] <- 0
         PrctTrmt.Mapped[cc+1] <- 0
         
-      })#b1
-      
-      b2 <- system.time({
-        
         #Determine available fuelbeds.
         avfb <- fbls[ttxm[,t.code + 3] == 2]
         
@@ -1039,7 +844,6 @@ if(sum(meanTAP) <= 0)
         sct <- vector(mode = "numeric", length = 0)
         sct <- resample(l.map[b.map == bun & s.map %in% elst], 
                         round(max((tbsa * seed.cells[t.code]),1),0))
-      })#b2
       
         if(tbsa >= 1)
         { #2.2.1 ---------------------------------------------------------------------------
@@ -1054,14 +858,7 @@ if(sum(meanTAP) <= 0)
           #multiple fuelbeds are involved.
           for (cc in 1:r.max)#cc <- 1
           { #3.0.0 ---------------------------------------------------------------------------
-            c1 <- 0
-            c2 <- 0
-            c3 <- 0
-            c4 <- 0
-            c5 <- 0
-            c6 <- 0
 
-c1 <- system.time({
             #Updated here in case any original stands have been completely overwritten
             loopA.snO <- sort(unique(as.vector(s.map[!s.map %in% c(NoData.Unit, 
                                                                    loopB.new_stand,
@@ -1082,12 +879,11 @@ c1 <- system.time({
             #Record area occupied by treatment[b].
             #tbma <- max(length(sct), length(s.map[s.map %in% loopC.new_stand]))
             tbma <- (length(sct) + ifelse(cc > 1, length(new.cells), 0))
-            })#c1
 
             #Ends loop when treatment[b] has been completely mapped.
             if(tbma < tbsa)
             { #3.1.1 ---------------------------------------------------------------------------
-              c2 <- system.time({             
+           
               #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>NEW
               #Differentiate between initial loop and subsequent loops were you want to keep the
               #treatment within the designated burn unit boundaries.
@@ -1102,12 +898,10 @@ c1 <- system.time({
               }
               #Then find stands within this subset that meet minimum age requirements for
               #the disturbance/treatment.
-              })#c2
               
               if(length(sct) > 0)
               { #3.2.1 ---------------------------------------------------------------------------
             
-c3 <- system.time({
                 #Tracks the highest stand number currently in s.map. 
                 #Used to assign new stand numbers for treatment[b].
                 #Can not place this below loop 4 in case treatment erases stand with highest number.
@@ -1118,66 +912,45 @@ c3 <- system.time({
                 s.map[sct] <- s.map[sct]*tesn_t
                 osnt <- c(osnt,s.map[sct])
                 tesn <- unique(osnt)
-})#c3 
+
                 #LOOP 4444444444444444444444444444444444444444444444444444444444444444444444444444
                 #Loop 4 (by iterations). This loop keeps growing treatment[b] in block[cc] 
                 #until growth stops.
                 for (d in 1:r.max)#d <- 1
                 { #4.0.0 ---------------------------------------------------------------------------
-                  d1 <- 0
-                  d2 <- 0
-                  d3 <- 0
-                  d4 <- 0
-                  d5 <- 0
-                  d6 <- 0
-                  d7 <- 0
-                  d8 <- 0
-                  d9 <- 0
-                  d10 <- 0
-                  d11 <- 0
-                  
-d1 <- system.time({          
+                        
                   #Area mapped for treatment[b].
                   tbma <- length(s.map[s.map %in% c(tesn,loopC.new_stand)])
-})#d1
+
                   #This statement stops loop 4 when treatment[b] has been fully mapped.
                   if(tbma < tbsa) 
                   { #4.1.1 ---------------------------------------------------------------------------
    
-
-d2 <- system.time({
                     #Object shows locations of 8 pixels surrounding each mapped pixel for 
                     #disturbance[e].
                     malo <- matrix(data = sn.seeker(search.set[1:8,1], search.set[1:8,2]),
                                    length(s.map[s.map %in% tesn]),dcl_t, byrow = T)
-})#d2
-d3 <- system.time({   
+ 
                     #Object shows the upper and lower limits of pixel locations listed in the 'malo' 
                     #object.
                     mali <- matrix(data = sn.limit(search.set[1:8,2], search.set[1:8,1]), 
                                    length(s.map[s.map %in% tesn]),dcl_t, byrow = T)
-                    
-})#d3
-d4 <- system.time({  
+                     
                     #Sets up information in malo and mali objects that replace location values with
                     #limits values if locations "spill" from map edges.
                     mixa <- c(malo[,1],malo[,2],mali[,3],mali[,4],mali[,5],mali[,6],mali[,7],malo[,8])
                     mixb <- c(mali[,1],mali[,2],malo[,3],malo[,4],malo[,5],malo[,6],malo[,7],mali[,8])
-})#d4
-d5 <- system.time({ 
+
                     #Replaces location values with limit values where necessary (first draft - works
                     #on top and bottom of map)
                     fdlo <- ifelse(mixa < mixb,mali,malo)
-})#d5
-d6 <- system.time({  
+  
                     #Replaces location values with limit values where necessary (second draft - works
                     #on sides of map)
                     sdlo <- ifelse(fdlo < 1,fdlo + rows,ifelse(fdlo > length(s.map),fdlo - rows,fdlo))
-})#d6
-d7 <- system.time({          
+         
                     #This object shows all unique locations available for establishment by treatment[b].
                     avlo <- unique(l.map[sdlo][l.map[sdlo] %in% l.map[b.map == bun & s.map %in% elst]])
-})#d7
  
                     #Ends loop if there are no more locations available for treatment[b] in the 
                     #block[cc] that is currently being mapped.
@@ -1185,8 +958,7 @@ d7 <- system.time({
                     { #4.2.1 ---------------------------------------------------------------------------
                       #Reset new.cells object.
                       new.cells <- vector(length=0, mode = "numeric")
-
-d8 <- system.time({                       
+                     
                       #This expression picks out which location values are of the same stand and are 
                       #available (i.e. they are not occupied by the another treatment) and makes sure 
                       #that the mapped regime does not exceed its prescribed area.
@@ -1205,8 +977,7 @@ d8 <- system.time({
                         tesn <- unique(osnt)
                         ocot <- c(ocot, new.cells) #tracks coordinates involved in disturbance.
                       }
-})#d8
-d9 <- system.time({ 
+
                       #Register mapping data after Loop 4 has finished running for iteration[d].
                       Iteration.cc[(length(Iteration.cc)+1)] <- cc
                       Explanation.cc[(length(Explanation.cc)+1)] <- "Block is running."
@@ -1217,11 +988,10 @@ d9 <- system.time({
                                                                                               tesn)])
                       PrctTrmt.Mapped[(length(PrctTrmt.Mapped)+1)] <- round(((Treatment.Area[
                         length(Treatment.Area)]/tbsa)*100),1)
-})#d9
+
                     } else #4.2.1 ----------------------------------------------------------------------
                     
 {#4.2.2
-d10 <- system.time({
   Iteration.cc[(length(Iteration.cc)+1)] <- cc
   Explanation.cc[(length(Explanation.cc)+1)] <- paste(
     "Cannot expand block. Advance.", collapse = "")
@@ -1232,8 +1002,6 @@ d10 <- system.time({
                                                                           tesn)])
   PrctTrmt.Mapped[(length(PrctTrmt.Mapped)+1)] <- round(((Treatment.Area[
     length(Treatment.Area)]/tbsa)*100),1)
-})#d10
-ad10[length(ad10) + 1] <- d10[3]
 
 #Save run data.
 dt <- Sys.Date()
@@ -1242,7 +1010,7 @@ tm <- format(Sys.time(), format = "%H.%M.%S",
 
 cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__", f.treatments$TreatmentName[t.code], 
           "_",b, "__block_",cc,"__expansion_" , "_",d,"__.txt",sep = ""), 
-    file = "run_iterations", append = T)#
+    file = paste("run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
 
   break
 } #4.2.2 ---------------------------------------------------------------------------
@@ -1250,7 +1018,6 @@ cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__", f.treatments$TreatmentName
                   } else #4.1.1 ----------------------------------------------------------------------
 
 { #4.1.2 ---------------------------------------------------------------------------
-d11 <- system.time({
   Iteration.cc[(length(Iteration.cc)+1)] <- cc
   Explanation.cc[(length(Explanation.cc)+1)] <- paste(
     "Treatment mapped. New block.", collapse = "")
@@ -1261,8 +1028,6 @@ d11 <- system.time({
                                                                           tesn)])
   PrctTrmt.Mapped[(length(PrctTrmt.Mapped)+1)] <- round(((Treatment.Area[
     length(Treatment.Area)]/tbsa)*100),1)
-})#d11
-ad11[length(ad11) + 1] <- d11[3]
 
 #Save run data.
 dt <- Sys.Date()
@@ -1270,33 +1035,20 @@ tm <- format(Sys.time(), format = "%H.%M.%S",
              tz = "", usetz = FALSE)
 cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__", f.treatments$TreatmentName[t.code], 
           "_",b, "__block_",cc,"__expansion_" , "_",d,"__.txt",sep = ""), 
-    file = "run_iterations", append = T)#
+    file = paste("run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
 
   break
 } #4.1.2 ---------------------------------------------------------------------------
 
-ad1[length(ad1) + 1] <- d1[3]
-ad2[length(ad2) + 1] <- d2[3]
-ad3[length(ad3) + 1] <- d3[3]
-ad4[length(ad4) + 1] <- d4[3]
-ad5[length(ad5) + 1] <- d5[3]
-ad6[length(ad6) + 1] <- d6[3]
-ad7[length(ad7) + 1] <- d7[3]
-ad8[length(ad8) + 1] <- d8[3]
-ad9[length(ad9) + 1] <- d9[3]
-#d10 --- break
-#d11 --- break
-
 #Save run data.
 dt <- Sys.Date()
 tm <- format(Sys.time(), format = "%H.%M.%S", 
              tz = "", usetz = FALSE)
 cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__", f.treatments$TreatmentName[t.code], 
           "_",b, "__block_",cc,"__expansion_" , "_",d,"__.txt",sep = ""), 
-    file = "run_iterations", append = T)#
+    file = paste("run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
                 } #4.0.0 ---------------------------------------------------------------------------
 
-c4 <- system.time({
 #Find unique fuelbeds in each management unit
 
 #Unique old stands
@@ -1325,12 +1077,10 @@ loopC.new_mgmtUnit <- c(loopC.new_mgmtUnit,rep(bun, length(nebc)))
 l.nebc <- rep(1,length(v.nebc))
 s.nebc <- summarize(l.nebc,v.nebc,sum)
 loopC.new_area <- c(loopC.new_area, as.vector(s.nebc[,2]))
-})#c4
 
               } else #3.2.1 ----------------------------------------------------------------------
 
 { #3.2.2 ---------------------------------------------------------------------------
-c5 <- system.time({
   Iteration.cc[(length(Iteration.cc)+1)] <- cc
   Explanation.cc[(length(Explanation.cc)+1)] <- paste(
     "Error - Treatment was not started (cc = 1), or not finished (cc = 2).", collapse = "")
@@ -1340,15 +1090,12 @@ c5 <- system.time({
                                                                           tesn)])
   PrctTrmt.Mapped[(length(PrctTrmt.Mapped)+1)] <- round(((Treatment.Area[
     length(Treatment.Area)]/tbsa)*100),1)
-})#c5
-ac5[length(ac5) + 1] <- c5[3]
   break
 } #3.2.2 ---------------------------------------------------------------------------
 
             } else #3.1.1 ----------------------------------------------------------------------
 
 { #3.1.2 ---------------------------------------------------------------------------
-  c6 <- system.time({
   Iteration.cc[(length(Iteration.cc)+1)] <- cc
   Explanation.cc[(length(Explanation.cc)+1)] <- paste(
     "Treatment mapped. End Mapping.", collapse = "")
@@ -1358,22 +1105,11 @@ ac5[length(ac5) + 1] <- c5[3]
                                                                           tesn)])
   PrctTrmt.Mapped[(length(PrctTrmt.Mapped)+1)] <- round(((Treatment.Area[
     length(Treatment.Area)]/tbsa)*100),1)
-  })#c6
-  ac6[length(ac6) + 1] <- c6[3]
   break
 } #3.1.2 ---------------------------------------------------------------------------
 d.d <- sum(d.d, d)#tracks expansions
 
-ac1[length(ac1) + 1] <- c1[3]
-ac2[length(ac2) + 1] <- c2[3]
-ac3[length(ac3) + 1] <- c3[3]
-ac4[length(ac4) + 1] <- c4[3]
-#c5 --- break
-#c6 --- break
-
-
           } #3.0.0 --------------------------------------------------------------------------- 
-b3 <- system.time({
 #Log treatment run data for treatment[b].
 if(length(Iteration.cc) > 1)
   Treatment.History[[(length(Treatment.History)+1)]] <- data.frame(
@@ -1404,11 +1140,10 @@ loopB <- data.frame(new_stand = loopB.new_stand,
                     new_area = loopB.new_area, 
                     old_stand = loopB.old_stand * -1)
 loopB <- loopB[order(loopB$old_stand),]
-})#b3
         } else #2.1.1 ----------------------------------------------------------------------
 
 { #2.1.2 ---------------------------------------------------------------------------
-  b4 <- system.time({
+
   #Log treatment run data for treatment[b].
   if(length(Iteration.cc) > 1)
     Treatment.History[[(length(Treatment.History)+1)]] <- paste(
@@ -1437,9 +1172,7 @@ loopB <- loopB[order(loopB$old_stand),]
                       new_area = loopB.new_area, 
                       old_stand = loopB.old_stand * -1)
   loopB <- loopB[order(loopB$old_stand),]
-  })#b4
 } #2.1.2 ---------------------------------------------------------------------------
-b5 <- system.time({
 
   #Area tracking
   meanTAA[t.code] <- sum(meanTAA[t.code], tbsa)
@@ -1450,30 +1183,22 @@ b5 <- system.time({
                tz = "", usetz = FALSE)
   
   #Tracking device
-  t.summary <- data.frame(
-    Date = dt, 
-    Time = tm, 
-    Year = a, 
-    Disturbance_No = b,
-    PercentComplete = round(((sum(meanTAA)/sum(meanTAP))*100),0), 
-    Name = f.treatments$TreatmentTitle[t.code], 
-    Area_Actual = tbma, 
-    Area_Expected = tbsa, 
-    Blocks = cc, 
-    Expansions = d.d) 
+  t.summary <- paste(
+    "Date: ", dt, 
+    " Time: ", tm, 
+    " Year: ", a, 
+    " Disturbance_No ", b,
+    " PercentComplete: ", round(((sum(meanTAA)/sum(meanTAP))*100),0), 
+    " Name: ", f.treatments$TreatmentTitle[t.code], 
+    " Area_Actual: ", tbma, 
+    " Area_Expected: ", tbsa, 
+    " Blocks: ", cc, 
+    " Expansions: ", d.d) 
   
 e.summary <- rbind(e.summary, t.summary)
 
 #Save run data.
-cat(t.summary, file = "disturbance_summary", append = T)#
-})#b5
-
-
-ab1[length(ab1) + 1] <- b1[3]
-ab2[length(ab2) + 1] <- b2[3]
-ab3[length(ab3) + 1] <- b3[3]
-ab4[length(ab4) + 1] <- b4[3]
-ab5[length(ab5) + 1] <- b5[3]
+cat(t.summary, file = paste("run_", run, "_disturbances.txt", sep = ""), fill = T, append = T)#
 } #2.1.2-----------------------------------------------------------------------------
     } #2.0.0 ---------------------------------------------------------------------------
   } #1.3.2-----------------------------------------------------------------------------
@@ -1482,22 +1207,15 @@ ab5[length(ab5) + 1] <- b5[3]
 #Update files if there were treatments in year[a].
 if(length(loopB.new_stand) > 0)
 {
-
-a6 <- system.time({
   #Object shows fuelbeds associated with each new stand number created by treatments 
   #in year[a].
   #ufxTa <- mapply(function(x) unique(f.map[s.map == x]), loopB.new_stand)
   ufxTa_1 <- Fuelbed.List[Stand.List %in% loopB$old_stand]
   usxTa_1 <- Stand.List[Stand.List %in% loopB$old_stand]
   ufxTa <- ufxTa_1[match(loopB$old_stand, usxTa_1)]
-  })#a6
 
-
-
-a7 <- system.time({
-
-#Add ufxTa to loopB data frame
-loopB <- data.frame(loopB, ufxTa = ufxTa)
+  #Add ufxTa to loopB data frame
+  loopB <- data.frame(loopB, ufxTa = ufxTa)
 
 #Sort data frame by new stands
 loopB <- loopB[order(loopB$new_stand),]#probably unecessary
@@ -1542,9 +1260,6 @@ loopB <- loopB[order(loopB$old_stand),]
 #Add newAGE_a7 to loopB data.frame
 loopB <- data.frame(loopB, newAGE_a7 = newAGE_a7)
 
-})#a7
-
-a8 <- system.time({
   #List stands that have been altered by treatments.
   ss1 <- (loopB.old_stand*-1)
   stands <- sort(unique(ss1))#there can be duplicates, this will mess up the shortcut in a9
@@ -1559,9 +1274,6 @@ a8 <- system.time({
   
   #Add a fire for stands that were prescrib burned
   nmv[,30] <- ifelse(loopB.treat_type == 3,1,0)
-})#a8
-
-a9 <- system.time({ 
 
   #Change stand properties as needed for treatments.
   #sad <- data.frame(stands = stands, sareas = sareas)
@@ -1572,9 +1284,7 @@ a9 <- system.time({
   Area.List[Stand.List == stands[i]] <- 
               Area.List[Stand.List == stands[i]] - sareas[i]
   }
-})#a9
 
-a10 <- system.time({
   #Update list to remove any stands that have been overwritten.
   Stand.List <- Stand.List[(Area.List == 0) == F]
   Fuelbed.List <- Fuelbed.List[(Area.List == 0) == F]
@@ -1587,9 +1297,7 @@ a10 <- system.time({
   MU.List <- MU.List[(Area.List == 0) == F]
   mfri.Matrix <- mfri.Matrix[(Area.List == 0) == F,]
   Area.List <- Area.List[(Area.List == 0) == F]
-})#a10
 
-a11 <- system.time({
   #Update list to add new stands.
   Stand.List <- c(Stand.List,loopB.new_stand)
   Fuelbed.List <- c(Fuelbed.List,newFB_a7)
@@ -1656,8 +1364,6 @@ a11 <- system.time({
 
   #Update
   Area.List <- c(Area.List,loopB.new_area)
-})#a11
-
 
 if(any(c(length(Stand.List),
          length(Fuelbed.List),
@@ -1677,16 +1383,13 @@ if(any(c(length(Stand.List),
   r101 <- 0   
 } 
 
-a12 <- system.time({
   #Temporary
   Loop.track[[length(Loop.track) + 1]] <- c(a,b,cc,d,e,f,g)
   MU.track[[length(MU.track) + 1]] <- MU.List
   mgmtUnit.track[[length(mgmtUnit.track) + 1]] <- loopB.new_mgmtUnit
-})#a12
 
 } else
 {
-a13 <- system.time({
   #No new stand numbers, enter a placeholder if there were no treatments for year[a].
   if(length(Treatment.History) == 0)
   {
@@ -1694,7 +1397,6 @@ a13 <- system.time({
     names(Treatment.History)[[length(Treatment.History)]] <- paste(
       "No treatments this year.", collapse = "")
   }
-})#a13
 }
 
 if(length(diar) == 0)
@@ -1724,18 +1426,13 @@ if(length(diar) == 0)
   { #8.0.0 ---------------------------------------------------------------------------
     
     #TESTING ONLY
-    e1 <- 0
-    e2 <- 0
-    e3 <- 0
-    e4 <- 0
-    e5 <- 0
+    
     UnitList <- list()
    forceBurnOut <- 0
     
     g.g <- vector(length =, mode = 'numeric')
-    e1 <- system.time({ 
-      
-      #Resent tesn
+  
+   #Resent tesn
       tesn <- -1
       
       #Reset object that tracks completely burned units, used in loop 9
@@ -1771,9 +1468,6 @@ if(length(diar) == 0)
       Disturbance.Area <- vector(mode = "numeric", length = 1)
       PrctDist.Mapped <- vector(mode = "numeric", length = 1)
       
-    })#e1
-    
-    e2 <- system.time({
       #OLD LOCATION OF loopE.snO CODE.
       
       #Object shows the number of pixels for disturbance[e].
@@ -1782,8 +1476,6 @@ if(length(diar) == 0)
       #Object shows fuelbeds available for establishment by disturbance[e].
       avfb <- fbls[!fbls %in% Non.Flammable]
       
-    })#e2
-    
       #End script for disturbance[e] if there are no available cells to establish.
       #1) must not be a wilderness area (in w.map 2 = wilderness, 1 non-wilderness, 
       #and 0 = area that are null in f.map.
@@ -1797,24 +1489,7 @@ if(length(diar) == 0)
         #has been mapped or stops establishing.
         for (f in 1:r.max)#f <- 1
         { #9.0.0 ---------------------------------------------------------------------------
-          f1 <- 0
-          f2 <- 0
-          f3 <- 0
-          f4 <- 0
-          f5 <- 0
-          f6 <- 0
-          f7 <- 0
-          f8 <- 0
-          f9 <- 0
-          f10 <- 0
-          f11 <- 0
-          f12 <- 0
-          f13 <- 0
-          f14 <- 0
-          f15 <- 0
-          f16 <- 0
-          f17 <- 0
-          f18 <- 0
+          
           check <- ifelse(f == 1, 0, check)#TEMP - REMOVE
           breaks <- ifelse(f == 1, 0, breaks)#TEMP - REMOVE
           if(forceBurnOut == 1 | f == 1)
@@ -1824,10 +1499,8 @@ if(length(diar) == 0)
           {
             spread.type <- spread.type
           }
-          
-          f1 <- system.time({          
+                 
             #Default g loop number.
-            
             
             g <- 0
             h <- 0
@@ -1839,10 +1512,6 @@ if(length(diar) == 0)
             #Set up an intra loop tracking device for overwritten coordinates.
             ocod <- vector(length = 0, mode = "numeric")
             
-          })#f1
-          
-          f2 <- system.time({
-            
             #Tracks the highest stand number. Used to assign stand numbers to new disturbance.
             #beneath loop 7. Can't place this below loop 7 in case disturbance erases stand with
             #highest number.
@@ -1853,13 +1522,11 @@ if(length(diar) == 0)
             
   #Record area occupied by disturbance[e].
           dema <- length(s.map[s.map %in% loopF.NewStand])
-})#f2 
 
           #Ends loop when disturbance[e] has been completely mapped.
           if(dema < desa)
           { #9.1.1 ---------------------------------------------------------------------------
 
-            f3 <- system.time({        
               #Updated here in case any original stands have been completely overwritten.
               #Exclude the no data unit, stands created in this year's treatment loop, and
               #stands created from previously burned areas this year.
@@ -1867,12 +1534,10 @@ if(length(diar) == 0)
                                                                      loopB.new_stand, 
                                                                      loopE.NewStand, 
                                                                      loopF.NewStand)])))
-            })#f3
-            
+
             if(spread.type == 0)
             { #9.2.1---------------------------------------------------------------
-            
-f4 <- system.time({  
+             
             ####################################################################################
             #This next section produces probabilities that help direct the location
             #of fire starts. The probabilities are based on spread probabilities and
@@ -1885,22 +1550,18 @@ f4 <- system.time({
             #Then find stands within this subset that meet minimum age requirements for
             #the disturbance/treatment.
             ss2 <- Stand.List[Stand.List %in% ss1 & Age.List >= D1E.List]
-})#f4
         
             if(tdc[e] == 1)
             { #EAFB -----------------------------------------------------------
-
-f5 <- system.time({ 
+ 
   #Create seperate stand lists for the buffer and eglin zones
               ss2.e <- sort(unique(as.vector(
                 s.map[s.map %in% ss2 & b.map %in% 
                         sort(unique(b.map[!b.map %in% c(NoData.Unit, Buffer.Unit)]))])))
-})#f5 
               
               if(length(ss2.e) > 0)
               {
 
-f6 <- system.time({ 
                 #Next, create a list of unique fuelbeds within these stands.
                 f.summary <- sort(unique(Fuelbed.List[Stand.List %in% ss2.e]))
               
@@ -1924,26 +1585,21 @@ f6 <- system.time({
                 #Probability of a fire starting at a location occupied by each fuelbed based
                 #on area.
                 fire.start <- (v.summary * a.summary)/(sum(v.summary * a.summary))
-})#f6
-                #cbind(f.summary,a.summary,p.temp,p.summary,v.summary,fire.start)
-                #sum(p.summary)
               } else
               {
-f6 <- system.time({  
+
                 fire.start <- vector(length=0,mode='numeric')
-})#f6              
+            
               }
             } else #EAFB -----------------------------------------------------------
             { #Buffer -----------------------------------------------------------
-              f5 <- system.time({ 
+
               ss2.b <- sort(unique(as.vector(
                 s.map[s.map %in% ss2 & b.map == Buffer.Unit])))
               
-              })#f5
-              
               if(length(ss2.b) > 0)
               {
-                f6 <- system.time({ 
+
                 #Next, create a list of unique fuelbeds within these stands.
                 f.summary <- sort(unique(Fuelbed.List[Stand.List %in% ss2.b]))
                
@@ -1967,21 +1623,14 @@ f6 <- system.time({
                 #Probability of a fire starting at a location occupied by each fuelbed based
                 #on area.
                 fire.start <- (v.summary * a.summary)/(sum(v.summary * a.summary))
-                })#f6
-                #cbind(f.summary,a.summary,p.temp,p.summary,v.summary,fire.start)
-                #sum(p.summary)
+
               } else
               {
-                f6 <- system.time({ 
+
                 fire.start <- vector(length=0,mode='numeric')
-                })#f6
+
               }
             } #Buffer -----------------------------------------------------------
-          
-#REMOVED F10 - NO LONGER NECESSARY, s.profile is still an object but is produced in a4, which
-#is now located below 9.4.2
-
-
           } else #9.2.1---------------------------------------------------------------
 { #9.2.2---------------------------------------------------------------
   save.desa <- desa
@@ -1994,17 +1643,14 @@ f6 <- system.time({
   
               if(spread.type != 11)
               { #9.4.1---------------------------------------------------------------
-              
-                f7 <- system.time({           
-              
+                 
               #Generates seed cell for disturbance[e]
               #scd object hold the fire location for disturbance[e].
               scd <- vector(mode = "numeric", length = 0)
-  })#f7
-  
+ 
   if(spread.type == 0)
   {#9.5.1 ---------------------------------------------------------------------------
-  f8 <- system.time({
+ 
               #determine the fuelbed disturbance[e] will start in.
               if(length(f.summary) == 1)
               {
@@ -2037,11 +1683,11 @@ f6 <- system.time({
     s.map[scd[1]] <- tesn
               #Used for measuring area of fire in tracking objects
               tesn_cum <- tesn
-  })#f8
+
     } else #9.5.1 ---------------------------------------------------------------------------
     { #9.5.2 ---------------------------------------------------------------------------
       #Code runs when a wildfire has burned beyond the original "block and burn" boundary.
-      f9 <- system.time({
+
       #Identify management units fire has spread into.
       f.bun <- sort(unique(b.map[s.map %in% neef]))
       
@@ -2115,11 +1761,8 @@ f6 <- system.time({
                       round(max((a.bun * seed.cells[3]),1),0))
       
       #Establish disturbance[e] in s.map and record old stand number
-      #osnd <- c(osnd,s.map[scd])
-      #ocod <- c(ocod, scd)
-      #s.map[scd] <- tesn -- don't do this until you know the units will be intentionally burned.
       tesn <- c(tesn, neef)
-      })#f9
+
     } #9.5.2 ---------------------------------------------------------------------------
 
               } else #9.4.1---------------------------------------------------------------
@@ -2127,8 +1770,6 @@ f6 <- system.time({
   desa <- 1
 } #9.4.2---------------------------------------------------------------
 
-
-f10 <- system.time({
   ####################################################################################
   #Updated spread contrast based on fire area and location of burn.
   #If the fire is large and located in the buffer zone or non-burn unit, then
@@ -2158,11 +1799,9 @@ f10 <- system.time({
       
       s.profile <- ifelse(f.probability[,2] < 0.1,f.probability[,2],sp)
   }
-})#f10
   
   if((desa-dema) < round((a.bun/3),0))
-  {#9.6.1 (WILDFIRE LOOP)--------------------------------------------------------------
-  f11 <- system.time({    
+  {#9.6.1 (WILDFIRE LOOP)-------------------------------------------------------------- 
     
     #These objects record data for each mapping iteration.
     
@@ -2222,42 +1861,21 @@ f10 <- system.time({
               #be reset for the first iteration of the spread algorithms.
               windSpd <- 0
               
-  })#f11
               #LOOP 10-10-10-10-10-10-10-10-10-10-10-10-10-10-10-10-10-10-10-10-10-10-10-10-10-10
               #Loop 10 (by iterations). This loop keeps trying to grow disturbance[e] until 
               #growth stops.
               for (g in 1:r.max)#g <- 1
               { #10.0.0 --------------------------------------------------------------------------
-                g1 <- 0
-                g2 <- 0
-                g3 <- 0
-                g4 <- 0
-                g5 <- 0
-                g6 <- 0
-                g7 <- 0
-                g8 <- 0
-                g9 <- 0
-                g10 <- 0
-                g11 <- 0
-                g12 <- 0
-                g13 <- 0
-                g14 <- 0
-                g15 <- 0
-                g16 <- 0
-                g17 <- 0
-                g18 <- 0
                 sts <- spread.type#TEMP - REMOVE
                 
-g1 <- system.time({         
                 #Area mapped by iteration[f].
                 #dema <- length(as.vector(s.map[s.map %in% loopF.NewStand]))
                 dema <- sum(loopF.Area)
-})#g1
+
                 #This statement stops loop 7 when disturbance[e] has been fully mapped.
                 if((dema + length(ocod)) < desa) 
                 { #10.1.1 --------------------------------------------------------------------------
-
-g2 <- system.time({              
+         
                   #For tracking purposes, log the windspeed in the previous iteration
                   #Will be 
                   prevWS <- windSpd
@@ -2315,27 +1933,22 @@ g2 <- system.time({
                   tesn <- sort(unique(as.vector(s.map[s.map < min(0,((g*-1)+burn.out)) & s.map > NoData.Unit])))
                   }
 
-                  })#g2
                   if(length(tesn) > 0)
                   {#10.2.1 --------------------------------------------------------------------------
-
-g3 <- system.time({               
+            
                    #Set row number for spread tables
                    tsl <- length(s.map[s.map %in% tesn])
-})#g3
-g4 <- system.time({             
+           
                    #Object shows locations of 48 pixels surrounding each mapped pixel for 
                    #disturbance[e].
                    malo <- matrix(data = sn.seeker(search.set[,1], search.set[,2]),
                                   length(s.map[s.map %in% tesn]),dcl, byrow = T)
-})#g4
-g5 <- system.time({ 
+
                    #Obbject shows the upper and lower limits of pixel locations listed in the 'malo' 
                    #object.
                    mali <- matrix(data = sn.limit(search.set[,2], search.set[,1]), 
                                   length(s.map[s.map %in% tesn]),dcl, byrow = T)
-})#g5
-g6 <- system.time({             
+           
                    #Sets up information in malo and mali objects that replace location values with
                    #limits values if locations "spill" from map edges.
                    mixa <- matrix(data = c(malo[,1],malo[,2],mali[,3],mali[,4],mali[,5],mali[,6],mali[,7],
@@ -2353,18 +1966,15 @@ g6 <- system.time({
                                            mali[,28],mali[,29],mali[,30],malo[,31],malo[,32],malo[,33],malo[,34],malo[,35],malo[,36],
                                            malo[,37],malo[,38],malo[,39],malo[,40],malo[,41],malo[,42],malo[,43],mali[,44],mali[,45],
                                            mali[,46],mali[,47],mali[,48]), nrow = tsl, ncol = dcl)
-})#g6
-g7 <- system.time({ 
+
                    #Replaces location values with limit values where necessary (first draft - works
                    #on top and bottom of map)
                    co.1 <- matrix(data = ifelse(mixa < mixb,mali,malo), nrow = tsl, ncol = dcl)
-})#g7
-g8 <- system.time({ 
+
                    pr.1 <- matrix(data = rep(distance.coefficient^((max(0,(maxWindSpd-windSpd))*(1/maxWindSpd))^2),
                                              length(malo[,1])), nrow = tsl, ncol =dcl, 
                                   byrow = T)
-})#g8
-g9 <- system.time({ 
+
   pr.2 <- round(sweep(pr.1, MARGIN = 2, wind, '*')/(max(pr.1 * wind)),3)               
                    #Replace locations currently burning with a zero, they no longer count and can't be
                    #eligible because they will likely have the highest burn probability.
@@ -2376,10 +1986,8 @@ g9 <- system.time({
   co.1[co.1 %in% l.map[!s.map %in% loopA.snO]] <-  0                
   pr.3 <- summarize(as.vector(pr.2),as.vector(co.1),sum)                 
   pr.3 <- pr.3[!pr.3[,1] == 0,] 
-})#g9
                   } else #10.2.1 --------------------------------------------------------------------------
 {#10.2.2 --------------------------------------------------------------------------
-g10 <- system.time({
   spread.type <- 0# necessary because this loop isn't producing new burnable area and you
   #need to relocate the fire.
  loop[(length(Iteration.f)+1)] <- "g" 
@@ -2393,16 +2001,13 @@ g10 <- system.time({
                                                    collapse = "")
  Disturbance.Area[(length(Disturbance.Area)+1)] <- dema + length(ocod)
  PrctDist.Mapped[(length(PrctDist.Mapped)+1)] <- round((((dema + length(ocod))/desa)*100),1)
-})#g10
-
-ag10[length(ag10) + 1] <- g10[3]
 
 #Save run data.
 dt <- Sys.Date()
 tm <- format(Sys.time(), format = "%H.%M.%S", 
              tz = "", usetz = FALSE)
 cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__free_",
-          g,"__.txt",sep = ""), file = "run_iterations", append = T)#
+          g,"__.txt",sep = ""), file = paste("run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
 breaks <- 1022
  break
 }#10.2.2 --------------------------------------------------------------------------
@@ -2410,7 +2015,6 @@ breaks <- 1022
 if(all(pr.3[,2] == 0))
   
 {#10.3.1 --------------------------------------------------------------------------
-g11 <- system.time({
   loop[(length(Iteration.f)+1)] <- "g" 
   Unit[(length(Iteration.f)+1)] <- ifelse(length(f.bun) > 1, f.bun[1], f.bun)
  Iteration.f[(length(Iteration.f)+1)] <- f
@@ -2422,43 +2026,35 @@ g11 <- system.time({
                                                    collapse = "")
  Disturbance.Area[(length(Disturbance.Area)+1)] <- dema + length(ocod)
  PrctDist.Mapped[(length(PrctDist.Mapped)+1)] <- round((((dema + length(ocod))/desa)*100),1)
-})#g11
-ag11[length(ag11) + 1] <- g11[3]
 
 #Save run data.
 dt <- Sys.Date()
 tm <- format(Sys.time(), format = "%H.%M.%S", 
              tz = "", usetz = FALSE)
 cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__free_",
-          g,"__.txt",sep = ""), file = "run_iterations", append = T)#
-
+          g,"__.txt",sep = ""), file = paste("run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
 breaks <- 1031
  break
 } else #10.3.1 ---------------------------------------------------------------------
 { #10.3.2 --------------------------------------------------------------------------
 
-g12 <- system.time({ 
   pr.4 <- as.vector(pr.3[,2])/max(pr.3[,2])
   
   #Reset new.cells object.
   new.cells <- vector(length=0, mode = "numeric")
-})#g12
-g13 <- system.time({ 
+
   #This expression picks out which location values are of the same stand and are 
   #available (i.e. they are not occupied by the another disturbance) and makes sure 
   #that the mapped regime does not exceed its prescribed area.
   fual <- s.profile[match(f.map[l.map %in% pr.3[,1]], f.probability[,1])]
-})#g13
-g14 <- system.time({ 
+
   pr.5 <- pr.4 * fual
-})#g14
-g15 <- system.time({ 
+
   #Produces a list with locations selected for each fuelbed.
   new.cells <- unlist(mapply(function(y){
     pr.3[y,1][resample(c(0,1), size = 1, replace = T, prob = c(1-pr.5[y], pr.5[y])) == 1]
   },1:length(pr.3[,1])))
-})#g15
-g16 <- system.time({ 
+
   #Scale back the number of new cells if it will exceed area to be burned.
   if((dema + length(ocod) + length(new.cells)) <= desa)
   {
@@ -2468,8 +2064,7 @@ g16 <- system.time({
     #If the number of new cells + dema exceeds dema then reduce the number of new cells.
     new.cells <- resample(new.cells, (desa-(dema + length(ocod))))
   }
-})#g16
-g17 <- system.time({ 
+
   osnd <- c(osnd, s.map[new.cells]) #tracks stand numbers involved in disturbance.
   ocod <- c(ocod, new.cells) #tracks coordinates involved in disturbance.
   s.map[new.cells] <- ((g*-1)-1) #maps disturbance.
@@ -2482,13 +2077,9 @@ g17 <- system.time({
   {
     tesn_cum <- c(tesn_cum,((g*-1)-1))#update values representing pixels burned in this fire.
   }
-  
-})#g17
-
 } #10.3.2 --------------------------------------------------------------------------
                 } else #10.1.1 ---------------------------------------------------------------------
 { #10.1.2 --------------------------------------------------------------------------
-  g18 <- system.time({ 
     loop[(length(Iteration.f)+1)] <- "g" 
     Unit[(length(Iteration.f)+1)] <- ifelse(length(f.bun > 1), length(f.bun), f.bun)
   Iteration.f[(length(Iteration.f)+1)] <- f
@@ -2500,15 +2091,13 @@ g17 <- system.time({
                                                     collapse = "")
   Disturbance.Area[(length(Disturbance.Area)+1)] <- dema + length(ocod)
   PrctDist.Mapped[(length(PrctDist.Mapped)+1)] <- round((((dema + length(ocod))/desa)*100),1)
-  })#g18
-  ag18[length(ag18) + 1] <- g18[3]
-  
+
   #Save run data.
   dt <- Sys.Date()
   tm <- format(Sys.time(), format = "%H.%M.%S", 
                tz = "", usetz = FALSE)
   cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__free_",
-            g,"__.txt",sep = ""), file = "run_iterations", append = T)#
+            g,"__.txt",sep = ""), file = paste("run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
   
   breaks <- 1012
   break
@@ -2516,25 +2105,6 @@ g17 <- system.time({
 
 if(spread.type == 12)
 {#10.4.1
-  ag1[length(ag1) + 1] <- g1[3]
-  ag2[length(ag2) + 1] <- g2[3]
-  ag3[length(ag3) + 1] <- g3[3]
-  ag4[length(ag4) + 1] <- g4[3]
-  ag5[length(ag5) + 1] <- g5[3]
-  ag6[length(ag6) + 1] <- g6[3]
-  ag7[length(ag7) + 1] <- g7[3]
-  ag8[length(ag8) + 1] <- g8[3]
-  ag9[length(ag9) + 1] <- g9[3]
-  #g10 --- break
-  #g11 --- break
-  ag12[length(ag12) + 1] <- g12[3]
-  ag13[length(ag13) + 1] <- g13[3]
-  ag14[length(ag14) + 1] <- g14[3]
-  ag15[length(ag15) + 1] <- g15[3]
-  ag16[length(ag16) + 1] <- g16[3]
-  ag17[length(ag17) + 1] <- g17[3]
-  #g18 --- break
-  
   loop[(length(Iteration.f)+1)] <- "g" 
   Unit[(length(Iteration.f)+1)] <- ifelse(length(f.bun > 1), f.bun[1], f.bun)
   Iteration.f[(length(Iteration.f)+1)] <- f
@@ -2552,31 +2122,12 @@ if(spread.type == 12)
   tm <- format(Sys.time(), format = "%H.%M.%S", 
                tz = "", usetz = FALSE)
   cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__free_",
-            g,"__.txt",sep = ""), file = "run_iterations", append = T)#
+            g,"__.txt",sep = ""), file = paste("run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
   
   breaks <- 1041
   break
 } else#10.4.1
 {#10.4.2
-  ag1[length(ag1) + 1] <- g1[3]
-ag2[length(ag2) + 1] <- g2[3]
-ag3[length(ag3) + 1] <- g3[3]
-ag4[length(ag4) + 1] <- g4[3]
-ag5[length(ag5) + 1] <- g5[3]
-ag6[length(ag6) + 1] <- g6[3]
-ag7[length(ag7) + 1] <- g7[3]
-ag8[length(ag8) + 1] <- g8[3]
-ag9[length(ag9) + 1] <- g9[3]
-#g10 --- break
-#g11 --- break
-ag12[length(ag12) + 1] <- g12[3]
-ag13[length(ag13) + 1] <- g13[3]
-ag14[length(ag14) + 1] <- g14[3]
-ag15[length(ag15) + 1] <- g15[3]
-ag16[length(ag16) + 1] <- g16[3]
-ag17[length(ag17) + 1] <- g17[3]
-#g18 --- break
-
 loop[(length(Iteration.f)+1)] <- "g" 
 Unit[(length(Iteration.f)+1)] <- ifelse(length(f.bun > 1), f.bun[1], f.bun)
 Iteration.f[(length(Iteration.f)+1)] <- f
@@ -2594,12 +2145,10 @@ dt <- Sys.Date()
 tm <- format(Sys.time(), format = "%H.%M.%S", 
              tz = "", usetz = FALSE)
 cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__free_",
-          g,"__.txt",sep = ""), file = "run_iterations", append = T)#
+          g,"__.txt",sep = ""), file = paste("run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
 breaks <- 1042
 }#10.4.2
-
               } #10.0.0 --------------------------------------------------------------------------
-
 } else #New -- A.1.1 (WILDFIRE LOOP)--------------------------------------------------------------
 {#New -- A.1.2 (RX FIRE LOOP)--------------------------------------------------------------
  
@@ -2632,73 +2181,49 @@ breaks <- 1042
  #until growth stops.
  for (h in 1:r.max)#h <- 2
  { #11.0.0 ---------------------------------------------------------------------------
-   h1 <- 0
-   h2 <- 0
-   h3 <- 0
-   h4 <- 0
-   h5 <- 0
-   h6 <- 0
-   h7 <- 0
-   h8 <- 0
-   h9 <- 0
-   h10 <- 0
-   h11 <- 0
-   h12 <- 0
-   h13 <- 0
+
    sts <- spread.type#TEMP - REMOVE
-   
-   h1 <- system.time({          
+      
      #Area mapped for fire[e].
      dema <- length(as.vector(s.map[s.map %in% loopF.NewStand]))
-   })#h1
-   
+
    #This statement stops loop 11 when treatment[b] has been fully mapped.
    if((dema + length(ocod)) < desa) 
    { #11.1.1 ---------------------------------------------------------------------------
-     
-     
-     h2 <- system.time({
+
        #Object shows locations of 8 pixels surrounding each mapped pixel for 
        #disturbance[e].
        malo <- matrix(data = sn.seeker(search.set[1:8,1], search.set[1:8,2]),
                       length(s.map[s.map %in% tesn]),dcl_t, byrow = T)
-     })#h2
-     h3 <- system.time({   
+ 
        #Object shows the upper and lower limits of pixel locations listed in the 'malo' 
        #object.
        mali <- matrix(data = sn.limit(search.set[1:8,2], search.set[1:8,1]), 
                       length(s.map[s.map %in% tesn]),dcl_t, byrow = T)
-       
-     })#h3
-     h4 <- system.time({  
+
        #Sets up information in malo and mali objects that replace location values with
        #limits values if locations "spill" from map edges.
        mixa <- c(malo[,1],malo[,2],mali[,3],mali[,4],mali[,5],mali[,6],mali[,7],malo[,8])
        mixb <- c(mali[,1],mali[,2],malo[,3],malo[,4],malo[,5],malo[,6],malo[,7],mali[,8])
-     })#h4
-     h5 <- system.time({ 
+
        #Replaces location values with limit values where necessary (first draft - works
        #on top and bottom of map)
        fdlo <- ifelse(mixa < mixb,mali,malo)
-     })#h5
-     h6 <- system.time({  
+
        #Replaces location values with limit values where necessary (second draft - works
        #on sides of map)
        sdlo <- ifelse(fdlo < 1,fdlo + rows,ifelse(fdlo > length(s.map),fdlo - rows,fdlo))
-     })#h6
-     h7 <- system.time({          
+    
        #This object shows all unique locations available for establishment by treatment[b].
        avlo <- unique(as.vector(l.map[sdlo][l.map[sdlo] %in% l.map[b.map %in% f.bun & s.map %in% ss2]]))
-     })#h7
-     
+
      #Ends loop if there are no more locations available for treatment[b] in the 
      #block[cc] that is currently being mapped.
      if(length(avlo) > 0)
      { #11.2.1 ---------------------------------------------------------------------------
        #Reset new.cells object.
        new.cells <- vector(length=0, mode = "numeric")
-       
-       h8 <- system.time({                       
+                 
          #This expression picks out which location values are of the same stand and are 
          #available (i.e. they are not occupied by the another treatment) and makes sure 
          #that the mapped regime does not exceed its prescribed area.
@@ -2739,15 +2264,14 @@ breaks <- 1042
                            }#-------------------------------------------------D-FALSE
                      }#-------------------------------------------------------C-FALSE
                }#-------------------------------------------------------------A-FALSE
-       })#h8
-       h9 <- system.time({ 
+
          osnd <- c(osnd, s.map[new.cells]) #tracks stand numbers involved in disturbance.
          ocod <- c(ocod, new.cells) #tracks coordinates involved in disturbance.
-       })#h9
+
      } else #11.2.1 ----------------------------------------------------------------------
      
 {#11.2.2
-  h10 <- system.time({
+
     loop[(length(Iteration.f)+1)] <- "h" 
     Unit[(length(Iteration.f)+1)] <- ifelse(length(f.bun) > 1, length(f.bun), f.bun)
     Iteration.f[(length(Iteration.f)+1)] <- f
@@ -2759,15 +2283,13 @@ breaks <- 1042
                                                       collapse = "")
     Disturbance.Area[(length(Disturbance.Area)+1)] <- dema + length(ocod)
     PrctDist.Mapped[(length(PrctDist.Mapped)+1)] <- round((((dema + length(ocod))/desa)*100),1)
-  })#h10
-  ah10[length(ah10) + 1] <- h10[3]
-  
+
   #Save run data.
   dt <- Sys.Date()
   tm <- format(Sys.time(), format = "%H.%M.%S", 
                tz = "", usetz = FALSE)
   cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__blocked_",
-            h,"__.txt",sep = ""), file = "run_iterations", append = T)#
+            h,"__.txt",sep = ""), file = paste("run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
 
 #NOTE (12/6/2015)
 #Fire has burned out and must be reassigned to a new area. Use spread.type = 0 to
@@ -2781,7 +2303,6 @@ breaks <- 1042
    } else #11.1.1 ----------------------------------------------------------------------
 
 { #11.1.2 ---------------------------------------------------------------------------
-  h11 <- system.time({
     loop[(length(Iteration.f)+1)] <- "h" 
     Unit[(length(Iteration.f)+1)] <- ifelse(length(f.bun) > 1, length(f.bun), f.bun)
     Iteration.f[(length(Iteration.f)+1)] <- f
@@ -2793,40 +2314,19 @@ breaks <- 1042
                                                       collapse = "")
     Disturbance.Area[(length(Disturbance.Area)+1)] <- dema + length(ocod)
     PrctDist.Mapped[(length(PrctDist.Mapped)+1)] <- round((((dema + length(ocod))/desa)*100),1)
-  })#h11
-  ah11[length(ah11) + 1] <- h11[3]
   
   #Save run data.
   dt <- Sys.Date()
   tm <- format(Sys.time(), format = "%H.%M.%S", 
                tz = "", usetz = FALSE)
   cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__blocked_",
-            h,"__.txt",sep = ""), file = "run_iterations", append = T)#
+            h,"__.txt",sep = ""), file = paste("run_", run, "_iterations.txt", sep = ""), append = T)#
   breaks <- 1112
   break
 } #11.1.2 ---------------------------------------------------------------------------
 
-
-
-
 if(spread.type == 11)
 {#11.3.1
-  h12 <- system.time({
-  burned.units <- c(burned.units, f.bun)
-  ah1[length(ah1) + 1] <- h1[3]
-  ah2[length(ah2) + 1] <- h2[3]
-  ah3[length(ah3) + 1] <- h3[3]
-  ah4[length(ah4) + 1] <- h4[3]
-  ah5[length(ah5) + 1] <- h5[3]
-  ah6[length(ah6) + 1] <- h6[3]
-  ah7[length(ah7) + 1] <- h7[3]
-  ah8[length(ah8) + 1] <- h8[3]
-  ah9[length(ah9) + 1] <- h9[3]
-  #h10 --- break
-  #h11 --- break
-  #h12 --- break
-  #h13 --- break
-  
   loop[(length(Iteration.f)+1)] <- "h" 
   Unit[(length(Iteration.f)+1)] <- ifelse(length(f.bun > 1), f.bun[1], f.bun)
   Iteration.f[(length(Iteration.f)+1)] <- f
@@ -2838,36 +2338,17 @@ if(spread.type == 11)
                                                     collapse = "")
   Disturbance.Area[(length(Disturbance.Area)+1)] <- dema + length(ocod)
   PrctDist.Mapped[(length(PrctDist.Mapped)+1)] <- round((((dema + length(ocod))/desa)*100),1)
-  
-  })#h12
-  ah12[length(ah12) + 1] <- h12[3]
-  
+
   #Save run data.
   dt <- Sys.Date()
   tm <- format(Sys.time(), format = "%H.%M.%S", 
                tz = "", usetz = FALSE)
   cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__blocked_",
-            h,"__.txt",sep = ""), file = "run_iterations", append = T)#
+            h,"__.txt",sep = ""), file = paste("run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
   breaks < - 1131
   break
 } else #11.3.1
 {#11.3.2
-
-  h13 <- system.time({
-ah1[length(ah1) + 1] <- h1[3]
-ah2[length(ah2) + 1] <- h2[3]
-ah3[length(ah3) + 1] <- h3[3]
-ah4[length(ah4) + 1] <- h4[3]
-ah5[length(ah5) + 1] <- h5[3]
-ah6[length(ah6) + 1] <- h6[3]
-ah7[length(ah7) + 1] <- h7[3]
-ah8[length(ah8) + 1] <- h8[3]
-ah9[length(ah9) + 1] <- h9[3]
-#h10 --- break
-#h11 --- break
-#h12 --- break
-#h13 --- break
-
 #Register mapping data after Loop 11 has finished running for iteration[d].
 loop[(length(Iteration.f)+1)] <- "h" 
 Unit[(length(Iteration.f)+1)] <- ifelse(length(f.bun > 1), f.bun[1], f.bun)
@@ -2880,39 +2361,26 @@ Explanation.g[(length(Explanation.g)+1)] <- paste(c("Expansion. New pixels: ",
 Disturbance.Area[(length(Disturbance.Area)+1)] <- dema + length(ocod)
 PrctDist.Mapped[(length(PrctDist.Mapped)+1)] <- round((((dema + length(ocod))/desa)*100),1)
 
-  })#h13
-ah13[length(ah13) + 1] <- h13[3]
-
 #Save run data.
 dt <- Sys.Date()
 tm <- format(Sys.time(), format = "%H.%M.%S", 
              tz = "", usetz = FALSE)
 
 cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__blocked_",
-          h,"__.txt",sep = ""), file = "run_iterations", append = T)#
+          h,"__.txt",sep = ""), file = paste("run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
 
 breaks <- 1132
 }#11.3.2
-
  } #11.0.0 ---------------------------------------------------------------------------
-
 }#New -- A.1.2 (RX FIRE LOOP)--------------------------------------------------------------
 
 #NEW F.1.2---------------------------------------------------------------
-f12 <- system.time({
 
 #Reset tesn, it should be -1 for FDM, except in loop 10 where it must include multiple
 #values to support the burn out function.
 tesn <- -1#temporary stand number.
 
 osnd <- abs(osnd)
-
-#Show fuelbeds in treatment[b], block[cc].
-#effb <- list()
-#effb <- mapply(function(y) 
-#{
-#  Fuelbed.List[Stand.List == y]
-#}, osnd)
 
 #Show fuelbeds associated with stands affected by fire
 fb_f12 <- Fuelbed.List[Stand.List %in% osnd]
@@ -2923,9 +2391,6 @@ osno <- Stand.List[Stand.List %in% osnd]
 #Expand fuelbeds to include each occurence of stand number in osnd
 effb <- fb_f12[match(osnd, osno)]
 
-})#f12
-
-f13 <- system.time({ 
 #Calculate number of new stands
 noef <- length(osno)
 
@@ -2937,20 +2402,13 @@ if(noef == 0)
 {
   neef <- seq((mudn + 1), (mudn + noef), 1)
 }
-})#f13
 
-f14 <- system.time({ 
 #Map new stands
   od <- data.frame(ocod, osnd)
   od <- od[order(od$ocod),]
   v.neef <- neef[match(od$osnd, osno)]
   s.map[l.map %in% od$ocod] <- v.neef
- 
-#  for(i in 1:noef)
-#{s.map[l.map %in% ocod[osnd == osno[i]]] <- neef[i]}
-})#f14
 
-f15 <- system.time({ 
 #Log new stand numbers and associated disturbances when they have been added to 
 #s.map.
   if(g == 0)
@@ -2982,9 +2440,7 @@ loopF.G_no <- c(loopF.G_no, rep(g, length(osno)))
 #Temporary - 12/6-2015 used to shut down loop when error and warning in run 1028 occurs.
 loopF1 <- data.frame(L1 = loopF.NewStand, L2 = loopF.Area, L3 = loopF.ReplacedStand, 
                     L4 = loopF.E_no, L5 = loopF.F_no, L6 = loopF.G_no)
-})#f15
 
-f16 <- system.time({ 
 UnitList[[f]] <- f.bun
 loop[(length(Iteration.f)+1)] <- ifelse(g == 0,"h","g") 
 Unit[(length(Iteration.f)+1)] <- ifelse(length(f.bun > 1), f.bun[1], f.bun)
@@ -2997,30 +2453,8 @@ Disturbance.Area[(length(Disturbance.Area)+1)] <- length(
   s.map[s.map %in% c(loopF.NewStand)])
 PrctDist.Mapped[(length(PrctDist.Mapped)+1)] <- round(((Disturbance.Area[
   length(Disturbance.Area)]/desa)*100),1)
-})#f16
 
-f17 <- system.time({ 
   g.g <- sum(g.g, ifelse(g == 0,h,g))#tracks expansions
-})#f17
-
-af1[length(af1) + 1] <- f1[3]
-af2[length(af2) + 1] <- f2[3]
-af3[length(af3) + 1] <- f3[3]
-af4[length(af4) + 1] <- f4[3]
-af5[length(af5) + 1] <- f5[3]
-af6[length(af6) + 1] <- f6[3]
-af7[length(af7) + 1] <- f7[3]
-af8[length(af8) + 1] <- f8[3]
-af9[length(af9) + 1] <- f9[3]
-af10[length(af10) + 1] <- f10[3]
-af11[length(af11) + 1] <- f11[3]
-af12[length(af12) + 1] <- f12[3]
-af13[length(af13) + 1] <- f13[3]
-af14[length(af14) + 1] <- f14[3]
-af15[length(af15) + 1] <- f15[3]
-af16[length(af16) + 1] <- f16[3]
-af17[length(af17) + 1] <- f17[3]
-#f18 --- break
 
 ##############################################################################
 ##############################################################################
@@ -3048,23 +2482,13 @@ if(length(s.map[s.map < 0 & s.map > -9999]) > 0)
 }
 #TEMPOARY -- FORCES FDM TO CRASH IF -1 IS ASSSIGNED TO S.MAP
 
-
             } else #9.3.1 ----------------------------------------------------------------------
 { #9.3.2 ---------------------------------------------------------------------------
-  f12 <- system.time({
-    
     #Reset tesn, it should be -1 for FDM, except in loop 10 where it must include multiple
     #values to support the burn out function.
     tesn <- -1#temporary stand number.
     
     osnd <- abs(osnd)
-    
-    #Show fuelbeds in treatment[b], block[cc].
-    #effb <- list()
-    #effb <- mapply(function(y) 
-    #{
-    #  Fuelbed.List[Stand.List == y]
-    #}, osnd)
     
     #Show fuelbeds associated with stands affected by fire
     fb_f12 <- Fuelbed.List[Stand.List %in% osnd]
@@ -3074,10 +2498,7 @@ if(length(s.map[s.map < 0 & s.map > -9999]) > 0)
     
     #Expand fuelbeds to include each occurence of stand number in osnd
     effb <- fb_f12[match(osnd, osno)]
-    
-  })#f12
-  
-  f13 <- system.time({ 
+
     #Unique old stands
     osno <- sort(unique(osnd))
     
@@ -3092,19 +2513,13 @@ if(length(s.map[s.map < 0 & s.map > -9999]) > 0)
     {
       neef <- seq((mudn + 1), (mudn + noef), 1)
     }
-  })#f13
-  
-  f14 <- system.time({ 
+
     #Map new stands
     od <- data.frame(osnd = osnd, ocod = ocod)
     od <- od[order(od$ocod),]
     v.neef <- neef[match(od.b$osnd, osno)]
     s.map[s.map %in% osno] <- v.neef
-    #for(i in 1:noef)
-    #{s.map[l.map %in% ocod[osnd == osno[i]]] <- neef[i]}
-  })#f14
-  
-  f15 <- system.time({ 
+
     #Log new stand numbers and associated disturbances when they have been added to 
     #s.map.
     if(g == 0)
@@ -3136,9 +2551,7 @@ if(length(s.map[s.map < 0 & s.map > -9999]) > 0)
     #Temporary - 12/6-2015 used to shut down loop when error and warning in run 1028 occurs.
     loopF2 <- data.frame(L1 = loopF.NewStand, L2 = loopF.Area, L3 = loopF.ReplacedStand, 
                         L4 = loopF.E_no, L5 = loopF.F_no, L6 = loopF.G_no)
-  })#f15
-  
-  f16 <- system.time({ 
+
     UnitList[[f]] <- f.bun
     loop[(length(Iteration.f)+1)] <- "skip" 
     Unit[(length(Iteration.f)+1)] <- ifelse(length(f.bun > 1), f.bun[1], f.bun)
@@ -3151,31 +2564,9 @@ if(length(s.map[s.map < 0 & s.map > -9999]) > 0)
     s.map[s.map %in% c(loopF.NewStand)])
   PrctDist.Mapped[(length(PrctDist.Mapped)+1)] <- round(((Disturbance.Area[
     length(Disturbance.Area)]/desa)*100),1)
-  })#f16
-  
-  f17 <- system.time({ 
+
     g.g <- sum(g.g, ifelse(g == 0,h,g))#tracks expansions
-  })#f17
-  
-  af1[length(af1) + 1] <- f1[3]
-  af2[length(af2) + 1] <- f2[3]
-  af3[length(af3) + 1] <- f3[3]
-  af4[length(af4) + 1] <- f4[3]
-  af5[length(af5) + 1] <- f5[3]
-  af6[length(af6) + 1] <- f6[3]
-  af7[length(af7) + 1] <- f7[3]
-  af8[length(af8) + 1] <- f8[3]
-  af9[length(af9) + 1] <- f9[3]
-  af10[length(af10) + 1] <- f10[3]
-  af11[length(af11) + 1] <- f11[3]
-  af12[length(af12) + 1] <- f12[3]
-  af13[length(af13) + 1] <- f13[3]
-  af14[length(af14) + 1] <- f14[3]
-  af15[length(af15) + 1] <- f15[3]
-  af16[length(af16) + 1] <- f16[3]
-  af17[length(af17) + 1] <- f17[3]
-  #f18 --- break_9.1.2
-  
+
   ##############################################################################
   ##############################################################################
   ##############################################################################
@@ -3206,7 +2597,6 @@ if(length(s.map[s.map < 0 & s.map > -9999]) > 0)
 } #9.3.2 ---------------------------------------------------------------------------
           } else #9.1.1 ----------------------------------------------------------------------
 { #9.1.2 ---------------------------------------------------------------------------
-  f18 <- system.time({ 
     UnitList[[f]] <- f.bun
     loop[(length(Iteration.f)+1)] <- ifelse(g == 0,"h","g") 
     Unit[(length(Iteration.f)+1)] <- ifelse(length(f.bun > 1), f.bun[1], f.bun)
@@ -3219,8 +2609,6 @@ if(length(s.map[s.map < 0 & s.map > -9999]) > 0)
     s.map[s.map %in% c(loopF.NewStand)]) + length(s.map[l.map %in% ocod])
   PrctDist.Mapped[(length(PrctDist.Mapped)+1)] <- round(((Disturbance.Area[
     length(Disturbance.Area)]/desa)*100),1)
-  })#f18
-  af18[length(af18) + 1] <- f18[3]
   break
 } #9.1.2 ---------------------------------------------------------------------------
 
@@ -3230,7 +2618,6 @@ if(length(s.map[s.map < 0 & s.map > -9999]) > 0)
 ##############################################################################
 
         } #9.0.0 ---------------------------------------------------------------------------
-e3 <- system.time({
 #Log disturbance run data for disturbance[e].
 if(length(Iteration.f) > 1)
   Disturbance.History[[(length(Disturbance.History)+1)]] <- data.frame(
@@ -3250,9 +2637,7 @@ names(Disturbance.History)[[length(Disturbance.History)]] <- paste(c(
   tda[e], " ### Area Mapped: ", Disturbance.Area[length(Disturbance.Area)], 
   " ### Completed: ", PrctDist.Mapped[length(PrctDist.Mapped)], "% ###"), 
   collapse = "")
-})#e3
 
-e4 <- system.time({
 #Log new stand numbers and associated disturbances when they have been added to 
 #s.map.
 loopE.NewStand <- c(loopE.NewStand,loopF.NewStand)
@@ -3268,11 +2653,9 @@ loopE <- data.frame(NewStand = loopE.NewStand,
                     F_no = loopE.F_no,
                     G_no = loopE.G_no)
 loopE <- loopE[order(loopE$ReplacedStand),]
-})#e4
       } else #8.1.1 ----------------------------------------------------------------------
 { #8.1.2 ---------------------------------------------------------------------------
   #Log disturbance run data for disturbance[e].
-  e3 <- system.time({
   if(length(Iteration.f) > 1)
     Disturbance.History[[(length(Disturbance.History)+1)]] <- paste(
       "Loop" = loop,
@@ -3287,9 +2670,7 @@ loopE <- loopE[order(loopE$ReplacedStand),]
     tda[e], " ### Area Mapped: ", Disturbance.Area[length(Disturbance.Area)], 
     " ### Completed: ", PrctDist.Mapped[length(PrctDist.Mapped)], "% ###"), 
     collapse = "")
-  })#e3
-  
-  e4 <- system.time({
+
   #Log new stand numbers and associated disturbance when they have been added to 
   #s.map.
   loopE.NewStand <- c(loopE.NewStand,loopF.NewStand)
@@ -3305,9 +2686,8 @@ loopE <- loopE[order(loopE$ReplacedStand),]
                       F_no = loopE.F_no,
                       G_no = loopE.G_no)
   loopE <- loopE[order(loopE$ReplacedStand),]
-  })#e4
+
 } #8.1.2 ---------------------------------------------------------------------------
-e5 <- system.time({
 
   #Record date and time.
   dt <- Sys.Date()
@@ -3315,28 +2695,21 @@ e5 <- system.time({
                tz = "", usetz = FALSE)
   
   #Tracking device
-  d.summary <- data.frame(
-    Date = dt, 
-    Time = tm, 
-    Year = a, 
-    Disturbance_No = e, 
-    PercentComplete = round(((e/length(tdn[tdy == a]))*100),), 
-    Name = f.disturbances$DisturbanceTitle[tdc[e]],
-    Area_Actual = dema, 
-    Area_Expected = desa, 
-    Blocks = f, 
-    Expansions = g.g)
+  d.summary <- paste(
+    " Date: ", dt, 
+    " Time: ", tm, 
+    " Year: ", a, 
+    " Disturbance_No: ", e, 
+    " PercentComplete: ", round(((e/length(tdn[tdy == a]))*100),), 
+    " Name: ", f.disturbances$DisturbanceTitle[tdc[e]],
+    " Area_Actual: ", dema, 
+    " Area_Expected: ", desa, 
+    " Blocks: ", f, 
+    " Expansions: ", g.g)
   e.summary <- rbind(e.summary, d.summary)
   
 #Save run data.
-cat(d.summary, file = "disturbance_summary", append = T)#
-})#e5
-
-ae1[length(ae1) + 1] <- e1[3]
-ae2[length(ae2) + 1] <- e2[3]
-ae3[length(ae3) + 1] <- e3[3]
-ae4[length(ae4) + 1] <- e4[3]
-ae5[length(ae5) + 1] <- e5[3]
+cat(d.summary, file = paste("run_", run, "_disturbances.txt", sep = ""), fill = T, append = T)#
 
 ##############################################################################
 ##############################################################################
@@ -3371,7 +2744,6 @@ if(r101 > 0)                                                                 #
 #Update files if there were disturbances in year[a].
 if(length(loopE.NewStand) > 0)
 {
-  a14 <- system.time({
     #Object shows fuelbeds associated with each new stand number created by 
     #disturbances in year[a].
     #ufxDa <- mapply(function(x) unique(f.map[s.map == x]), loopE.NewStand)
@@ -3381,28 +2753,6 @@ if(length(loopE.NewStand) > 0)
     #Storage for fuelbeds and ages of new stands.
     #sfubed <- vector()
     #sagesd <- vector()
-  })#a14
-  
-  a15 <- system.time({
-  #Update portion of f.map affected by disturbances for year[a]. 
-  #for(i in 1:length(loopE.NewStand))
-  #{
-    #Updates f.map.
-    #f.map[s.map == loopE.NewStand[i]] <- dtxm[,2][fblo[d.post$fuelbed == ufxDa[i]]]
-    #replaced with dummy code on Oct 20 b/c this code should be for crown fires.
-    #f.map[s.map == loopE.NewStand[i]] <- d.post$fuelbed[fblo[d.post$fuelbed == ufxDa[i]]]
-    
-    #Forms a list of the new fuelbeds.
-    #sfubed[i] <- dtxm[,2][fblo[d.post$fuelbed == ufxDa[i]]]
-    #replaced with dummy code on Oct 20 b/c this code should be for crown fires.
-    #sfubed[i] <- d.post$fuelbed[fblo[d.post$fuelbed == ufxDa[i]]]
-    
-    #Forms a list of the new ages.
-    #sagesd[i] <- (f.path$start[f.path$pre == dtxm[,2][fblo[
-    #  d.post$fuelbed == ufxDa[i]]]] - 1)
-    #replaced with dummy code on Oct 20 b/c this code should be for crown fires.
-    #sagesd[i] <- Age.List[Stand.List == loopE.ReplacedStand[i]]
-  #}
 
     #Code below replaces loop, vene though there are more lines it should run way faster.
     
@@ -3456,43 +2806,27 @@ if(length(loopE.NewStand) > 0)
     #Add newAGE_a7 to loopB data.frame
     loopE <- data.frame(loopE, newAGE_a15 = newAGE_a15)
 
-  })#a15
-
-a16 <- system.time({
   #List stands that have been altered by disturbances.
   ss2 <- loopE.ReplacedStand
   standd <- sort(unique(ss2))#there can be duplicates, this will mess up the shortcut in a9
   sb <- summarize(loopE.Area,ss2,sum)#sum areas for duplicates.
   saread <- as.vector(sb[,2])
   smud <- mapply(function(y) MU.List[Stand.List == y], loopE.ReplacedStand)
-})#a16
 
-a17 <- system.time({
   #Shelve fire history for stands that have been impacted by disturbance
   new_mfri_vec <- mapply(function(y) mfri.Matrix[Stand.List == y,], loopE.ReplacedStand)
   nmvd <- t(new_mfri_vec)
   
   #Add a fire for stands that were burned in wildfires
   nmvd[,30] <- 1
-})#a17
 
-a18 <- system.time({
-
-  #Improved method removes loop
-  #sad_a18 <- data.frame(standd = standd, saread = saread)
-  #sad_a18b <- sad_a18[order(sad_a18$standd),]
-  #Area.List[Stand.List %in% sad_a18b$standd] <- Area.List[Stand.List %in% sad_a18b$standd] - sad_a18b$saread
-  
 #Change stand properties as needed for treatments.
 for(i in 1:length(standd))
   {
     Area.List[Stand.List == standd[i]] <- 
                 Area.List[Stand.List == standd[i]] - saread[i]
   }
-})#a18
 
-a19 <- system.time({
-  
   #Update list to remove any stands that have been overwritten.
   Stand.List <- Stand.List[(Area.List == 0) == F]
   Fuelbed.List <- Fuelbed.List[(Area.List == 0) == F]
@@ -3505,9 +2839,7 @@ a19 <- system.time({
   MU.List <- MU.List[(Area.List == 0) == F]
   mfri.Matrix <- mfri.Matrix[(Area.List == 0) == F,]
   Area.List <- Area.List[(Area.List == 0) == F]
-})#a19
 
-a20 <- system.time({
   #Update list to add new stands.
   Stand.List <- c(Stand.List, loopE.NewStand)
   Fuelbed.List <- c(Fuelbed.List, newFB_a15)
@@ -3572,7 +2904,6 @@ a20 <- system.time({
   mfri.List <- round(30/mfri.List,0)
   mfri.List <- ifelse(mfri.List == Inf, 32, mfri.List)
   Area.List <- c(Area.List,loopE.Area)
-})#a20
 
 ##############################################################################
 ##############################################################################
@@ -3600,7 +2931,6 @@ if(any(c(length(Stand.List),
 ##############################################################################
 ##############################################################################
 
-a21 <- system.time({
   feof <- mapply(function(x) ifelse(
     mfri.List[x] < d.post$mfri_start[d.post$fuelbed == Fuelbed.List[x]], 
     d.post$more_fire[d.post$fuelbed == Fuelbed.List[x]], 
@@ -3611,10 +2941,6 @@ a21 <- system.time({
                       d.post$less_fire2[d.post$fuelbed == Fuelbed.List[x]]),1),
            d.post$less_fire1[d.post$fuelbed == Fuelbed.List[x]]),
     Fuelbed.List[x])),1:length(Stand.List))
-  #cbind(Stand.List,Fuelbed.List,feof)
-})#a21
-
-a22 <- system.time({
 
   #Update f.map
   #Improved function to update f.map based on mFRI. Former code used a for()
@@ -3624,17 +2950,7 @@ a22 <- system.time({
   v.feof2 <- feof2[match(vs.map, s.SL)]
   f.map[s.map %in% s.SL] <- v.feof2
   Fuelbed.List[Stand.List %in% s.SL] <- feof2
-  
-  #Update f.map (old code, works on the order of minutes: 500 stands/minute)
-  #for(i in 1:length(Stand.List))
-  #  if(Fuelbed.List[i] != feof[i])
-  #  {
-  #    f.map[s.map == Stand.List[i]] <- feof[i]
-  #    Fuelbed.List[i] <- feof[i]
-  #  }
-})#a22
 
-a23 <- system.time({
   #Temporary -- run 41
   Loop.track[[length(Loop.track) + 1]] <- c(a,b,cc,d,e,f,g)
   MU.track[[length(MU.track) + 1]] <- MU.List
@@ -3645,7 +2961,6 @@ a23 <- system.time({
   len <- loopE.NewStand
   lea <- loopE.Area
   ler <- loopE.ReplacedStand
-})#a23
 
   #cbind(Stand.List,Fuelbed.List,Area.List)
 } else
@@ -3653,11 +2968,9 @@ a23 <- system.time({
   #No new stand numbers, enter a placeholder.
   if(length(Disturbance.History) == 0)
   {
-    a24 <- system.time({
     Disturbance.History[[(length(Disturbance.History)+1)]] <- "No Data."
     names(Disturbance.History)[[length(Disturbance.History)]] <- paste(
       "No disturbances this year.", collapse = "")
-    })#a24
   }
 }
 
@@ -3666,7 +2979,6 @@ a23 <- system.time({
 
 #Identify potential changes in fuelbeds based on succession pathways.
 
-a25 <- system.time({
 pmuf <- mapply(function(x) ifelse(
   Age.List[x] > f.path$end[f.path$pre == Fuelbed.List[x]],
   ifelse(f.path$post_2[f.path$pre == Fuelbed.List[x]] > 0,
@@ -3674,13 +2986,7 @@ pmuf <- mapply(function(x) ifelse(
                     f.path$post_2[f.path$pre == Fuelbed.List[x]]),1),
          f.path$post_1[f.path$pre == Fuelbed.List[x]]),
   Fuelbed.List[x]),1:length(Stand.List))
-#cbind(Stand.List,Fuelbed.List,pmuf)
-})#a25
 
-
-a26 <- system.time({
-#Update f.map
-  
 #Update f.map
 #Improved function to update f.map based on mFRI. Former code used a for()
 s.SL2 <- Stand.List[Fuelbed.List != pmuf]
@@ -3690,21 +2996,8 @@ v.pmuf2 <- pmuf2[match(vs.map2, s.SL2)]
 f.map[s.map %in% s.SL2] <- v.pmuf2
 Fuelbed.List[Stand.List %in% s.SL2] <- pmuf2
 
-#for(i in 1:length(Stand.List))
-#  if(Fuelbed.List[i] != pmuf[i])
-#  {
-#    f.map[s.map == Stand.List[i]] <- pmuf[i]
-#    Fuelbed.List[i] <- pmuf[i]
-#  }
-})#a26
-
-a27 <- system.time({
 #Update D.List
 D.List <- cbind(T1E.List, T2E.List, D1E.List, D2E.List)
-})#a27
-
-a28 <- system.time({
-#})#TESTING
 
 #Save run data.
 dt <- Sys.Date()
@@ -3712,11 +3005,7 @@ tm <- format(Sys.time(), format = "%H.%M.%S",
              tz = "", usetz = FALSE)
 
 #Save run data.
-cat(e.summary, file = "annual_summary", append = T)#
-
-})#a28
-
-a29 <- system.time({
+cat(e.summary, file = paste("run_", run, "_annualSummary.txt", sep = ""), fill = T, append = T)#
 
 #Create maps for interval years.
 if((a %% Interval) == 0)
@@ -3744,37 +3033,6 @@ write.table(f.map, file = paste("run_", run,"maps/sef_fmap_",
 #Log treatment and disturbance mapping data for year[a].
 Map.History[[a]] <- c(Treatment.History,Disturbance.History)
 names(Map.History)[[a]] <- paste("Year", a,":", collapse = "")
-})#a29
-
-aa1[length(aa1) + 1] <- a1[3]
-aa2[length(aa2) + 1] <- a2[3]
-aa3[length(aa3) + 1] <- a3[3]
-aa4[length(aa4) + 1] <- a4[3]
-aa5[length(aa5) + 1] <- a5[3]
-aa6[length(aa6) + 1] <- a6[3]
-aa7[length(aa7) + 1] <- a7[3]
-aa8[length(aa8) + 1] <- a8[3]
-aa9[length(aa9) + 1] <- a9[3]
-aa10[length(aa10) + 1] <- a10[3]
-aa11[length(aa11) + 1] <- a11[3]
-aa12[length(aa12) + 1] <- a12[3]
-aa13[length(aa13) + 1] <- a13[3]
-aa14[length(aa14) + 1] <- a14[3]
-aa15[length(aa15) + 1] <- a15[3]
-aa16[length(aa16) + 1] <- a16[3]
-aa17[length(aa17) + 1] <- a17[3]
-aa18[length(aa18) + 1] <- a18[3]
-aa19[length(aa19) + 1] <- a19[3]
-aa20[length(aa20) + 1] <- a20[3]
-aa21[length(aa21) + 1] <- a21[3]
-aa22[length(aa22) + 1] <- a22[3]
-aa23[length(aa23) + 1] <- a23[3]
-aa24[length(aa24) + 1] <- a24[3]
-aa25[length(aa25) + 1] <- a25[3]
-aa26[length(aa26) + 1] <- a26[3]
-aa27[length(aa27) + 1] <- a27[3]
-aa28[length(aa28) + 1] <- a28[3]
-aa29[length(aa29) + 1] <- a29[3]
 
 } #1.0.0 ---------------------------------------------------------------------------
 

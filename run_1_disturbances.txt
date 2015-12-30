@@ -1,0 +1,9 @@
+Date:  2015-12-29  Time:  19.00.43  Year:  1  Disturbance_No  1  PercentComplete:  19  Name:  Pre-commercial thinning  Area_Actual:  2256  Area_Expected:  2256  Blocks:  2  Expansions:  2
+Date:  2015-12-29  Time:  19.00.51  Year:  1  Disturbance_No  2  PercentComplete:  22  Name:  Herbicide Application  Area_Actual:  376  Area_Expected:  376  Blocks:  2  Expansions:  2
+Date:  2015-12-29  Time:  19.00.59  Year:  1  Disturbance_No  3  PercentComplete:  26  Name:  Herbicide Application  Area_Actual:  428  Area_Expected:  428  Blocks:  2  Expansions:  2
+Date:  2015-12-29  Time:  19.01.08  Year:  1  Disturbance_No  4  PercentComplete:  31  Name:  Herbicide Application  Area_Actual:  686  Area_Expected:  686  Blocks:  2  Expansions:  2
+Date:  2015-12-29  Time:  19.01.23  Year:  1  Disturbance_No  5  PercentComplete:  58  Name:  Prescribed Fire  Area_Actual:  389  Area_Expected:  3182  Blocks:  2  Expansions:  4
+Date:  2015-12-29  Time:  19.01.43  Year:  1  Disturbance_No  6  PercentComplete:  59  Name:  Prescribed Fire  Area_Actual:  17  Area_Expected:  163  Blocks:  2  Expansions:  7
+Date:  2015-12-29  Time:  19.01.56  Year:  1  Disturbance_No  7  PercentComplete:  71  Name:  Prescribed Fire  Area_Actual:  168  Area_Expected:  1417  Blocks:  2  Expansions:  4
+Date:  2015-12-29  Time:  19.02.07  Year:  1  Disturbance_No  8  PercentComplete:  76  Name:  Prescribed Fire  Area_Actual:  315  Area_Expected:  654  Blocks:  2  Expansions:  3
+Date:  2015-12-29  Time:  19.02.20  Year:  1  Disturbance_No  9  PercentComplete:  81  Name:  Prescribed Fire  Area_Actual:  73  Area_Expected:  534  Blocks:  2  Expansions:  4
