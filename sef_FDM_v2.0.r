@@ -20,7 +20,7 @@ setwd("C:/Users/jcronan/Documents/GitHub/EglinAirForceBase")
 #args <- commandArgs(TRUE)
 args <- read.table("sef_lut_schedule_treatment.csv", header=TRUE, 
                    sep=",", na.strings="NA", dec=".", strip.white=TRUE)
-args <- args[1,]
+args <- args[2,]
 
 #Number of rows and columns in ascii map files
 rows <- 1771
@@ -359,7 +359,7 @@ tdt <- vector(mode = "numeric", length = 0)    #Records wildfire data
 D.List <- cbind(T1E.List, T2E.List, D1E.List, D2E.List)
 
 #This will be used to log run times for disturbance loops.
-e.summary <- data.frame()
+#e.summary <- data.frame()
 
 ####################################################################################
 ####################################################################################
@@ -1195,7 +1195,7 @@ loopB <- loopB[order(loopB$old_stand),]
     " Blocks: ", cc, 
     " Expansions: ", d.d) 
   
-e.summary <- rbind(e.summary, t.summary)
+#e.summary <- rbind(e.summary, t.summary)
 
 #Save run data.
 cat(t.summary, file = paste("run_", run, "_disturbances.txt", sep = ""), fill = T, append = T)#
@@ -2706,7 +2706,7 @@ loopE <- loopE[order(loopE$ReplacedStand),]
     " Area_Expected: ", desa, 
     " Blocks: ", f, 
     " Expansions: ", g.g)
-  e.summary <- rbind(e.summary, d.summary)
+ # e.summary <- rbind(e.summary, d.summary)
   
 #Save run data.
 cat(d.summary, file = paste("run_", run, "_disturbances.txt", sep = ""), fill = T, append = T)#
@@ -3005,7 +3005,9 @@ tm <- format(Sys.time(), format = "%H.%M.%S",
              tz = "", usetz = FALSE)
 
 #Save run data.
-cat(e.summary, file = paste("run_", run, "_annualSummary.txt", sep = ""), fill = T, append = T)#
+cat(paste("TreatedExpected: ", meanTAP, "TreatedActual: ", meanTAA, 
+          "BurnedExpected: ", desa, "BurnedActual: ", dema), 
+    file = paste("run_", run, "_annualSummary.txt", sep = ""), fill = T, append = T)#
 
 #Create maps for interval years.
 if((a %% Interval) == 0)
