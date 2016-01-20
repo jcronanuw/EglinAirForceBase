@@ -1,0 +1,103 @@
+Date:  2015-12-30  Time:  12.04.47  Year:  1  Disturbance_No  1  PercentComplete:  2  Name:  Pre-commercial thinning  Area_Actual:  1157  Area_Expected:  1157  Blocks:  2  Expansions:  2
+Date:  2015-12-30  Time:  12.04.58  Year:  1  Disturbance_No  2  PercentComplete:  3  Name:  Herbicide Application  Area_Actual:  582  Area_Expected:  582  Blocks:  2  Expansions:  2
+Date:  2015-12-30  Time:  12.05.09  Year:  1  Disturbance_No  3  PercentComplete:  4  Name:  Herbicide Application  Area_Actual:  284  Area_Expected:  284  Blocks:  2  Expansions:  2
+Date:  2015-12-30  Time:  12.05.20  Year:  1  Disturbance_No  4  PercentComplete:  5  Name:  Herbicide Application  Area_Actual:  464  Area_Expected:  464  Blocks:  2  Expansions:  2
+Date:  2015-12-30  Time:  12.05.35  Year:  1  Disturbance_No  5  PercentComplete:  6  Name:  Prescribed Fire  Area_Actual:  362  Area_Expected:  755  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.05.50  Year:  1  Disturbance_No  6  PercentComplete:  7  Name:  Prescribed Fire  Area_Actual:  308  Area_Expected:  639  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.06.06  Year:  1  Disturbance_No  7  PercentComplete:  8  Name:  Prescribed Fire  Area_Actual:  249  Area_Expected:  512  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.06.24  Year:  1  Disturbance_No  8  PercentComplete:  14  Name:  Prescribed Fire  Area_Actual:  506  Area_Expected:  3047  Blocks:  2  Expansions:  4
+Date:  2015-12-30  Time:  12.06.40  Year:  1  Disturbance_No  9  PercentComplete:  15  Name:  Prescribed Fire  Area_Actual:  274  Area_Expected:  584  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.06.55  Year:  1  Disturbance_No  10  PercentComplete:  21  Name:  Prescribed Fire  Area_Actual:  1391  Area_Expected:  2994  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.07.14  Year:  1  Disturbance_No  11  PercentComplete:  22  Name:  Prescribed Fire  Area_Actual:  95  Area_Expected:  605  Blocks:  2  Expansions:  4
+Date:  2015-12-30  Time:  12.07.27  Year:  1  Disturbance_No  12  PercentComplete:  24  Name:  Prescribed Fire  Area_Actual:  319  Area_Expected:  698  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.07.43  Year:  1  Disturbance_No  13  PercentComplete:  25  Name:  Prescribed Fire  Area_Actual:  322  Area_Expected:  737  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.07.59  Year:  1  Disturbance_No  14  PercentComplete:  26  Name:  Prescribed Fire  Area_Actual:  167  Area_Expected:  436  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.08.13  Year:  1  Disturbance_No  15  PercentComplete:  27  Name:  Prescribed Fire  Area_Actual:  250  Area_Expected:  494  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.08.29  Year:  1  Disturbance_No  16  PercentComplete:  30  Name:  Prescribed Fire  Area_Actual:  687  Area_Expected:  1664  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.08.44  Year:  1  Disturbance_No  17  PercentComplete:  31  Name:  Prescribed Fire  Area_Actual:  209  Area_Expected:  454  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.09.03  Year:  1  Disturbance_No  18  PercentComplete:  34  Name:  Prescribed Fire  Area_Actual:  223  Area_Expected:  1376  Blocks:  2  Expansions:  4
+Date:  2015-12-30  Time:  12.09.17  Year:  1  Disturbance_No  19  PercentComplete:  36  Name:  Prescribed Fire  Area_Actual:  607  Area_Expected:  1309  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.09.35  Year:  1  Disturbance_No  20  PercentComplete:  37  Name:  Prescribed Fire  Area_Actual:  124  Area_Expected:  619  Blocks:  2  Expansions:  4
+Date:  2015-12-30  Time:  12.09.50  Year:  1  Disturbance_No  21  PercentComplete:  41  Name:  Prescribed Fire  Area_Actual:  917  Area_Expected:  2143  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.10.08  Year:  1  Disturbance_No  22  PercentComplete:  43  Name:  Prescribed Fire  Area_Actual:  175  Area_Expected:  804  Blocks:  2  Expansions:  4
+Date:  2015-12-30  Time:  12.10.28  Year:  1  Disturbance_No  23  PercentComplete:  45  Name:  Prescribed Fire  Area_Actual:  164  Area_Expected:  1293  Blocks:  2  Expansions:  4
+Date:  2015-12-30  Time:  12.10.46  Year:  1  Disturbance_No  24  PercentComplete:  48  Name:  Prescribed Fire  Area_Actual:  192  Area_Expected:  1511  Blocks:  2  Expansions:  4
+Date:  2015-12-30  Time:  12.11.00  Year:  1  Disturbance_No  25  PercentComplete:  52  Name:  Prescribed Fire  Area_Actual:  740  Area_Expected:  1851  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.11.16  Year:  1  Disturbance_No  26  PercentComplete:  54  Name:  Prescribed Fire  Area_Actual:  524  Area_Expected:  1115  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.11.34  Year:  1  Disturbance_No  27  PercentComplete:  56  Name:  Prescribed Fire  Area_Actual:  133  Area_Expected:  1242  Blocks:  2  Expansions:  4
+Date:  2015-12-30  Time:  12.11.48  Year:  1  Disturbance_No  28  PercentComplete:  59  Name:  Prescribed Fire  Area_Actual:  507  Area_Expected:  1125  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.12.04  Year:  1  Disturbance_No  29  PercentComplete:  63  Name:  Prescribed Fire  Area_Actual:  1090  Area_Expected:  2403  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.12.18  Year:  1  Disturbance_No  30  PercentComplete:  67  Name:  Prescribed Fire  Area_Actual:  853  Area_Expected:  1913  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.12.36  Year:  1  Disturbance_No  31  PercentComplete:  72  Name:  Prescribed Fire  Area_Actual:  310  Area_Expected:  2831  Blocks:  2  Expansions:  4
+Date:  2015-12-30  Time:  12.12.55  Year:  1  Disturbance_No  32  PercentComplete:  83  Name:  Prescribed Fire  Area_Actual:  594  Area_Expected:  5514  Blocks:  2  Expansions:  4
+Date:  2015-12-30  Time:  12.13.10  Year:  1  Disturbance_No  33  PercentComplete:  85  Name:  Prescribed Fire  Area_Actual:  526  Area_Expected:  1099  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.13.28  Year:  1  Disturbance_No  34  PercentComplete:  88  Name:  Prescribed Fire  Area_Actual:  164  Area_Expected:  1286  Blocks:  2  Expansions:  4
+Date:  2015-12-30  Time:  12.13.43  Year:  1  Disturbance_No  35  PercentComplete:  91  Name:  Prescribed Fire  Area_Actual:  740  Area_Expected:  1558  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.13.58  Year:  1  Disturbance_No  36  PercentComplete:  92  Name:  Prescribed Fire  Area_Actual:  208  Area_Expected:  482  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.14.16  Year:  1  Disturbance_No  37  PercentComplete:  92  Name:  Prescribed Fire  Area_Actual:  66  Area_Expected:  327  Blocks:  2  Expansions:  4
+Date:  2015-12-30  Time:  12.14.36  Year:  1  Disturbance_No  38  PercentComplete:  99  Name:  Prescribed Fire  Area_Actual:  370  Area_Expected:  3444  Blocks:  2  Expansions:  4
+Date:  2015-12-30  Time:  12.14.54  Year:  1  Disturbance_No  39  PercentComplete:  99  Name:  Prescribed Fire  Area_Actual:  31  Area_Expected:  169  Blocks:  2  Expansions:  4
+Date:  2015-12-30  Time:  12.15.10  Year:  1  Disturbance_No  40  PercentComplete:  100  Name:  Prescribed Fire  Area_Actual:  99  Area_Expected:  224  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.15.25  Year:  1  Disturbance_No  41  PercentComplete:  101  Name:  Prescribed Fire  Area_Actual:  344  Area_Expected:  757  Blocks:  2  Expansions:  3
+ Date:  2015-12-30  Time:  12.17.19  Year:  1  Disturbance_No:  1  PercentComplete:  17  Name:  Shorter Fire Rotation (Eglin AFB)  Area_Actual:  278  Area_Expected:  278  Blocks:  2  Expansions:  20
+ Date:  2015-12-30  Time:  12.17.51  Year:  1  Disturbance_No:  2  PercentComplete:  33  Name:  Shorter Fire Rotation (Eglin AFB)  Area_Actual:  62  Area_Expected:  62  Blocks:  2  Expansions:  6
+ Date:  2015-12-30  Time:  12.18.45  Year:  1  Disturbance_No:  3  PercentComplete:  50  Name:  Shorter Fire Rotation (Eglin AFB)  Area_Actual:  96  Area_Expected:  96  Blocks:  2  Expansions:  11
+ Date:  2015-12-30  Time:  12.19.49  Year:  1  Disturbance_No:  4  PercentComplete:  67  Name:  Shorter Fire Rotation (Eglin AFB)  Area_Actual:  1397  Area_Expected:  1397  Blocks:  5  Expansions:  9
+ Date:  2015-12-30  Time:  12.21.07  Year:  1  Disturbance_No:  5  PercentComplete:  83  Name:  Shorter Fire Rotation (Eglin AFB)  Area_Actual:  135  Area_Expected:  135  Blocks:  2  Expansions:  17
+ Date:  2015-12-30  Time:  12.22.12  Year:  1  Disturbance_No:  6  PercentComplete:  100  Name:  Shorter Fire Rotation (Buffer Zone)  Area_Actual:  55  Area_Expected:  55  Blocks:  2  Expansions:  14
+Date:  2015-12-30  Time:  12.23.53  Year:  2  Disturbance_No  1  PercentComplete:  1  Name:  Pre-commercial thinning  Area_Actual:  472  Area_Expected:  472  Blocks:  2  Expansions:  2
+Date:  2015-12-30  Time:  12.24.04  Year:  2  Disturbance_No  2  PercentComplete:  1  Name:  Pre-commercial thinning  Area_Actual:  86  Area_Expected:  86  Blocks:  2  Expansions:  2
+Date:  2015-12-30  Time:  12.24.15  Year:  2  Disturbance_No  3  PercentComplete:  7  Name:  Pre-commercial thinning  Area_Actual:  2850  Area_Expected:  2850  Blocks:  2  Expansions:  2
+Date:  2015-12-30  Time:  12.24.27  Year:  2  Disturbance_No  4  PercentComplete:  9  Name:  Herbicide Application  Area_Actual:  1040  Area_Expected:  1040  Blocks:  2  Expansions:  2
+Date:  2015-12-30  Time:  12.24.43  Year:  2  Disturbance_No  5  PercentComplete:  10  Name:  Prescribed Fire  Area_Actual:  416  Area_Expected:  848  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.24.58  Year:  2  Disturbance_No  6  PercentComplete:  12  Name:  Prescribed Fire  Area_Actual:  469  Area_Expected:  1030  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.25.16  Year:  2  Disturbance_No  7  PercentComplete:  13  Name:  Prescribed Fire  Area_Actual:  61  Area_Expected:  445  Blocks:  2  Expansions:  4
+Date:  2015-12-30  Time:  12.25.35  Year:  2  Disturbance_No  8  PercentComplete:  14  Name:  Prescribed Fire  Area_Actual:  65  Area_Expected:  547  Blocks:  2  Expansions:  4
+Date:  2015-12-30  Time:  12.25.51  Year:  2  Disturbance_No  9  PercentComplete:  22  Name:  Prescribed Fire  Area_Actual:  1928  Area_Expected:  4143  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.26.09  Year:  2  Disturbance_No  10  PercentComplete:  24  Name:  Prescribed Fire  Area_Actual:  171  Area_Expected:  1082  Blocks:  2  Expansions:  4
+Date:  2015-12-30  Time:  12.26.24  Year:  2  Disturbance_No  11  PercentComplete:  29  Name:  Prescribed Fire  Area_Actual:  1207  Area_Expected:  2677  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.26.39  Year:  2  Disturbance_No  12  PercentComplete:  33  Name:  Prescribed Fire  Area_Actual:  837  Area_Expected:  1953  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.26.54  Year:  2  Disturbance_No  13  PercentComplete:  34  Name:  Prescribed Fire  Area_Actual:  192  Area_Expected:  420  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.27.12  Year:  2  Disturbance_No  14  PercentComplete:  36  Name:  Prescribed Fire  Area_Actual:  120  Area_Expected:  1078  Blocks:  2  Expansions:  4
+Date:  2015-12-30  Time:  12.27.27  Year:  2  Disturbance_No  15  PercentComplete:  37  Name:  Prescribed Fire  Area_Actual:  173  Area_Expected:  436  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.27.45  Year:  2  Disturbance_No  16  PercentComplete:  38  Name:  Prescribed Fire  Area_Actual:  91  Area_Expected:  696  Blocks:  2  Expansions:  4
+Date:  2015-12-30  Time:  12.28.00  Year:  2  Disturbance_No  17  PercentComplete:  39  Name:  Prescribed Fire  Area_Actual:  226  Area_Expected:  478  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.28.16  Year:  2  Disturbance_No  18  PercentComplete:  43  Name:  Prescribed Fire  Area_Actual:  928  Area_Expected:  2133  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.29.09  Year:  2  Disturbance_No  19  PercentComplete:  43  Name:  Prescribed Fire  Area_Actual:  19  Area_Expected:  182  Blocks:  2  Expansions:  12
+Date:  2015-12-30  Time:  12.29.24  Year:  2  Disturbance_No  20  PercentComplete:  44  Name:  Prescribed Fire  Area_Actual:  256  Area_Expected:  534  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.29.38  Year:  2  Disturbance_No  21  PercentComplete:  46  Name:  Prescribed Fire  Area_Actual:  365  Area_Expected:  789  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.29.58  Year:  2  Disturbance_No  22  PercentComplete:  48  Name:  Prescribed Fire  Area_Actual:  195  Area_Expected:  1134  Blocks:  2  Expansions:  4
+Date:  2015-12-30  Time:  12.30.13  Year:  2  Disturbance_No  23  PercentComplete:  49  Name:  Prescribed Fire  Area_Actual:  258  Area_Expected:  609  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.30.31  Year:  2  Disturbance_No  24  PercentComplete:  50  Name:  Prescribed Fire  Area_Actual:  74  Area_Expected:  410  Blocks:  2  Expansions:  4
+Date:  2015-12-30  Time:  12.30.46  Year:  2  Disturbance_No  25  PercentComplete:  52  Name:  Prescribed Fire  Area_Actual:  462  Area_Expected:  1110  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.31.02  Year:  2  Disturbance_No  26  PercentComplete:  56  Name:  Prescribed Fire  Area_Actual:  803  Area_Expected:  1679  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.31.25  Year:  2  Disturbance_No  27  PercentComplete:  58  Name:  Prescribed Fire  Area_Actual:  132  Area_Expected:  1077  Blocks:  2  Expansions:  5
+Date:  2015-12-30  Time:  12.32.06  Year:  2  Disturbance_No  28  PercentComplete:  58  Name:  Prescribed Fire  Area_Actual:  22  Area_Expected:  213  Blocks:  2  Expansions:  10
+Date:  2015-12-30  Time:  12.32.26  Year:  2  Disturbance_No  29  PercentComplete:  59  Name:  Prescribed Fire  Area_Actual:  88  Area_Expected:  454  Blocks:  2  Expansions:  4
+Date:  2015-12-30  Time:  12.32.44  Year:  2  Disturbance_No  30  PercentComplete:  62  Name:  Prescribed Fire  Area_Actual:  285  Area_Expected:  1703  Blocks:  2  Expansions:  4
+Date:  2015-12-30  Time:  12.33.00  Year:  2  Disturbance_No  31  PercentComplete:  63  Name:  Prescribed Fire  Area_Actual:  180  Area_Expected:  388  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.33.20  Year:  2  Disturbance_No  32  PercentComplete:  66  Name:  Prescribed Fire  Area_Actual:  155  Area_Expected:  1464  Blocks:  2  Expansions:  4
+Date:  2015-12-30  Time:  12.33.35  Year:  2  Disturbance_No  33  PercentComplete:  69  Name:  Prescribed Fire  Area_Actual:  747  Area_Expected:  1767  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.33.51  Year:  2  Disturbance_No  34  PercentComplete:  70  Name:  Prescribed Fire  Area_Actual:  206  Area_Expected:  492  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.34.09  Year:  2  Disturbance_No  35  PercentComplete:  72  Name:  Prescribed Fire  Area_Actual:  211  Area_Expected:  1158  Blocks:  2  Expansions:  4
+Date:  2015-12-30  Time:  12.34.24  Year:  2  Disturbance_No  36  PercentComplete:  75  Name:  Prescribed Fire  Area_Actual:  577  Area_Expected:  1228  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.34.40  Year:  2  Disturbance_No  37  PercentComplete:  78  Name:  Prescribed Fire  Area_Actual:  820  Area_Expected:  1979  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.35.00  Year:  2  Disturbance_No  38  PercentComplete:  81  Name:  Prescribed Fire  Area_Actual:  178  Area_Expected:  1188  Blocks:  2  Expansions:  4
+Date:  2015-12-30  Time:  12.35.14  Year:  2  Disturbance_No  39  PercentComplete:  84  Name:  Prescribed Fire  Area_Actual:  667  Area_Expected:  1471  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.35.29  Year:  2  Disturbance_No  40  PercentComplete:  85  Name:  Prescribed Fire  Area_Actual:  303  Area_Expected:  689  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.35.46  Year:  2  Disturbance_No  41  PercentComplete:  88  Name:  Prescribed Fire  Area_Actual:  220  Area_Expected:  1751  Blocks:  2  Expansions:  4
+Date:  2015-12-30  Time:  12.36.01  Year:  2  Disturbance_No  42  PercentComplete:  90  Name:  Prescribed Fire  Area_Actual:  328  Area_Expected:  778  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.36.16  Year:  2  Disturbance_No  43  PercentComplete:  91  Name:  Prescribed Fire  Area_Actual:  374  Area_Expected:  823  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.36.31  Year:  2  Disturbance_No  44  PercentComplete:  95  Name:  Prescribed Fire  Area_Actual:  918  Area_Expected:  1998  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.36.45  Year:  2  Disturbance_No  45  PercentComplete:  98  Name:  Prescribed Fire  Area_Actual:  682  Area_Expected:  1637  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.37.00  Year:  2  Disturbance_No  46  PercentComplete:  99  Name:  Prescribed Fire  Area_Actual:  125  Area_Expected:  254  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.37.15  Year:  2  Disturbance_No  47  PercentComplete:  101  Name:  Prescribed Fire  Area_Actual:  566  Area_Expected:  1218  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.37.30  Year:  2  Disturbance_No  48  PercentComplete:  102  Name:  Prescribed Fire  Area_Actual:  233  Area_Expected:  526  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.37.45  Year:  2  Disturbance_No  49  PercentComplete:  103  Name:  Prescribed Fire  Area_Actual:  321  Area_Expected:  661  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.37.59  Year:  2  Disturbance_No  50  PercentComplete:  104  Name:  Prescribed Fire  Area_Actual:  192  Area_Expected:  418  Blocks:  2  Expansions:  3
+Date:  2015-12-30  Time:  12.38.20  Year:  2  Disturbance_No  51  PercentComplete:  105  Name:  Prescribed Fire  Area_Actual:  58  Area_Expected:  561  Blocks:  2  Expansions:  5
+ Date:  2015-12-30  Time:  12.40.32  Year:  2  Disturbance_No:  7  PercentComplete:  140  Name:  Shorter Fire Rotation (Eglin AFB)  Area_Actual:  9961  Area_Expected:  9789  Blocks:  6  Expansions:  16
+ Date:  2015-12-30  Time:  12.41.56  Year:  2  Disturbance_No:  8  PercentComplete:  160  Name:  Shorter Fire Rotation (Eglin AFB)  Area_Actual:  479  Area_Expected:  479  Blocks:  2  Expansions:  18
+ Date:  2015-12-30  Time:  12.48.16  Year:  2  Disturbance_No:  9  PercentComplete:  180  Name:  Shorter Fire Rotation (Eglin AFB)  Area_Actual:  257  Area_Expected:  257  Blocks:  2  Expansions:  87
+ Date:  2015-12-30  Time:  12.49.28  Year:  2  Disturbance_No:  10  PercentComplete:  200  Name:  Shorter Fire Rotation (Eglin AFB)  Area_Actual:  204  Area_Expected:  204  Blocks:  3  Expansions:  16
+ Date:  2015-12-30  Time:  12.50.22  Year:  2  Disturbance_No:  11  PercentComplete:  220  Name:  Shorter Fire Rotation (Buffer Zone)  Area_Actual:  56  Area_Expected:  56  Blocks:  2  Expansions:  13

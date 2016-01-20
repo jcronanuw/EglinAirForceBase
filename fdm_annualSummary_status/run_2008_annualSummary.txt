@@ -1,0 +1,6 @@
+TreatedExpected:  1000 TreatedActual:  1157 BurnedExpected:  55 BurnedActual:  55 
+TreatedExpected:  1000 TreatedActual:  1330 BurnedExpected:  55 BurnedActual:  55 
+TreatedExpected:  1e+05 TreatedActual:  101791 BurnedExpected:  55 BurnedActual:  55
+TreatedExpected:  1000 TreatedActual:  1447 BurnedExpected:  63 BurnedActual:  63 
+TreatedExpected:  1000 TreatedActual:  3345 BurnedExpected:  63 BurnedActual:  63 
+TreatedExpected:  1e+05 TreatedActual:  100209 BurnedExpected:  63 BurnedActual:  63

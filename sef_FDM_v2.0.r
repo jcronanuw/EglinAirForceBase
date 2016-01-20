@@ -20,7 +20,10 @@ setwd("C:/Users/jcronan/Documents/GitHub/EglinAirForceBase")
 #args <- commandArgs(TRUE)
 args <- read.table("sef_lut_schedule_treatment.csv", header=TRUE, 
                    sep=",", na.strings="NA", dec=".", strip.white=TRUE)
-args <- args[2,]
+args <- args[1,]
+
+set.seed(args[1])#this prevents script from producing identical random numbers
+#when running in parallel on the same machine.
 
 #Number of rows and columns in ascii map files
 rows <- 1771
@@ -43,11 +46,6 @@ run <- args[1]
 #Do not map fires below this value (in acres). Purpose is to reduce model run time
 #by excluding small fires that do not impact vegetation at the landscape scale.
 fire.cut <- 10
-
-#Create files to pass information about model run status.
-file.create(paste("run_", run, "_iterations.txt", sep = ""))
-file.create(paste("run_", run, "_disturbances.txt", sep = ""))
-file.create(paste("run_", run, "_annualSummary.txt", sep = ""))
 
 #Temporary tracking items to figure out why MU.List is being corrupted.
 Loop.track <- list()
@@ -133,6 +131,9 @@ shape2 <- c(5,5,2.5)#shape 2 parameter
 #Read in third meanTAP parameter from file
 meanTAP <- c(1000, 1000, as.numeric(args[3]))
 
+#Convert area in acres to 30 m pixels
+meanTAP <- round(meanTAP/MapRes,0)
+
 #Proportion of available cells within a treatment unit to seed treatment.
 seed.cells <- c(0.50,0.50,0.10)#thinning, herbicide, prescribed fire
 
@@ -190,11 +191,26 @@ Area.List <- as.vector(Area.List[,2], mode = "numeric")#23
 Area.List <- Area.List[-1]
 
 mfri.List <- read.table(paste(
-  "sef_mfriList_",rows,"x",cols,".txt",
+  "sef_mfriList_v2_",rows,"x",cols,".txt",
   sep = ""), header=TRUE, 
   sep=",", na.strings="NA", dec=".", strip.white=TRUE)
 mfri.List <- as.vector(mfri.List[,2], mode = "numeric")#23
 mfri.List <- mfri.List[-1]
+
+mfri.Matrix <- read.table(paste(
+  "sef_mfriMatrix_v2_",rows,"x",cols,".txt",
+  sep = ""), header=T, 
+  sep=",", na.strings="NA", dec=".", strip.white=TRUE)
+#Remove no Data Unit
+mm1 <- mfri.Matrix[,-1]
+#Force into a matrix (opens as a data.frame with mode = integer; these characteristics will crash FDM)
+mm2 <- data.matrix(mm1)
+#Data mode is still integer and there are additional attributes
+#Convert to vector (removes attributes from data.frame and coverts integer to numeric)
+mm3 <- as.vector(mm2, mode = 'numeric')
+#Restore rows and cols.
+mm4 <- matrix(data = mm3, nrow = length(mm1[,1]), ncol = length(mm1[1,]))
+mfri.Matrix <- mm4
 
 T1E.List <- read.table(paste(
   "sef_T1EList_",rows,"x",cols,".txt",
@@ -230,6 +246,12 @@ MU.List <- read.table(paste(
   sep=",", na.strings="NA", dec=".", strip.white=TRUE)
 MU.List <- as.vector(MU.List[,2], mode = "numeric")#25
 MU.List <- MU.List[-1]
+
+TSLFxUnits <- read.table(paste(
+  "sef_TSLF.List_",rows,"x",cols,".txt",
+  sep = ""), header=TRUE, 
+  sep=",", na.strings="NA", dec=".", strip.white=TRUE)
+TSLFxUnits <- TSLFxUnits[,-1]
 
 #Last line removes the first integer from the .List objects which contain the NoDate
 #area and will not match up with any date in f.path, resulting in an error.
@@ -267,10 +289,16 @@ b.unit <- read.table("sef_lut_burn_units.txt", header=TRUE,
 b.unit <- data.frame(unit = b.unit[,2], area_ac = b.unit[,3], thin= b.unit[,4], 
                      herb = b.unit[,5], fire = b.unit[,6])#remove col 1 and rename cols 2-6.
 
-#TODO: Add burn blocks in later. 
-#b.block <- read.table("sef_lut_pathways_burnBlocks.csv", header=F, 
-#           sep=",", na.strings="NA", dec=".", strip.white=TRUE)
+b.block <- read.table("sef_lut_pathways_burnBlocks.csv", header=T, 
+                      sep=",", na.strings="NA", dec=".", strip.white=TRUE)
+b.block <- b.block[-1,]#remove first row -- no data unit.
 
+b.thresh <- read.table("sef_lut_threshold_mgmtOptions.csv", header=T, 
+                       sep=",", na.strings="NA", dec=".", strip.white=TRUE)
+
+f.start <- read.table("sef_lut_pathways_fireStart.csv", header=T, 
+                      sep=",", na.strings="NA", dec=".", strip.white=TRUE)
+f.start <- f.start[-1,]#remove first row -- no data unit.
 ####################################################################################
 ####################################################################################
 #STEP 07: Simplify input data.
@@ -298,6 +326,13 @@ eglin.area <- length(b.map[!b.map %in% c(Buffer.Unit,-9999)])
 #pixels within Eglin's perimeter.
 buffer.area <- length(b.map[b.map == Buffer.Unit & !f.map != Open.Water])
 #pixels within the buffer landscape, excluding pixels with open water fuelbeds.
+
+#Determine Area of BANSA units, these must be burned every year and will determine
+#the amount of area burned in CCA units.
+#assigns thresholds for CCA and BANSA management threshold which will be
+#based on the relative areas of each management level.
+BANSA.Area <- sum(Area.List[MU.List %in% b.block$BurnBlock[b.block$BANSA == 2]])
+
 FF.e <- ((eglin.area*MapRes)/(NFR[1]*MFS[1]))#FF.e = Fire Frequency for Eglin
 FF.b <- ((buffer.area*MapRes)/(NFR[2]*MFS[2]))#FF.b = Fire Frequency for buffer
 Mu.e <- 2*log(MFS[1]) - 0.5*(log(DFS[1]^2 + MFS[1]^2))#mean of log transformed mean fire size
@@ -451,76 +486,6 @@ avfb_herb <- fbls[ttxm[,5] == 2]
 
 #For prescribed fire treatments
 avfb_fire <- fbls[ttxm[,6] == 2]
-
-####################################################################################
-####################################################################################
-#STEP 12: Update mFRI list and then create a mFRI format that can be updated.
-
-#Update -- the mFRI list needs to be updated because the mFRI data layer was not
-#used to inform the generation of all fuelbeds. For instance, small ponds are included
-#in polygons representing frequently burned areas but themselves do not burn. This instance
-#does not cause a problem because in the look-up tables open water has a mFRI range of 
-#0-32 and the updating loop at the end of FDM will not consider these "stands". However
-#there are thousands of forested stands of unburnable fuels with a long mFRI range.
-#For instance sand pine, riparian forests, and young plantations that may be included
-#in a short fire return interval polygon but do not burn. These stands present a 
-#problem because the fire regime updating loop at the end of FDM will flag these stands
-#as being outside of their mFRI but the look-up table will maintain the fuelbed (as it should)
-#This is a problem because it is a large time burden on FDM run times. To fix this two things should
-#happen. First before the loops initiate (i.e. right here) the mFRI list needs to be updated
-#to reflect the actual mFRI likely for the stand, not what is shown by the generalized
-#mFRI layer (as listed is mfri.List). Second the lookup tables must have alternatives
-#for fuelbeds with low-medium to medium probability of burning or they will build up
-#over the course of an FDM run as out of compliance with their mFRI range and bog down
-#the model.
-
-
-#Testing only (run 93)
-pre.m1 <- mfri.List 
-pre.f1 <- Fuelbed.List
-pre.s1 <- Stand.List
-pre.a1 <- Area.List
-
-#This updates the mFRI list so all stands have the correct mFRI given
-#their fuelbed. This mostly corrects short mFRIs in non-burnable/low probability burn fuelbeds.
-#See above paragraph for more information.
-mfri.List_v2 <- mapply(function(y) 
-  {
-  ifelse(any(mfri.List[y] < d.post$mfri_start[d.post$fuelbed == Fuelbed.List[y]], 
-             mfri.List[y] > d.post$mfri_end[d.post$fuelbed == Fuelbed.List[y]]) == T,
-         resample(seq(d.post$mfri_start[d.post$fuelbed == Fuelbed.List[y]], 
-                      d.post$mfri_end[d.post$fuelbed == Fuelbed.List[y]], 1), 1), 
-         mfri.List[y])
-  }, 1:length(mfri.List))
-
-#Replace old (and incorrect) mfri.List with new one.
-mfri.List <- mfri.List_v2
-
-
-
-matcols <- 30
-mfri.Matrix <- matrix(data = 0, nrow = length(mfri.List), ncol = matcols)
-
-for(i in 1:length(mfri.List)) 
-{
-  if(mfri.List[i] == -9999)
-  {
-    mfri.Matrix[i,] <- rep(-9999,matcols)
-  } else
-  {
-   temp_mfri <- c(rep(1,ifelse(mfri.List[i] == 32,0,round(matcols/mfri.List[i],0))),
-   rep(0,ifelse(mfri.List[i] == 32,30,(matcols-round(matcols/mfri.List[i],0)))))
-   mfri.Matrix[i,] <- sample(temp_mfri, length(temp_mfri))
-    
-    #mfri.Matrix[i,] <- resample(c(rep(0,(mfri.List[i]-1)),1), 
-    #                           matcols,
-    #                           prob = rep((1/mfri.List[i]),mfri.List[i]), replace = T)
-   ##Made these changes to the code on 10/19/2015. The new code ensures
-   #that the list of fires reflects the actual mFRI value in mfri.List whereas this
-   #old version was based on probability and could produce different values that could
-   #result in a dramatically different mFRI if there where 2 rather than 1 fire.
-  }
-}
 
 ####################################################################################
 ####################################################################################
