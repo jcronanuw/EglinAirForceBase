@@ -16,3 +16,15 @@ TreatedExpected:  224830 TreatedActual:  233421 BurnedExpected:  0 BurnedActual:
 TreatedExpected:  13490 TreatedActual:  15279 BurnedExpected:  121 BurnedActual:  121 
 TreatedExpected:  0 TreatedActual:  0 BurnedExpected:  121 BurnedActual:  121 
 TreatedExpected:  224830 TreatedActual:  268770 BurnedExpected:  121 BurnedActual:  121
+TreatedExpected:  13490 TreatedActual:  14620 BurnedExpected:  58 BurnedActual:  58 
+TreatedExpected:  0 TreatedActual:  0 BurnedExpected:  58 BurnedActual:  58 
+TreatedExpected:  224830 TreatedActual:  236043 BurnedExpected:  58 BurnedActual:  58
+TreatedExpected:  13490 TreatedActual:  16074 BurnedExpected:  93 BurnedActual:  93 
+TreatedExpected:  0 TreatedActual:  0 BurnedExpected:  93 BurnedActual:  93 
+TreatedExpected:  224830 TreatedActual:  263526 BurnedExpected:  93 BurnedActual:  93
+TreatedExpected:  13490 TreatedActual:  13669 BurnedExpected:  105 BurnedActual:  105 
+TreatedExpected:  0 TreatedActual:  0 BurnedExpected:  105 BurnedActual:  105 
+TreatedExpected:  224830 TreatedActual:  224882 BurnedExpected:  105 BurnedActual:  105
+TreatedExpected:  13490 TreatedActual:  14553 BurnedExpected:  60 BurnedActual:  60 
+TreatedExpected:  0 TreatedActual:  0 BurnedExpected:  60 BurnedActual:  60 
+TreatedExpected:  224830 TreatedActual:  224866 BurnedExpected:  60 BurnedActual:  60

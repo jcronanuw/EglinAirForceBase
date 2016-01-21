@@ -20,9 +20,9 @@ setwd("C:/Users/jcronan/Documents/GitHub/EglinAirForceBase")
 #args <- commandArgs(TRUE)
 args <- read.table("sef_lut_schedule_treatment.csv", header=TRUE, 
                    sep=",", na.strings="NA", dec=".", strip.white=TRUE)
-args <- args[1,]
+args <- args[30,]
 
-set.seed(args[1])#this prevents script from producing identical random numbers
+set.seed(as.numeric(args[1]))#this prevents script from producing identical random numbers
 #when running in parallel on the same machine.
 
 #Number of rows and columns in ascii map files
@@ -32,7 +32,7 @@ cols <- 3491
 tx <- 4
 
 #Number of years to run model for:
-Years <- 2
+Years <- 10
 
 #Number of rows with metadata for each ascii map file
 fh.adj <- 6#fuelbed map (f.map)
@@ -41,7 +41,7 @@ bh.adj <- 6#burn unit map (b.map)
 lh.adj <- 6#coordinate map (l.map)
 
 #Unique identifier for this run/simulation --- using id column from treatment schedule
-run <- args[1] 
+run <- 2030#args[1] 
 
 #Do not map fires below this value (in acres). Purpose is to reduce model run time
 #by excluding small fires that do not impact vegetation at the landscape scale.
@@ -76,9 +76,9 @@ c.scale <- 0.1#9
 #When wildfires are burned by the block and burn method flammability of fuels is based on
 #probability. The meaning of the scale.factor and dist.curve are flipped and corresponding
 #values are randomly selected from each dataset
-NFR <- c(2954.38,99457.39)#c(5000,10000)#Natural fire rotation in years for Eglin, Buffer, and Combined.
-MFS <- c(103.65,5.23)#c(1000,200)#Mean fire size in acres for Eglin, Buffer, and Combined.
-DFS <- c(361.12,13.98)#c(20,10)#Standard deviation of mean fire size for Eglin and Buffer and Combined.
+NFR <- c(54.38,999457.39)#c(5000,10000)#Natural fire rotation in years for Eglin, Buffer, and Combined.
+MFS <- c(53.65,5.23)#c(103.65,5.23)#Mean fire size in acres for Eglin, Buffer, and Combined.
+DFS <- c(61.12,13.98)#c(361.12,13.98)#Standard deviation of mean fire size for Eglin and Buffer and Combined.
 Truncate.AAB <- c(50000,25000)#Maximum annual area burned
 Truncate.Area <- c(12000,6000)#Maximum fire size
 Truncate.Number <- c(400,800,50,50,500)#Maximum number of fires and treatments in a given year
@@ -129,7 +129,7 @@ shape2 <- c(5,5,2.5)#shape 2 parameter
 
 #Average annual area treated for thinning, herbicide, and prescribed fire.
 #Read in third meanTAP parameter from file
-meanTAP <- c(1000, 1000, as.numeric(args[3]))
+meanTAP <- c(0, 0, as.numeric(args[3]))
 
 #Convert area in acres to 30 m pixels
 meanTAP <- round(meanTAP/MapRes,0)
@@ -489,6 +489,34 @@ avfb_fire <- fbls[ttxm[,6] == 2]
 
 ####################################################################################
 ####################################################################################
+#STEP 12: CREATE DETAILED LIST OF ACREAGES FOR EACH MANAGEMENT OPTION
+
+#Fill in percent values so perc_cats adds up to one for each level within each treatment
+#type
+b.thresh$perc_level[b.thresh$t_code == 3 & b.thresh$level == 1] <- BANSA.Area/meanTAP[3] 
+b.thresh$perc_level[b.thresh$t_code == 3 & b.thresh$level == 2] <- 1-BANSA.Area/meanTAP[3] 
+b.thresh$perc_mgmt[b.thresh$t_code == 3] <-  b.thresh$perc_level[b.thresh$t_code == 3] * 
+  b.thresh$perc_mgmt[b.thresh$t_code == 3]
+b.thresh$perc_cats[b.thresh$t_code == 3] <-  b.thresh$perc_mgmt[b.thresh$t_code == 3] * 
+  b.thresh$perc_cats[b.thresh$t_code == 3]
+
+#Now convert percentages to pixels
+for(i in 1:length(meanTAP))
+{
+  b.thresh$perc_level[b.thresh$t_code == i] <- 
+    b.thresh$perc_level[b.thresh$t_code == i] * meanTAP[i]
+  b.thresh$perc_mgmt[b.thresh$t_code == i] <- 
+    b.thresh$perc_mgmt[b.thresh$t_code == i] * meanTAP[i]
+  b.thresh$perc_cats[b.thresh$t_code == i] <- 
+    b.thresh$perc_cats[b.thresh$t_code == i] * meanTAP[i]
+}
+
+#Now condense tables to remove combinations of levels, management options, and
+#mfri categories that do not apply
+b.thresh <- b.thresh[b.thresh$perc_cats > 0,]
+
+####################################################################################
+####################################################################################
 #STEP 04: RUN MODEL LOOP
 
 #LOOP 111111111111111111111111111111111111111111111111111111111111111111111111111111
@@ -501,9 +529,22 @@ for(a in 1:Years)#a <- 1
   #The number of treatments per year is drawn from the normal distribution.
   #The mean and standard deviation for each treatment type is entered in step 1.
 
+  #Null value for t.code. It will be re-assigned a value in the treatment loop (loop 2)
+  t.code <- 4
+  
+  #Record cumulative burn units
+  c.bun <- vector()
+  
+  #Burn units excluding c.bun
+  a.bun <- b.unit$unit
+  
+  #Stores management options that ran out of space
+  end.rc <- vector()
+  
   #Objects to record annual area for thinning, herbicide, and prescribed fire treatments.
-  meanTAA <- c(0, 0, 0)
-
+  meanTAA <- c(0, 0, 0)#records area treated (+ untreated area)
+  meanUAA <- c(0, 0, 0)#records untreated area
+  
   #UPDATE PRIORITY FOR EACH MANAGEMENT UNIT
   
   #Determine priority of management units for thinning treatments
@@ -544,6 +585,12 @@ for(a in 1:Years)#a <- 1
   
   
   pri <- data.frame(thin = pri.thin, herb = pri.herb, fire = pri.fire)
+  
+  #Object to record area burned within each management type.
+  b.actual <- b.thresh
+  b.actual[,4] <- 0
+  b.actual[,7] <- 0
+  b.actual[,10] <- 0
   
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>TREATMENTS>>>>>>>>
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>TREATMENTS>>>>>>>>
@@ -714,7 +761,7 @@ for(a in 1:Years)#a <- 1
   #ALSO, YOU NEED SOME WAY OF KEEPING TREATMENTS OUT OF UNITS THAT HAVE ALREADY BEEN TREATED
 
 if(sum(meanTAP) <= 0)
-  {
+  {#1.1.1-----------------------------------------------------------------------------
   tbsa <- 0
   Treatment.Area <- 0
   PrctTrmt.Mapped <- 0
@@ -729,13 +776,17 @@ if(sum(meanTAP) <= 0)
     tbsa, " ### Area Mapped: ", Treatment.Area[length(Treatment.Area)], 
     " ### Completed: ", PrctTrmt.Mapped[length(PrctTrmt.Mapped)], "% ###"), 
     collapse = "")
-  } else
-  {
+  } else #1.1.1------------------------------------------------------------------------ 
+  { #1.1.2-----------------------------------------------------------------------------
     #LOOP 222222222222222222222222222222222222222222222222222222222222222222222222222222
     #Loop 2 (by treatments within year[a]). This loop runs all treatments for year[a].
     for (b in 1:r.max)#b <- 1
     { #2.0.0 ---------------------------------------------------------------------------
 
+      #Governs loop
+      end <- 1# switches to 2 if there is no remaining area available for the last management option
+      untreated.area <- 0# registers remaining area when there is no remaining area for any management option
+      
       #Lists treatment code for current treatment
       t.code <- ifelse(length(which(meanTAA < meanTAP)) == 0,4,min(which(meanTAA < meanTAP)))
       
@@ -788,30 +839,110 @@ if(sum(meanTAP) <= 0)
         #Determine available fuelbeds.
         avfb <- fbls[ttxm[,t.code + 3] == 2]
         
-        #Find eligible stands with eligible fuelbeds
-        elst <- sort(unique(s.map[!b.map %in% c(NoData.Unit, Buffer.Unit, 
-                                                Unmanaged.Unit) & 
+  #Find eligible stands with eligible fuelbeds
+  elst <- sort(unique(s.map[!b.map %in% c(NoData.Unit, Buffer.Unit, 
+                                          Unmanaged.Unit) & 
                                     f.map %in% avfb & s.map %in% loopA.snO]))
         
-        #Determine the burn unit for treatment
-        #Only consider management units where over 50% of the unit is available for treatment.
-        #For units that are use percent of unit available for treatment as prob arg for selection.
-        bun <- resample(b.unit$unit[pri[,t.code] > 0.50],
-                        size = 1,
-                        prob = pri[,t.code][pri[,t.code] > 0.50])
-        
-        #Determine the treatment area. This is governed by the available fuelbeds, minimum stand
-        #area, and fraction of available area treated (beta distribution).
-        tbsa <- round(((length(b.map[b.map == bun & s.map %in% elst])) * 
-                         rbeta(1,shape1[t.code],shape2[t.code])),0)
-        
-        #Initiate treatment in the proportion of available pixels specified in step 1 (cuts)
-        sct <- vector(mode = "numeric", length = 0)
-        sct <- resample(l.map[b.map == bun & s.map %in% elst], 
-                        round(max((tbsa * seed.cells[t.code]),1),0))
+  #Determine how management options will impact selection of burn unit selected based on area
+  #treated for current treatment type
+  row.code <- ifelse(length(which(b.actual$perc_cats[b.thresh$perc_cats > 0]
+                                  >= b.thresh$perc_cats[b.thresh$perc_cats > 0])) == 0, 
+                     1, 
+                     (max(which(b.actual$perc_cats[b.thresh$perc_cats > 0]
+                                >= b.thresh$perc_cats[b.thresh$perc_cats > 0])) + 1))
+  
+  if(t.code %in% c(1,2))
+  {
+    #Determine the burn unit for treatment
+    #Only consider management units where over 50% of the unit is available for treatment and
+    #units are within the prescribed management option.
+    #Units available based on these criteria are assigned a probability of assignment based 
+    #on the percent of unit available for treatment with increasing probability of selection
+    #as percentage of unit available increases.
+    bun <- resample(b.unit$unit[pri[,t.code] > 0.50 & 
+                                  b.block[,2 + b.thresh$m_code[row.code]] == 2 & b.unit$unit %in% a.bun], size = 1, 
+                    prob = pri[,t.code][pri[,t.code] > 0.50 & 
+                                          b.block[,2 + b.thresh$m_code[row.code]] == 2 & b.unit$unit %in% a.bun])
+  } else
+  {
+    #Determine the burn unit for prescribed fire treatment
+    #Only consider management units where TSLF is in the specified range and units are within
+    #the prescribed management option.
+    bun <- resample(b.unit$unit[TSLFxUnits %in% seq(b.thresh$mfriCats_min[row.code], 
+                                                    b.thresh$mfriCats_max[row.code], 1) &  
+                                  b.block[,2 + b.thresh$m_code[row.code]] == 2 & b.unit$unit %in% a.bun], size = 1)
+  }
+  
+  #If no areas are available for specific management option then move to next one.
+  if(length(bun) == 1)
+  {
+    #Status quo, no change
+    row.code <- row.code#unit available, do not change row code.
+  } else
+  {
+    #No available area for this treatment and management option, are there any remaining management options?
+    if(row.code < length(b.thresh[,1]))
+    {
+      #Yes, move to next one and continue with disturbance loop.
       
+      #Switch value of end to return to top of loop 2
+      end <- 2
+      
+      #Register untreated area.
+      untreated.area <- b.thresh$perc_cats[row.code] - b.actual$perc_cats[row.code]
+      meanUAA[t.code] <- sum(meanUAA[t.code], untreated.area)
+      
+      #Modify "treated" area to show FDM this management option is complete
+      b.actual$perc_cats[row.code] <- b.thresh$perc_cats[row.code]
+      
+      #Move to next row code.
+      row.code <- row.code + 1      
+    } else
+    {
+      #No, end disturbance loop.
+      
+      #Switch value of end object to kill loop 2
+      end <- 3
+      
+      #Register untreated area.
+      untreated.area <- b.thresh$perc_cats[row.code] - b.actual$perc_cats[row.code]
+      meanUAA[t.code] <- sum(meanUAA[t.code], untreated.area)
+      
+      #Modify "treated" area to show FDM this management option is complete
+      b.actual$perc_cats[row.code] <- b.thresh$perc_cats[row.code]
+      
+      #Also update meanTAA
+      meanTAA[t.code] <- sum(meanTAA[t.code], (b.thresh$perc_cats[row.code] - b.actual$perc_cats[row.code]))
+    }
+  }
+        
+  if(end < 3)
+  {#2.2.1 ---------------------------------------------------------------------------
+   if(end < 2)
+   {#2.3.1 ---------------------------------------------------------------------------
+    
+    #Records treatments selected for treatment so they will not be selected again
+    c.bun <- c(c.bun,bun)
+    a.bun <- b.unit$unit[!b.unit$unit %in% c.bun]
+    
+    #Update tracking of area treated. Considers area of management unit selected, not actual
+    #area within the unit affected.
+    b.actual[row.code,10] <- sum(b.actual[row.code,10], sum(Area.List[MU.List == bun]))
+    meanTAA[t.code] <- sum(meanTAA[t.code], sum(Area.List[MU.List == bun]))
+    
+    #Determine the treatment area. This is governed by the available fuelbeds, minimum stand
+    #area, and fraction of available area treated (beta distribution).
+    tbsa <- round(((length(b.map[b.map == bun & s.map %in% elst])) * 
+                     rbeta(1,shape1[t.code],shape2[t.code])),0)
+    
+    #Initiate treatment in the proportion of available pixels specified in step 1 (cuts)
+    sct <- vector(mode = "numeric", length = 0)
+    sct <- resample(l.map[b.map == bun & s.map %in% elst], 
+                    round(max((tbsa * seed.cells[t.code]), 1),0))
+    
         if(tbsa >= 1)
-        { #2.2.1 ---------------------------------------------------------------------------
+        { #2.4.1 ---------------------------------------------------------------------------
           
           #LOOP 3333333333333333333333333333333333333333333333333333333333333333333333
           #Loop 3 (by treatment[b] by block). This loop keeps running until treatment
@@ -1000,7 +1131,7 @@ tm <- format(Sys.time(), format = "%H.%M.%S",
              tz = "", usetz = FALSE)
 cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__", f.treatments$TreatmentName[t.code], 
           "_",b, "__block_",cc,"__expansion_" , "_",d,"__.txt",sep = ""), 
-    file = paste("run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
+    file = paste("fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
 
   break
 } #4.1.2 ---------------------------------------------------------------------------
@@ -1011,7 +1142,7 @@ tm <- format(Sys.time(), format = "%H.%M.%S",
              tz = "", usetz = FALSE)
 cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__", f.treatments$TreatmentName[t.code], 
           "_",b, "__block_",cc,"__expansion_" , "_",d,"__.txt",sep = ""), 
-    file = paste("run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
+    file = paste("fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
                 } #4.0.0 ---------------------------------------------------------------------------
 
 #Find unique fuelbeds in each management unit
@@ -1105,9 +1236,9 @@ loopB <- data.frame(new_stand = loopB.new_stand,
                     new_area = loopB.new_area, 
                     old_stand = loopB.old_stand * -1)
 loopB <- loopB[order(loopB$old_stand),]
-        } else #2.1.1 ----------------------------------------------------------------------
+        } else #2.4.1 ----------------------------------------------------------------------
 
-{ #2.1.2 ---------------------------------------------------------------------------
+{ #2.4.2 ---------------------------------------------------------------------------
 
   #Log treatment run data for treatment[b].
   if(length(Iteration.cc) > 1)
@@ -1137,11 +1268,10 @@ loopB <- loopB[order(loopB$old_stand),]
                       new_area = loopB.new_area, 
                       old_stand = loopB.old_stand * -1)
   loopB <- loopB[order(loopB$old_stand),]
-} #2.1.2 ---------------------------------------------------------------------------
+} #2.4.2 ---------------------------------------------------------------------------
+   } else #2.3.1 ----------------------------------------------------------------------
 
-  #Area tracking
-  meanTAA[t.code] <- sum(meanTAA[t.code], tbsa)
-  
+{ #2.3.2 ---------------------------------------------------------------------------
   #Date and time
   dt <- Sys.Date()
   tm <- format(Sys.time(), format = "%H.%M.%S", 
@@ -1152,21 +1282,91 @@ loopB <- loopB[order(loopB$old_stand),]
     "Date: ", dt, 
     " Time: ", tm, 
     " Year: ", a, 
+    " PercentComplete_ForYear: ", round((((sum(meanTAA)-sum(meanUAA))/sum(meanTAP))*100),2), 
     " Disturbance_No ", b,
-    " PercentComplete: ", round(((sum(meanTAA)/sum(meanTAP))*100),0), 
     " Name: ", f.treatments$TreatmentTitle[t.code], 
-    " Area_Actual: ", tbma, 
-    " Area_Expected: ", tbsa, 
+    "MgmtOp: ", b.thresh$management_type[row.code], 
+    "BurnBlock: ", bun, 
+    "PercentBlack: ", round(tbsa/sum(Area.List[MU.List == bun]), 1), 
+    " TreatedArea_Expected: ", tbsa, 
+    " TreatedArea_Actual: ", tbma,
+    "Untreated_Area: ", untreated.area, 
     " Blocks: ", cc, 
-    " Expansions: ", d.d) 
+    " Expansions: ", d.d, 
+    "HiStandNo: ", max(nebc)) 
   
+  #e.summary <- rbind(e.summary, t.summary)
+  
+  #Save run data.
+  cat(t.summary, file = paste("fdm_disturbances_status/run_", run, "_disturbances.txt", sep = ""), fill = T, append = T)#
+} #2.3.2 --------------------------------------------------------------------------- 
+#Date and time
+dt <- Sys.Date()
+tm <- format(Sys.time(), format = "%H.%M.%S", 
+             tz = "", usetz = FALSE)
+
+#Tracking device
+t.summary <- paste(
+  "Date: ", dt, 
+  " Time: ", tm, 
+  " Year: ", a, 
+  " PercentComplete_ForYear: ", round((((sum(meanTAA)-sum(meanUAA))/sum(meanTAP))*100),2), 
+  " Disturbance_No ", b,
+  " Name: ", f.treatments$TreatmentTitle[t.code], 
+  "MgmtOp: ", b.thresh$management_type[row.code], 
+  "BurnBlock: ", bun, 
+  "PercentBlack: ", round(tbsa/sum(Area.List[MU.List == bun]), 1), 
+  " TreatedArea_Expected: ", tbsa, 
+  " TreatedArea_Actual: ", tbma,
+  "Untreated_Area: ", untreated.area, 
+  " Blocks: ", cc, 
+  " Expansions: ", d.d, 
+  "HiStandNo: ", max(nebc)) 
+
 #e.summary <- rbind(e.summary, t.summary)
 
 #Save run data.
-cat(t.summary, file = paste("run_", run, "_disturbances.txt", sep = ""), fill = T, append = T)#
+cat(t.summary, file = paste("fdm_disturbances_status/run_", run, "_disturbances.txt", sep = ""), fill = T, append = T)#
+  } else #2.2.1 ----------------------------------------------------------------------
+
+{ #2.2.2 ---------------------------------------------------------------------------
+  #Date and time
+  dt <- Sys.Date()
+  tm <- format(Sys.time(), format = "%H.%M.%S", 
+               tz = "", usetz = FALSE)
+  
+  #Tracking device
+  t.summary <- paste(
+    "Date: ", dt, 
+    " Time: ", tm, 
+    " Year: ", a, 
+    " PercentComplete_ForYear: ", round((((sum(meanTAA)-sum(meanUAA))/sum(meanTAP))*100),2), 
+    " Disturbance_No ", b, 
+    " Name: ", f.treatments$TreatmentTitle[t.code], 
+    "MgmtOp: ", b.thresh$management_type[row.code], 
+    "BurnBlock: ", bun, 
+    "PercentBlack: ", round(tbsa/sum(Area.List[MU.List == bun]), 1), 
+    " TreatedArea_Expected: ", tbsa, 
+    " TreatedArea_Actual: ", tbma,
+    "Untreated_Area: ", untreated.area, 
+    " Blocks: ", cc, 
+    " Expansions: ", d.d, 
+    "HiStandNo: ", max(nebc))  
+  
+  #e.summary <- rbind(e.summary, t.summary)
+  
+  #Save run data.
+  cat(t.summary, file = paste("fdm_disturbances_status/run_", run, "_disturbances.txt", sep = ""), fill = T, append = T)#
+  break
+} #2.2.2-----------------------------------------------------------------------------
 } #2.1.2-----------------------------------------------------------------------------
     } #2.0.0 ---------------------------------------------------------------------------
-  } #1.3.2-----------------------------------------------------------------------------
+  } #1.1.2-----------------------------------------------------------------------------
+
+#Update time-since-last-fire to include latest treatments and add one year
+#treatments include herbicide and thinning
+TSLFxUnits[b.unit$unit %in% c.bun] <- 0
+TSLFxUnits <- TSLFxUnits + 1
 
 #Post run step 1>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 #Update files if there were treatments in year[a].
@@ -1375,19 +1575,23 @@ if(length(diar) == 0)
     "No fires for this year", collapse = "")
   
   #Add header to list.
-  #Add header to list.
   names(Disturbance.History)[[length(Disturbance.History)]] <- paste(c(
     "Disturbance Number: ",e," ### Disturbance Type: ", 
     title," ### Disturbance Area: ", 
     tda[e], " ### Area Mapped: ", da, 
     " ### Completed: ", pm, "% ###"), 
     collapse = "")
+  
+  #Used for reporting after loop 8
+  dema <- 0
+  desa <- 0
+  
 } else #1.1.1 ---------------------------------------------------------------------------
   { #1.1.2 ---------------------------------------------------------------------------
   #LOOP 888888888888888888888888888888888888888888888888888888888888888888888888888888
   #Loop 8 (by disturbances within year[a]). This loop runs all disturbances for 
   #year[a].
-  for (e in tdn[tdy == a])#e <- 2
+  for (e in 1:134)#tdn[tdy == a])#e <- 2
   { #8.0.0 ---------------------------------------------------------------------------
     
     #TESTING ONLY
@@ -1519,10 +1723,22 @@ if(length(diar) == 0)
             if(tdc[e] == 1)
             { #EAFB -----------------------------------------------------------
  
-  #Create seperate stand lists for the buffer and eglin zones
+              #Pick a burn unit based on probability of fire start data in each unit
+              #If the fire is small (less than 50 acres (224 pixels) you can use units 
+              #that were treated this year, but if the fire is larger than 50 acres it
+              #will be restricted to untreated units)
+              if(tda[e] < 200)
+              {
+                ignition.bun <- resample(b.unit$unit,1,prob = f.start$Prob)
+              } else
+              {
+                ignition.bun <- resample(b.unit$unit[!b.unit$unit %in% c.bun], 1, 
+                                         prob = f.start$Prob[!b.unit$unit %in% c.bun])
+              }
+              
+              #Create seperate stand lists for the buffer and eglin zones
               ss2.e <- sort(unique(as.vector(
-                s.map[s.map %in% ss2 & b.map %in% 
-                        sort(unique(b.map[!b.map %in% c(NoData.Unit, Buffer.Unit)]))])))
+                s.map[s.map %in% ss2 & b.map == ignition.bun])))
               
               if(length(ss2.e) > 0)
               {
@@ -1627,16 +1843,16 @@ if(length(diar) == 0)
         
               #Create an object that shows available burn units depending on whether the fire
               #is in Eglin or the buffer zone.
-              if(tdc[e] == 1)
-              {abu <- c(Unmanaged.Unit,sort(unique(b.map[b.map < Buffer.Unit & b.map > 0])))} else
-              {abu <- Buffer.Unit}
+   if(tdc[e] == 1)
+   {abu <- ignition.bun} else
+   {abu <- Buffer.Unit}
 
-              #Select a seed cell
-    scd <- resample(l.map[f.map %in% ignition.fuelbed & s.map %in% loopA.snO & 
-                                      b.map %in% abu],1) 
+   #Select a seed cell
+   scd <- resample(l.map[f.map %in% ignition.fuelbed & s.map %in% ss2 & 
+                           b.map %in% abu],1) 
               
               #Establish disturbance[e] in s.map and record old stand number
-              f.bun <- b.map[scd]
+              f.bun <- abu
               a.bun <- round(((length(b.map[b.map == f.bun & s.map %in% ss2])) * 
                           rbeta(1,shape1[3],shape2[3])),0)
     scd <- vector(mode = "numeric", length = 0)
@@ -1972,7 +2188,7 @@ dt <- Sys.Date()
 tm <- format(Sys.time(), format = "%H.%M.%S", 
              tz = "", usetz = FALSE)
 cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__free_",
-          g,"__.txt",sep = ""), file = paste("run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
+          g,"__.txt",sep = ""), file = paste("fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
 breaks <- 1022
  break
 }#10.2.2 --------------------------------------------------------------------------
@@ -1997,7 +2213,7 @@ dt <- Sys.Date()
 tm <- format(Sys.time(), format = "%H.%M.%S", 
              tz = "", usetz = FALSE)
 cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__free_",
-          g,"__.txt",sep = ""), file = paste("run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
+          g,"__.txt",sep = ""), file = paste("fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
 breaks <- 1031
  break
 } else #10.3.1 ---------------------------------------------------------------------
@@ -2062,7 +2278,7 @@ breaks <- 1031
   tm <- format(Sys.time(), format = "%H.%M.%S", 
                tz = "", usetz = FALSE)
   cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__free_",
-            g,"__.txt",sep = ""), file = paste("run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
+            g,"__.txt",sep = ""), file = paste("fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
   
   breaks <- 1012
   break
@@ -2087,7 +2303,7 @@ if(spread.type == 12)
   tm <- format(Sys.time(), format = "%H.%M.%S", 
                tz = "", usetz = FALSE)
   cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__free_",
-            g,"__.txt",sep = ""), file = paste("run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
+            g,"__.txt",sep = ""), file = paste("fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
   
   breaks <- 1041
   break
@@ -2110,7 +2326,7 @@ dt <- Sys.Date()
 tm <- format(Sys.time(), format = "%H.%M.%S", 
              tz = "", usetz = FALSE)
 cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__free_",
-          g,"__.txt",sep = ""), file = paste("run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
+          g,"__.txt",sep = ""), file = paste("fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
 breaks <- 1042
 }#10.4.2
               } #10.0.0 --------------------------------------------------------------------------
@@ -2120,26 +2336,44 @@ breaks <- 1042
  
  #Establish disturbance[e] in s.map and record old stand number
  if(spread.type == 12)
- {
+   {
    osnd <- c(osnd,s.map[scd])
    ocod <- c(ocod, scd)
    s.map[scd] <- s.map[scd] * tesn_t
- } else
- {
-   if(spread.type == 0)
-   {
-     osnd <- c(osnd,s.map[scd[2:length(scd)]])
-     ocod <- c(ocod, scd[2:length(scd)])
-     s.map[scd[1]] <- scd.1
-     s.map[scd] <- s.map[scd] * tesn_t
-     tesn <- c(tesn, sort(unique(s.map[scd])))
    } else
-   {
-     osnd <- c(osnd,s.map[scd[2:length(scd)]])
-     ocod <- c(ocod, scd[2:length(scd)])
-     s.map[scd] <- s.map[scd] * tesn_t
-   }
- }
+     {
+       if(spread.type == 0)
+         {
+         if(length(scd) == 1)
+           {
+           osnd <- osnd
+           ocod <- ocod
+           s.map[scd[1]] <- scd.1
+           s.map[scd] <- s.map[scd] * tesn_t
+           tesn <- c(tesn, sort(unique(s.map[scd])))
+           } else
+             {
+               osnd <- c(osnd,s.map[scd[2:length(scd)]])
+               ocod <- c(ocod, scd[2:length(scd)])
+               s.map[scd[1]] <- scd.1
+               s.map[scd] <- s.map[scd] * tesn_t
+               tesn <- c(tesn, sort(unique(s.map[scd])))
+             }
+         } else
+           {
+             if(length(scd) == 1)
+               {
+               osnd <- osnd
+               ocod <- ocod
+               s.map[scd] <- s.map[scd] * tesn_t
+               } else
+                 {
+                   osnd <- c(osnd,s.map[scd[2:length(scd)]])
+                   ocod <- c(ocod, scd[2:length(scd)])
+                   s.map[scd] <- s.map[scd] * tesn_t
+                 }
+           }
+     }
  
 #LOOP 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 
  #Loop 11 (by iterations). This loop keeps growing fire[e] in block[f] 
@@ -2254,7 +2488,7 @@ breaks <- 1042
   tm <- format(Sys.time(), format = "%H.%M.%S", 
                tz = "", usetz = FALSE)
   cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__blocked_",
-            h,"__.txt",sep = ""), file = paste("run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
+            h,"__.txt",sep = ""), file = paste("fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
 
 #NOTE (12/6/2015)
 #Fire has burned out and must be reassigned to a new area. Use spread.type = 0 to
@@ -2285,7 +2519,7 @@ breaks <- 1042
   tm <- format(Sys.time(), format = "%H.%M.%S", 
                tz = "", usetz = FALSE)
   cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__blocked_",
-            h,"__.txt",sep = ""), file = paste("run_", run, "_iterations.txt", sep = ""), append = T)#
+            h,"__.txt",sep = ""), file = paste("fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), append = T)#
   breaks <- 1112
   break
 } #11.1.2 ---------------------------------------------------------------------------
@@ -2309,7 +2543,7 @@ if(spread.type == 11)
   tm <- format(Sys.time(), format = "%H.%M.%S", 
                tz = "", usetz = FALSE)
   cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__blocked_",
-            h,"__.txt",sep = ""), file = paste("run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
+              h,"__.txt",sep = ""), file = paste("fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
   breaks < - 1131
   break
 } else #11.3.1
@@ -2332,7 +2566,7 @@ tm <- format(Sys.time(), format = "%H.%M.%S",
              tz = "", usetz = FALSE)
 
 cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__blocked_",
-          h,"__.txt",sep = ""), file = paste("run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
+          h,"__.txt",sep = ""), file = paste("fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
 
 breaks <- 1132
 }#11.3.2
@@ -2659,22 +2893,27 @@ loopE <- loopE[order(loopE$ReplacedStand),]
   tm <- format(Sys.time(), format = "%H.%M.%S", 
                tz = "", usetz = FALSE)
   
-  #Tracking device
-  d.summary <- paste(
-    " Date: ", dt, 
-    " Time: ", tm, 
-    " Year: ", a, 
-    " Disturbance_No: ", e, 
-    " PercentComplete: ", round(((e/length(tdn[tdy == a]))*100),), 
-    " Name: ", f.disturbances$DisturbanceTitle[tdc[e]],
-    " Area_Actual: ", dema, 
-    " Area_Expected: ", desa, 
-    " Blocks: ", f, 
-    " Expansions: ", g.g)
+#Tracking device
+d.summary <- paste(
+  " Date: ", dt, 
+  " Time: ", tm, 
+  " Year: ", a, 
+  " PercentComplete_ForYear: ", round(((e/length(tdn[tdy == a]))*100),), 
+  " Disturbance_No: ", e, 
+  " Name: ", f.disturbances$DisturbanceTitle[tdc[e]],
+  "MgmtOp: ", "N/A", 
+  "BurnBlock: ", "N/A", 
+  " BurnedArea_Expected: ", desa, 
+  " BurnedArea_Actual: ", dema, 
+  "UnBurned_Area: ", desa-dema, 
+  " Blocks: ", f, 
+  " Expansions: ", g.g, 
+  "HiStandNo: ", max(neef))
+
  # e.summary <- rbind(e.summary, d.summary)
   
 #Save run data.
-cat(d.summary, file = paste("run_", run, "_disturbances.txt", sep = ""), fill = T, append = T)#
+cat(d.summary, file = paste("fdm_disturbances_status/run_", run, "_disturbances.txt", sep = ""), fill = T, append = T)#
 
 ##############################################################################
 ##############################################################################
@@ -2983,11 +3222,11 @@ dt <- Sys.Date()
 tm <- format(Sys.time(), format = "%H.%M.%S", 
              tz = "", usetz = FALSE)
 
-#write.table(s.map, file = paste("C:\\usfs_sef_outputs_FDM\\run_", run,"maps\\sef_smap_",
-#                                dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
-#            append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
-#            dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
-#              c("escape", "double"))#
+write.table(s.map, file = paste("C:\\usfs_sef_outputs_FDM\\run_", run,"maps\\sef_smap_",
+                                dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
+            append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
+            dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
+              c("escape", "double"))#
 
 write.table(f.map, file = paste("run_", run,"maps/sef_fmap_",
                                 dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
