@@ -14,13 +14,15 @@ library(gtools)  #for combinations()ge
 #STEP 1: Administrative Information
 
 ### FOR MANUAL RUNS ###
-# RX_FIRE <-   # area burned annually by wildfire
-# SEED <-   # starting point for psuedo random number generator
-# RUN <-  # unique identifier for run
+RX_FIRE <- 1000 # area burned annually by wildfire
+SEED <- 999 # starting point for psuedo random number generator
+RUN <- 999 # unique identifier for run
 
 # Reads mutable parameters from AWS user data
+try(host_sim_params <- read.csv("host_sim_params.txt"), silent=TRUE)
 host_sim_params <- read.csv("host_sim_params.txt")
-if ("run_id" %in% colnames(host_sim_params)) {
+
+if (exists("host_sim_params") && "run_id" %in% colnames(host_sim_params)) {
   # from AWS user data
   run <- host_sim_params$run_id
 } else if (exists("RUN")) {
@@ -30,7 +32,7 @@ if ("run_id" %in% colnames(host_sim_params)) {
   stop("No run id present.")
 }
 
-if ("seed" %in% colnames(host_sim_params)) {
+if (exists("host_sim_params") && "seed" %in% colnames(host_sim_params)) {
   # from AWS user data
   set.seed(host_sim_params$seed)
 } else if (exists("SEED")) {
@@ -78,7 +80,10 @@ g <- 0
 ####################################################################################
 #STEP 2: Operational Parameters
 MapRes <- 0.22239#The number of acres per pixel
-Interval <- 5#6
+Interval <- 1#6
+if (Interval > Years) {
+  stop("Interval too high. Make interval less than year variable.")
+}
 r.max <- 1000#7
 c.shape <- 1.5#8
 c.scale <- 0.1#9
@@ -144,10 +149,10 @@ shape2 <- c(5,5,2.5)#shape 2 parameter
 
 #Average annual area treated for thinning, herbicide, and prescribed fire.
 #Read in third meanTAP parameter from file
-if (exists(RX_FIRE)) {
+if (exists("RX_FIRE")) {
   # manual
   meanTAP <- c(0, 0, RX_FIRE)
-} else if ("rxfire" %in% host_sim_params) {
+} else if (exists("host_sim_params") && "rxfire" %in% host_sim_params) {
   # from AWS
   meanTAP <- c(0, 0, host_sim_params$rxfire)
 } else {
@@ -1614,7 +1619,7 @@ if(length(diar) == 0)
   #LOOP 888888888888888888888888888888888888888888888888888888888888888888888888888888
   #Loop 8 (by disturbances within year[a]). This loop runs all disturbances for 
   #year[a].
-  for (e in 1:134)#tdn[tdy == a])#e <- 2
+  for (e in tdn[tdy == a])#e <- 2
   { #8.0.0 ---------------------------------------------------------------------------
     
     #TESTING ONLY
