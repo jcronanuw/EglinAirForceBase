@@ -17,6 +17,7 @@ library(gtools)  #for combinations()ge
 RX_FIRE <- 1000 # area burned annually by wildfire
 SEED <- 999 # starting point for psuedo random number generator
 RUN <- 999 # unique identifier for run
+SIMULATION <- "UNTITLED_SIMULATION"
 
 # Reads mutable parameters from AWS user data
 try(host_sim_params <- read.csv("host_sim_params.txt"), silent=TRUE)
@@ -29,6 +30,16 @@ if (exists("host_sim_params") && "run_id" %in% colnames(host_sim_params)) {
   run <- RUN
 } else {
   stop("No run id present.")
+}
+
+if (exists("host_sim_params") && "sim_id" %in% colnames(host_sim_params)) {
+  # from AWS user data
+  sim_id <- host_sim_params$sim_id
+} else if (exists("SIMULATION")) {
+  # manual
+  sim_id <- SIMULATION
+} else {
+  stop("No simulationn id present.")
 }
 
 if (exists("host_sim_params") && "seed" %in% colnames(host_sim_params)) {
