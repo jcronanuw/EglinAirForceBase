@@ -1846,19 +1846,20 @@ if(length(diar) == 0)
 } #9.2.2---------------------------------------------------------------
             #Ends loop if there are no locations to establish disturbance[e] where fuelbed 
             #requirements, wilderness designations, and stand numbers check out. 
-            if(length(f.map[f.map %in% dtxm[,2] & s.map %in% loopA.snO]) > 0 & length(fire.start) > 0)
+            if(length(f.map[f.map %in% dtxm[,2] & s.map %in% loopA.snO]) > 0)
               #need something that measures previously assigned cells
             { #9.3.1 ---------------------------------------------------------------------------
-  
-              if(spread.type != 11)
+              if(length(fire.start) > 0)
               { #9.4.1---------------------------------------------------------------
+              if(spread.type != 11)
+              { #9.5.1---------------------------------------------------------------
                  
               #Generates seed cell for disturbance[e]
               #scd object hold the fire location for disturbance[e].
               scd <- vector(mode = "numeric", length = 0)
  
   if(spread.type == 0)
-  {#9.5.1 ---------------------------------------------------------------------------
+  {#9.6.1 ---------------------------------------------------------------------------
  
               #determine the fuelbed disturbance[e] will start in.
               if(length(f.summary) == 1)
@@ -1893,8 +1894,8 @@ if(length(diar) == 0)
               #Used for measuring area of fire in tracking objects
               tesn_cum <- tesn
 
-    } else #9.5.1 ---------------------------------------------------------------------------
-    { #9.5.2 ---------------------------------------------------------------------------
+    } else #9.6.1 ---------------------------------------------------------------------------
+    { #9.6.2 ---------------------------------------------------------------------------
       #Code runs when a wildfire has burned beyond the original "block and burn" boundary.
 
       #Identify management units fire has spread into.
@@ -1972,12 +1973,12 @@ if(length(diar) == 0)
       #Establish disturbance[e] in s.map and record old stand number
       tesn <- c(tesn, neef)
 
-    } #9.5.2 ---------------------------------------------------------------------------
+    } #9.6.2 ---------------------------------------------------------------------------
 
-              } else #9.4.1---------------------------------------------------------------
-{ #9.4.2---------------------------------------------------------------
+              } else #9.5.1---------------------------------------------------------------
+{ #9.5.2---------------------------------------------------------------
   desa <- 1
-} #9.4.2---------------------------------------------------------------
+} #9.5.2---------------------------------------------------------------
 
   ####################################################################################
   #Updated spread contrast based on fire area and location of burn.
@@ -2010,7 +2011,7 @@ if(length(diar) == 0)
   }
   
   if((desa-dema) < round((a.bun/3),0))
-  {#9.6.1 (WILDFIRE LOOP)-------------------------------------------------------------- 
+  {#9.7.1 (WILDFIRE LOOP)-------------------------------------------------------------- 
     
     #These objects record data for each mapping iteration.
     
@@ -2358,8 +2359,8 @@ cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"_
 breaks <- 1042
 }#10.4.2
               } #10.0.0 --------------------------------------------------------------------------
-} else #New -- A.1.1 (WILDFIRE LOOP)--------------------------------------------------------------
-{#New -- A.1.2 (RX FIRE LOOP)--------------------------------------------------------------
+} else #9.7.1 (WILDFIRE LOOP)--------------------------------------------------------------
+{#9.7.2 (RX FIRE LOOP)--------------------------------------------------------------
  
  
  #Establish disturbance[e] in s.map and record old stand number
@@ -2599,7 +2600,7 @@ cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"_
 breaks <- 1132
 }#11.3.2
  } #11.0.0 ---------------------------------------------------------------------------
-}#New -- A.1.2 (RX FIRE LOOP)--------------------------------------------------------------
+}#9.7.2 (RX FIRE LOOP)--------------------------------------------------------------
 
 #NEW F.1.2---------------------------------------------------------------
 
@@ -2708,6 +2709,23 @@ if(length(s.map[s.map < 0 & s.map > -9999]) > 0)
   f <- f
 }
 #TEMPOARY -- FORCES FDM TO CRASH IF -1 IS ASSSIGNED TO S.MAP
+
+            } else #9.4.1 ----------------------------------------------------------------------
+{ #9.4.2 ---------------------------------------------------------------------------
+  UnitList[[f]] <- f.bun
+  loop[(length(Iteration.f)+1)] <- "na" 
+  Unit[(length(Iteration.f)+1)] <- ignition.bun
+  Iteration.f[(length(Iteration.f)+1)] <- f
+  Explanation.f[(length(Explanation.f)+1)] <- paste(
+    "9.4.2: No burnable area in unit. Next block(f).", collapse = "")
+  Iteration.g[(length(Iteration.g)+1)] <- 0
+  Explanation.g[(length(Explanation.g)+1)] <- "Expansion not started."
+  Disturbance.Area[(length(Disturbance.Area)+1)] <- length(
+    s.map[s.map %in% c(loopF.NewStand)]) + length(s.map[l.map %in% ocod])
+  PrctDist.Mapped[(length(PrctDist.Mapped)+1)] <- round(((Disturbance.Area[
+    length(Disturbance.Area)]/desa)*100),1)
+  
+} #9.4.2 ---------------------------------------------------------------------------
 
             } else #9.3.1 ----------------------------------------------------------------------
 { #9.3.2 ---------------------------------------------------------------------------
