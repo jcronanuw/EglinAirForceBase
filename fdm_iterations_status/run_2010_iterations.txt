@@ -1,2 +1,0 @@
-run_2010_2016-01-13_10.19.43_year_1__thin_1__block_0__expansion__1__.txt
-run_2010_2016-01-13_10.21.04_year_1__thin_1__block_0__expansion__1__.txt

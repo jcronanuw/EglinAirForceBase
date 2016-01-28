@@ -1,3 +1,0 @@
-TreatedExpected:  13490 TreatedActual:  13610 BurnedExpected:  89 BurnedActual:  89 
-TreatedExpected:  13490 TreatedActual:  14439 BurnedExpected:  89 BurnedActual:  89 
-TreatedExpected:  449661 TreatedActual:  479798 BurnedExpected:  89 BurnedActual:  89

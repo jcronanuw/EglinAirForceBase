@@ -1,9 +1,0 @@
-TreatedExpected:  13490 TreatedActual:  14003 BurnedExpected:  47 BurnedActual:  47 
-TreatedExpected:  13490 TreatedActual:  13787 BurnedExpected:  47 BurnedActual:  47 
-TreatedExpected:  449661 TreatedActual:  452351 BurnedExpected:  47 BurnedActual:  47
-TreatedExpected:  13490 TreatedActual:  16426 BurnedExpected:  489 BurnedActual:  489 
-TreatedExpected:  13490 TreatedActual:  13666 BurnedExpected:  489 BurnedActual:  489 
-TreatedExpected:  449661 TreatedActual:  449781 BurnedExpected:  489 BurnedActual:  489
-TreatedExpected:  13490 TreatedActual:  15922 BurnedExpected:  46 BurnedActual:  46 
-TreatedExpected:  13490 TreatedActual:  14218 BurnedExpected:  46 BurnedActual:  46 
-TreatedExpected:  449661 TreatedActual:  449682 BurnedExpected:  46 BurnedActual:  46
