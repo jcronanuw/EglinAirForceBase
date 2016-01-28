@@ -20,7 +20,6 @@ RUN <- 999 # unique identifier for run
 
 # Reads mutable parameters from AWS user data
 try(host_sim_params <- read.csv("host_sim_params.txt"), silent=TRUE)
-host_sim_params <- read.csv("host_sim_params.txt")
 
 if (exists("host_sim_params") && "run_id" %in% colnames(host_sim_params)) {
   # from AWS user data
@@ -1133,7 +1132,7 @@ tm <- format(Sys.time(), format = "%H.%M.%S",
              tz = "", usetz = FALSE)
 
 cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__", f.treatments$TreatmentName[t.code], 
-          "_",b, "__block_",cc,"__expansion_" , "_",d,"__.txt",sep = ""), 
+          "_",b, "__block_",cc,"__expansion_" , "_",d,sep = ""), 
     file = paste("run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
 
   break
@@ -1159,7 +1158,7 @@ tm <- format(Sys.time(), format = "%H.%M.%S",
              tz = "", usetz = FALSE)
 cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__", f.treatments$TreatmentName[t.code], 
           "_",b, "__block_",cc,"__expansion_" , "_",d,"__.txt",sep = ""), 
-    file = paste("fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
+    file = paste("run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
 
   break
 } #4.1.2 ---------------------------------------------------------------------------
@@ -1170,7 +1169,7 @@ tm <- format(Sys.time(), format = "%H.%M.%S",
              tz = "", usetz = FALSE)
 cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__", f.treatments$TreatmentName[t.code], 
           "_",b, "__block_",cc,"__expansion_" , "_",d,"__.txt",sep = ""), 
-    file = paste("fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
+    file = paste("run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
                 } #4.0.0 ---------------------------------------------------------------------------
 
 #Find unique fuelbeds in each management unit
@@ -1326,7 +1325,7 @@ loopB <- loopB[order(loopB$old_stand),]
   #e.summary <- rbind(e.summary, t.summary)
   
   #Save run data.
-  cat(t.summary, file = paste("fdm_disturbances_status/run_", run, "_disturbances.txt", sep = ""), fill = T, append = T)#
+  cat(t.summary, file = paste("run_", run, "_disturbances.txt", sep = ""), fill = T, append = T)#
 } #2.3.2 --------------------------------------------------------------------------- 
 #Date and time
 dt <- Sys.Date()
@@ -1354,7 +1353,7 @@ t.summary <- paste(
 #e.summary <- rbind(e.summary, t.summary)
 
 #Save run data.
-cat(t.summary, file = paste("fdm_disturbances_status/run_", run, "_disturbances.txt", sep = ""), fill = T, append = T)#
+cat(t.summary, file = paste("run_", run, "_disturbances.txt", sep = ""), fill = T, append = T)#
   } else #2.2.1 ----------------------------------------------------------------------
 
 { #2.2.2 ---------------------------------------------------------------------------
@@ -1384,7 +1383,7 @@ cat(t.summary, file = paste("fdm_disturbances_status/run_", run, "_disturbances.
   #e.summary <- rbind(e.summary, t.summary)
   
   #Save run data.
-  cat(t.summary, file = paste("fdm_disturbances_status/run_", run, "_disturbances.txt", sep = ""), fill = T, append = T)#
+  cat(t.summary, file = paste("run_", run, "_disturbances.txt", sep = ""), fill = T, append = T)#
   break
 } #2.2.2-----------------------------------------------------------------------------
 } #2.1.2-----------------------------------------------------------------------------
@@ -2216,7 +2215,7 @@ dt <- Sys.Date()
 tm <- format(Sys.time(), format = "%H.%M.%S", 
              tz = "", usetz = FALSE)
 cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__free_",
-          g,"__.txt",sep = ""), file = paste("fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
+          g,"__.txt",sep = ""), file = paste("run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
 breaks <- 1022
  break
 }#10.2.2 --------------------------------------------------------------------------
@@ -2241,7 +2240,7 @@ dt <- Sys.Date()
 tm <- format(Sys.time(), format = "%H.%M.%S", 
              tz = "", usetz = FALSE)
 cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__free_",
-          g,"__.txt",sep = ""), file = paste("fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
+          g,"__.txt",sep = ""), file = paste("run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
 breaks <- 1031
  break
 } else #10.3.1 ---------------------------------------------------------------------
@@ -2306,7 +2305,7 @@ breaks <- 1031
   tm <- format(Sys.time(), format = "%H.%M.%S", 
                tz = "", usetz = FALSE)
   cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__free_",
-            g,"__.txt",sep = ""), file = paste("fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
+            g,"__.txt",sep = ""), file = paste("run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
   
   breaks <- 1012
   break
@@ -2331,7 +2330,7 @@ if(spread.type == 12)
   tm <- format(Sys.time(), format = "%H.%M.%S", 
                tz = "", usetz = FALSE)
   cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__free_",
-            g,"__.txt",sep = ""), file = paste("fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
+            g,"__.txt",sep = ""), file = paste("run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
   
   breaks <- 1041
   break
@@ -2354,7 +2353,7 @@ dt <- Sys.Date()
 tm <- format(Sys.time(), format = "%H.%M.%S", 
              tz = "", usetz = FALSE)
 cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__free_",
-          g,"__.txt",sep = ""), file = paste("fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
+          g,"__.txt",sep = ""), file = paste("run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
 breaks <- 1042
 }#10.4.2
               } #10.0.0 --------------------------------------------------------------------------
@@ -2516,7 +2515,7 @@ breaks <- 1042
   tm <- format(Sys.time(), format = "%H.%M.%S", 
                tz = "", usetz = FALSE)
   cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__blocked_",
-            h,"__.txt",sep = ""), file = paste("fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
+            h,"__.txt",sep = ""), file = paste("run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
 
 #NOTE (12/6/2015)
 #Fire has burned out and must be reassigned to a new area. Use spread.type = 0 to
@@ -2547,7 +2546,7 @@ breaks <- 1042
   tm <- format(Sys.time(), format = "%H.%M.%S", 
                tz = "", usetz = FALSE)
   cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__blocked_",
-            h,"__.txt",sep = ""), file = paste("fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), append = T)#
+            h,"__.txt",sep = ""), file = paste("run_", run, "_iterations.txt", sep = ""), append = T)#
   breaks <- 1112
   break
 } #11.1.2 ---------------------------------------------------------------------------
@@ -2571,7 +2570,7 @@ if(spread.type == 11)
   tm <- format(Sys.time(), format = "%H.%M.%S", 
                tz = "", usetz = FALSE)
   cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__blocked_",
-              h,"__.txt",sep = ""), file = paste("fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
+              h,"__.txt",sep = ""), file = paste("run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
   breaks < - 1131
   break
 } else #11.3.1
@@ -2594,7 +2593,7 @@ tm <- format(Sys.time(), format = "%H.%M.%S",
              tz = "", usetz = FALSE)
 
 cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__blocked_",
-          h,"__.txt",sep = ""), file = paste("fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
+          h,"__.txt",sep = ""), file = paste("run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
 
 breaks <- 1132
 }#11.3.2
@@ -2941,7 +2940,7 @@ d.summary <- paste(
  # e.summary <- rbind(e.summary, d.summary)
   
 #Save run data.
-cat(d.summary, file = paste("fdm_disturbances_status/run_", run, "_disturbances.txt", sep = ""), fill = T, append = T)#
+cat(d.summary, file = paste("run_", run, "_disturbances.txt", sep = ""), fill = T, append = T)#
 
 ##############################################################################
 ##############################################################################
