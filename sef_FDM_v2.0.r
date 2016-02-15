@@ -16,9 +16,9 @@ library(gtools)  #for combinations()ge
 #STEP 1: Administrative Information
 
 ### FOR MANUAL RUNS ###
-RX_FIRE <- 1000 # area burned annually by wildfire
+RX_FIRE <- 50000 # area burned annually by wildfire
 SEED <- 999 # starting point for psuedo random number generator
-RUN <- 2044 # unique identifier for run
+RUN <- 1 # unique identifier for run
 
 # Reads mutable parameters from AWS user data
 try(host_sim_params <- read.csv("host_sim_params.txt"), silent=TRUE)
@@ -54,7 +54,7 @@ cols <- 3491
 tx <- 4
 
 #Number of years to run model for:
-Years <- 1
+Years <- 3
 
 #Number of rows with metadata for each ascii map file
 fh.adj <- 6  #fuelbed map (f.map)
@@ -98,9 +98,9 @@ c.scale <- 0.1#9
 #When wildfires are burned by the block and burn method flammability of fuels is based on
 #probability. The meaning of the scale.factor and dist.curve are flipped and corresponding
 #values are randomly selected from each dataset
-NFR <- c(954.38,999457.39)#c(5000,10000)#Natural fire rotation in years for Eglin, Buffer, and Combined.
-MFS <- c(53.65,5.23)#c(103.65,5.23)#Mean fire size in acres for Eglin, Buffer, and Combined.
-DFS <- c(61.12,13.98)#c(361.12,13.98)#Standard deviation of mean fire size for Eglin and Buffer and Combined.
+NFR <- c(104.38,957.39)#c(54.38,457.39)#Natural fire rotation in years for Eglin, Buffer, and Combined.
+MFS <- c(103.65,5.23)#c(103.65,5.23)#Mean fire size in acres for Eglin, Buffer, and Combined.
+DFS <- c(361.12,13.98)#c(361.12,13.98)#Standard deviation of mean fire size for Eglin and Buffer and Combined.
 Truncate.AAB <- c(50000,25000)#Maximum annual area burned
 Truncate.Area <- c(12000,6000)#Maximum fire size
 Truncate.Number <- c(400,800,50,50,500)#Maximum number of fires and treatments in a given year
