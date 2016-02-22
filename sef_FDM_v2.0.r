@@ -995,18 +995,50 @@ if(sum(meanTAP) <= 0)
             { #3.1.1 ---------------------------------------------------------------------------
            
               #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>NEW
-              #Differentiate between initial loop and subsequent loops were you want to keep the
+              #Differentiate between initial loop and subsequent loops where you want to keep the
               #treatment within the designated burn unit boundaries.
               if(cc > 1)
               {
-                #Find eligible stands with eligible fuelbeds
+                #This option will try and locate treatable areas in the burn block (bun) that are
+                #isolated and could not be treated from previous rounds of seed cells.
+                
+                #List eligible stands in burn block
                 elst <- sort(unique(s.map[!b.map %in% c(NoData.Unit, Buffer.Unit, Unmanaged.Unit) & 
                                             f.map %in% avfb & s.map %in% loopA.snO]))
                 
-                #Initiate treatment in the proportion of available pixels specified in step 1 (cuts)
+                #Reset seed cells
                 sct <- vector(mode = "numeric", length = 0)
-                sct <- resample(l.map[b.map == bun & s.map %in% elst], 
-                                round(max((tbsa * seed.cells[t.code]), 1),0))
+                
+                #Ask question: is the remaining number of available cells greater than the remaining
+                #area to be treated. If the answer is no break from this loop and move on to the next
+                #disturbance. If yes, then generate seed cells in the isolated areas and re-initiate
+                #the treatment.
+                if(length(l.map[b.map == bun & s.map %in% elst]) < (tbsa-tbma))
+                {
+                  Iteration.cc[(length(Iteration.cc)+1)] <- cc
+                  Explanation.cc[(length(Explanation.cc)+1)] <- paste(
+                    "Treatment could not be fully mapped. End Mapping.", collapse = "")
+                  Iteration.d[(length(Iteration.d)+1)] <- d
+                  Explanation.d[(length(Explanation.d)+1)] <- "Expansion not started."
+                  Treatment.Area[(length(Treatment.Area)+1)] <- length(s.map[s.map %in% c(loopC.new_stand,
+                                                                                          tesn)])
+                  PrctTrmt.Mapped[(length(PrctTrmt.Mapped)+1)] <- round(((Treatment.Area[
+                    length(Treatment.Area)]/tbsa)*100),1)
+                  
+                  breaks <- 311
+                  break
+                } else
+                {
+                  sct <- resample(l.map[b.map == bun & s.map %in% elst], 
+                                  round(max(((tbsa-tbma) * seed.cells[t.code]), 1),0))
+                }
+                
+                #Establish treatment[b] in s.map and record old stand number
+                ocot <- c(ocot, sct) #tracks coordinates involved in disturbance.
+                s.map[sct] <- s.map[sct]*tesn_t
+                osnt <- c(osnt,s.map[sct])
+                tesn <- unique(osnt)
+                
               } else
               {
                 #Establish treatment[b] in s.map and record old stand number
@@ -1017,6 +1049,7 @@ if(sum(meanTAP) <= 0)
               }
               #Then find stands within this subset that meet minimum age requirements for
               #the disturbance/treatment.
+              
               
               if(length(sct) > 0)
               { #3.2.1 ---------------------------------------------------------------------------
@@ -1125,7 +1158,8 @@ cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__", f.treatments$TreatmentName
           "_",b, "__block_",cc,"__expansion_" , "_",d,"__.txt",sep = ""), 
     file = paste("run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
 
-  break
+breaks <- 422  
+break
 } #4.2.2 ---------------------------------------------------------------------------
 
                   } else #4.1.1 ----------------------------------------------------------------------
@@ -1150,7 +1184,8 @@ cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__", f.treatments$TreatmentName
           "_",b, "__block_",cc,"__expansion_" , "_",d,"__.txt",sep = ""), 
     file = paste("fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
 
-  break
+breaks <- 412    
+break
 } #4.1.2 ---------------------------------------------------------------------------
 
 #Save run data.
@@ -1203,6 +1238,7 @@ loopC.new_area <- c(loopC.new_area, as.vector(s.nebc[,2]))
                                                                           tesn)])
   PrctTrmt.Mapped[(length(PrctTrmt.Mapped)+1)] <- round(((Treatment.Area[
     length(Treatment.Area)]/tbsa)*100),1)
+  breaks <- 322  
   break
 } #3.2.2 ---------------------------------------------------------------------------
 
@@ -1218,6 +1254,7 @@ loopC.new_area <- c(loopC.new_area, as.vector(s.nebc[,2]))
                                                                           tesn)])
   PrctTrmt.Mapped[(length(PrctTrmt.Mapped)+1)] <- round(((Treatment.Area[
     length(Treatment.Area)]/tbsa)*100),1)
+  breaks <- 312
   break
 } #3.1.2 ---------------------------------------------------------------------------
 d.d <- sum(d.d, d)#tracks expansions
@@ -1417,6 +1454,7 @@ cat(t.summary, file = paste("fdm_disturbances_status/run_", run, "_disturbances.
   #Save run data.
   cat(t.summary, file = paste("fdm_disturbances_status/run_", run, "_disturbances.txt", 
                               sep = ""), fill = T, append = T)#
+  breaks <- 222
   break
 } #2.2.2-----------------------------------------------------------------------------
 } #2.1.2-----------------------------------------------------------------------------
