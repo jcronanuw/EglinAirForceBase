@@ -8,6 +8,8 @@ library(GenKern)
 library(SDMTools)
 library(gtools)  #for combinations()ge
 
+#Set working directory
+setwd("C:/Users/jcronan/Documents/GitHub/EglinAirForceBase")
 
 
 #Version 17e corresponds with model documentation
@@ -16,9 +18,9 @@ library(gtools)  #for combinations()ge
 #STEP 1: Administrative Information
 
 ### FOR MANUAL RUNS ###
-RX_FIRE <- 50000 # area burned annually by wildfire
+RX_FIRE <- 10000 # area burned annually by wildfire
 SEED <- 999 # starting point for psuedo random number generator
-RUN <- 1 # unique identifier for run
+RUN <- 4009 # unique identifier for run
 
 # Reads mutable parameters from AWS user data
 try(host_sim_params <- read.csv("host_sim_params.txt"), silent=TRUE)
@@ -54,7 +56,7 @@ cols <- 3491
 tx <- 4
 
 #Number of years to run model for:
-Years <- 3
+Years <- 4
 
 #Number of rows with metadata for each ascii map file
 fh.adj <- 6  #fuelbed map (f.map)
@@ -98,7 +100,7 @@ c.scale <- 0.1#9
 #When wildfires are burned by the block and burn method flammability of fuels is based on
 #probability. The meaning of the scale.factor and dist.curve are flipped and corresponding
 #values are randomly selected from each dataset
-NFR <- c(104.38,957.39)#c(54.38,457.39)#Natural fire rotation in years for Eglin, Buffer, and Combined.
+NFR <- c(10054.38,10457.39)#c(54.38,457.39)#Natural fire rotation in years for Eglin, Buffer, and Combined.
 MFS <- c(103.65,5.23)#c(103.65,5.23)#Mean fire size in acres for Eglin, Buffer, and Combined.
 DFS <- c(361.12,13.98)#c(361.12,13.98)#Standard deviation of mean fire size for Eglin and Buffer and Combined.
 Truncate.AAB <- c(50000,25000)#Maximum annual area burned
@@ -950,11 +952,27 @@ if(sum(meanTAP) <= 0)
     tbsa <- round(((length(b.map[b.map == bun & s.map %in% elst])) * 
                      rbeta(1,shape1[t.code],shape2[t.code])),0)
     
-    #Initiate treatment in the proportion of available pixels specified in step 1 (cuts)
-    sct <- vector(mode = "numeric", length = 0)
-    sct <- resample(l.map[b.map == bun & s.map %in% elst], 
-                    round(max((tbsa * seed.cells[t.code]), 1),0))
-    
+    #Cell selection method is different for silvicultural treatments and prescribed fire because
+    #there is a continuous set of values determining probability of spread for prescribed fires
+    #while probability of spread for silvicultural treatments is bindary.
+    if(t.code == 3)
+    {
+      #Prescribed fire: Initiate treatment in the proportion of available pixels specified 
+      #in step 1 (cuts)
+      sct <- vector(mode = "numeric", length = 0)
+      sct <- l.map[b.map == bun & s.map %in% elst]
+      f_sct <- f.map[match(sct, l.map)]
+      ss <- rbinom(f_sct, 1, f.probability[,2][match(f_sct, f.probability[,1])])
+      sct <- sct[ss == 1]
+      sct <- resample(sct, round(max((tbsa * seed.cells[t.code]), 1),0))
+    } else
+    {
+      #Silvicultural treatments: Initiate treatment in the proportion of available pixels specified 
+      #in step 1 (cuts)
+      sct <- vector(mode = "numeric", length = 0)
+      sct <- resample(l.map[b.map == bun & s.map %in% elst], 
+                      round(max((tbsa * seed.cells[t.code]), 1),0))
+    }
         if(tbsa >= 1)
         { #2.4.1 ---------------------------------------------------------------------------
           
@@ -991,7 +1009,7 @@ if(sum(meanTAP) <= 0)
             tbma <- ifelse(cc == 1, length(sct), sum(loopC.new_area))
 
             #Ends loop when treatment[b] has been completely mapped.
-            if(tbma < tbsa)
+            if(tbma < tbsa & breaks != 432)
             { #3.1.1 ---------------------------------------------------------------------------
            
               #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>NEW
@@ -1029,10 +1047,25 @@ if(sum(meanTAP) <= 0)
                   break
                 } else
                 {
-                  sct <- resample(l.map[b.map == bun & s.map %in% elst], 
-                                  round(max(((tbsa-tbma) * seed.cells[t.code]), 1),0))
+                  #Differentiate between spread of prescribed fires (continuous probabilities based 
+                  #on fuelbed) and silvicultural treatments (binary spread based on fuelbeds)
+                  if(t.code == 3)
+                  {
+                    #Prescribed fire -- select cells that fire will spread to.
+                    sct <- vector(mode = "numeric", length = 0)
+                    sct <- l.map[b.map == bun & s.map %in% elst]
+                    f_sct <- f.map[match(sct, l.map)]
+                    ss <- rbinom(f_sct, 1, f.probability[,2][match(f_sct, f.probability[,1])])
+                    sct <- sct[ss == 1]
+                    sct <- resample(sct, round(max((tbsa-tbma * seed.cells[t.code]), 1),0))
+                  } else
+                  {
+                    sct <- vector(mode = "numeric", length = 0)
+                    sct <- resample(l.map[b.map == bun & s.map %in% elst], 
+                                    round(max((tbsa-tbma * seed.cells[t.code]), 1),0))
+                  }
                 }
-                
+
                 #Establish treatment[b] in s.map and record old stand number
                 ocot <- c(ocot, sct) #tracks coordinates involved in disturbance.
                 s.map[sct] <- s.map[sct]*tesn_t
@@ -1059,10 +1092,34 @@ if(sum(meanTAP) <= 0)
                 #Can not place this below loop 4 in case treatment erases stand with highest number.
                 masn <- max(treat.stand,max(unique(as.vector(s.map[s.map < fire.stand]))))
                 
+                #For fires determine and apply growth rate cutoff
+                if(t.code == 3)
+                {
+                  #Pick a cutoff growth rate between 0.5% and 5% from an exponential
+                  #prob den function... that is much higher chance of the treatment
+                  #being cutoff at 5% growth over 0.5% growth.
+                  
+                  #Object is a list of cut off growth rates from 0.5% to 5%
+                  list.of.cutoff.growth.rates <- seq(0.5,5,0.1)
+                  #Object is a vector of probabilites from an inverse exponential function.
+                  list.of.cutoff.probabilities <- sort(mapply(function(y) 
+                  {
+                    exp(-5*y)
+                  },
+                  seq(0.01,1,1/length(list.of.cutoff.growth.rates))))
+                  
+                  cutoff.growth.rate <- resample(list.of.cutoff.growth.rates,
+                                                 1,
+                                                 prob = list.of.cutoff.probabilities)
+                } else
+                {
+                  cc <- cc
+                }
+                
                 #LOOP 4444444444444444444444444444444444444444444444444444444444444444444444444444
                 #Loop 4 (by iterations). This loop keeps growing treatment[b] in block[cc] 
                 #until growth stops.
-                for (d in 1:r.max)#d <- 1
+                for (d in 2:r.max)#d <- 1
                 { #4.0.0 ---------------------------------------------------------------------------
                         
                   #Area mapped for treatment[b].
@@ -1104,26 +1161,60 @@ if(sum(meanTAP) <= 0)
                     { #4.2.1 ---------------------------------------------------------------------------
                       #Reset new.cells object.
                       new.cells <- vector(length=0, mode = "numeric")
-                     
-                      #This expression picks out which location values are of the same stand and are 
-                      #available (i.e. they are not occupied by the another treatment) and makes sure 
-                      #that the mapped regime does not exceed its prescribed area.
-                      if((tbma + length(avlo)) <= tbsa)
+                      
+                      #Differentiate between spread of prescribed fires (continuous probabilities based 
+                      #on fuelbed) and silvicultural treatments (binary spread based on fuelbeds)
+                      if(t.code == 3)
                       {
-                        new.cells <- avlo
-                        s.map[new.cells] <- s.map[new.cells]*tesn_t
-                        osnt <- c(osnt, s.map[new.cells])
-                        tesn <- unique(osnt)
-                        ocot <- c(ocot, new.cells) #tracks coordinates involved in disturbance.
+                        #PRESCRIBED FIRE
+                        
+                        #Apply probability of ignition values to potentially burned cells to determine
+                        #which will actually burn.
+                        fual <- f.map[match(avlo, l.map)]
+                        ss <- rbinom(fual, 1,  f.probability[,2][match(fual, f.probability[,1])])
+                        new.cells <- avlo[ss == 1]
+                        #This expression picks out which location values are of the same stand and are 
+                        #available (i.e. they are not occupied by the another treatment) and makes sure 
+                        #that the mapped regime does not exceed its prescribed area.
+                        if((tbma + length(new.cells)) <= tbsa)
+                        {
+                          s.map[new.cells] <- s.map[new.cells]*tesn_t
+                          osnt <- c(osnt, s.map[new.cells])
+                          tesn <- unique(osnt)
+                          ocot <- c(ocot, new.cells) #tracks coordinates involved in disturbance.
+                        } else
+                        {
+                          new.cells <- resample(new.cells,(tbsa - tbma))
+                          s.map[new.cells] <- s.map[new.cells]*tesn_t
+                          osnt <- c(osnt, s.map[new.cells])
+                          tesn <- unique(osnt)
+                          ocot <- c(ocot, new.cells) #tracks coordinates involved in disturbance.
+                        }
                       } else
                       {
-                        new.cells <- resample(avlo,(tbsa - tbma))
-                        s.map[new.cells] <- s.map[new.cells]*tesn_t
-                        osnt <- c(osnt, s.map[new.cells])
-                        tesn <- unique(osnt)
-                        ocot <- c(ocot, new.cells) #tracks coordinates involved in disturbance.
+                        #SILVICULTURAL TREATMENT
+                        
+                        #This expression picks out which location values are of the same stand and are 
+                        #available (i.e. they are not occupied by the another treatment) and makes sure 
+                        #that the mapped regime does not exceed its prescribed area.
+                        if((tbma + length(avlo)) <= tbsa)
+                        {
+                          new.cells <- avlo
+                          s.map[new.cells] <- s.map[new.cells]*tesn_t
+                          osnt <- c(osnt, s.map[new.cells])
+                          tesn <- unique(osnt)
+                          ocot <- c(ocot, new.cells) #tracks coordinates involved in disturbance.
+                        } else
+                        {
+                          new.cells <- resample(avlo,(tbsa - tbma))
+                          s.map[new.cells] <- s.map[new.cells]*tesn_t
+                          osnt <- c(osnt, s.map[new.cells])
+                          tesn <- unique(osnt)
+                          ocot <- c(ocot, new.cells) #tracks coordinates involved in disturbance.
+                        }
+                        
                       }
-
+                     
                       #Register mapping data after Loop 4 has finished running for iteration[d].
                       Iteration.cc[(length(Iteration.cc)+1)] <- cc
                       Explanation.cc[(length(Explanation.cc)+1)] <- "Block is running."
@@ -1134,7 +1225,50 @@ if(sum(meanTAP) <= 0)
                                                                                               tesn)])
                       PrctTrmt.Mapped[(length(PrctTrmt.Mapped)+1)] <- round(((Treatment.Area[
                         length(Treatment.Area)]/tbsa)*100),1)
-
+                      
+                      #Evaluate growth rate of prescribed fire and end loop 4 if growth
+                      #rate has dropped below the predetermined cutoff
+                      #Do not apply to silvicultural treatments.
+                      if(t.code == 3)
+                        {
+                        #Determine if the rate of prescribed fire growth has dropped below 1% per
+                        #iteration. When this happens the loop ends.
+                        treatment.growth <- PrctTrmt.Mapped[length(PrctTrmt.Mapped)]-
+                          PrctTrmt.Mapped[length(PrctTrmt.Mapped)-1]
+                        
+                        if(treatment.growth > cutoff.growth.rate)
+                      {#4.3.1----------------------------------------------------------------------
+                        d <- d#placeholder
+                      } else#4.3.1-----------------------------------------------------------------
+                      {#4.3.2----------------------------------------------------------------------
+                        Iteration.cc[(length(Iteration.cc)+1)] <- cc
+                        Explanation.cc[(length(Explanation.cc)+1)] <- paste(
+                          "Cannot expand block. Advance.", collapse = "")
+                        Iteration.d[(length(Iteration.d)+1)] <- d
+                        Explanation.d[(length(Explanation.d)+1)] <- paste(c("End expansion. Total: ",
+                                                                            length(s.map[s.map %in% tesn]),"."), collapse = "")
+                        Treatment.Area[(length(Treatment.Area)+1)] <- length(s.map[s.map %in% c(loopC.new_stand,
+                                                                                                tesn)])
+                        PrctTrmt.Mapped[(length(PrctTrmt.Mapped)+1)] <- round(((Treatment.Area[
+                          length(Treatment.Area)]/tbsa)*100),1)
+                        
+                        #Save run data.
+                        dt <- Sys.Date()
+                        tm <- format(Sys.time(), format = "%H.%M.%S", 
+                                     tz = "", usetz = FALSE)
+                        
+                        cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__", f.treatments$TreatmentName[t.code], 
+                                  "_",b, "__block_",cc,"__expansion_" , "_",d,"__.txt",sep = ""), 
+                            file = paste("run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
+                        
+                        breaks <- 432  
+                        break
+                      }#4.3.2----------------------------------------------------------------------
+                      } else
+                      {
+                        d <- d#placeholder
+                      }
+                      
                     } else #4.2.1 ----------------------------------------------------------------------
                     
 {#4.2.2
@@ -3383,7 +3517,7 @@ dt <- Sys.Date()
 tm <- format(Sys.time(), format = "%H.%M.%S", 
              tz = "", usetz = FALSE)
 
-write.table(s.map, file = paste("C:\\usfs_sef_outputs_FDM\\run_", run,"maps\\sef_smap_",
+write.table(s.map, file = paste("run_", run,"maps/sef_smap_",
                                 dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
             append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
             dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
