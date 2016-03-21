@@ -18,7 +18,7 @@ setwd("C:/Users/jcronan/Documents/GitHub/EglinAirForceBase")
 #STEP 1: Administrative Information
 
 ### FOR MANUAL RUNS ###
-RX_FIRE <- 10000 # area burned annually by wildfire
+RX_FIRE <- 5000 # area burned annually by wildfire
 SEED <- 999 # starting point for psuedo random number generator
 RUN <- 4009 # unique identifier for run
 
@@ -56,7 +56,7 @@ cols <- 3491
 tx <- 4
 
 #Number of years to run model for:
-Years <- 4
+Years <- 1
 
 #Number of rows with metadata for each ascii map file
 fh.adj <- 6  #fuelbed map (f.map)
@@ -155,7 +155,7 @@ shape2 <- c(5,5,2.5)#shape 2 parameter
 #Read in third meanTAP parameter from file
 if (exists("RX_FIRE")) {
   # manual
-  meanTAP <- c(1000, 1000, RX_FIRE)
+  meanTAP <- c(0, 0, RX_FIRE)
 } else if (exists("host_sim_params") && "rxfire" %in% host_sim_params) {
   # from AWS
   meanTAP <- c(1000, 1000, host_sim_params$rxfire)
