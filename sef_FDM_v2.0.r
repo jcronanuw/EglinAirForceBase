@@ -1173,46 +1173,27 @@ if(sum(meanTAP) <= 0)
                         fual <- f.map[match(avlo, l.map)]
                         ss <- rbinom(fual, 1,  f.probability[,2][match(fual, f.probability[,1])])
                         new.cells <- avlo[ss == 1]
-                        #This expression picks out which location values are of the same stand and are 
-                        #available (i.e. they are not occupied by the another treatment) and makes sure 
-                        #that the mapped regime does not exceed its prescribed area.
-                        if((tbma + length(new.cells)) <= tbsa)
-                        {
-                          s.map[new.cells] <- s.map[new.cells]*tesn_t
-                          osnt <- c(osnt, s.map[new.cells])
-                          tesn <- unique(osnt)
-                          ocot <- c(ocot, new.cells) #tracks coordinates involved in disturbance.
-                        } else
-                        {
-                          new.cells <- resample(new.cells,(tbsa - tbma))
-                          s.map[new.cells] <- s.map[new.cells]*tesn_t
-                          osnt <- c(osnt, s.map[new.cells])
-                          tesn <- unique(osnt)
-                          ocot <- c(ocot, new.cells) #tracks coordinates involved in disturbance.
-                        }
+                      } else {
+                        #SILVICULTURAL TREATMENT
+                        new.cells <- avlo
+                      }
+                        
+                      #This expression picks out which location values are of the same stand and are 
+                      #available (i.e. they are not occupied by the another treatment) and makes sure 
+                      #that the mapped regime does not exceed its prescribed area.
+                      if((tbma + length(new.cells)) <= tbsa)
+                      {
+                        s.map[new.cells] <- s.map[new.cells]*tesn_t
+                        osnt <- c(osnt, s.map[new.cells])
+                        tesn <- unique(osnt)
+                        ocot <- c(ocot, new.cells) #tracks coordinates involved in disturbance.
                       } else
                       {
-                        #SILVICULTURAL TREATMENT
-                        
-                        #This expression picks out which location values are of the same stand and are 
-                        #available (i.e. they are not occupied by the another treatment) and makes sure 
-                        #that the mapped regime does not exceed its prescribed area.
-                        if((tbma + length(avlo)) <= tbsa)
-                        {
-                          new.cells <- avlo
-                          s.map[new.cells] <- s.map[new.cells]*tesn_t
-                          osnt <- c(osnt, s.map[new.cells])
-                          tesn <- unique(osnt)
-                          ocot <- c(ocot, new.cells) #tracks coordinates involved in disturbance.
-                        } else
-                        {
-                          new.cells <- resample(avlo,(tbsa - tbma))
-                          s.map[new.cells] <- s.map[new.cells]*tesn_t
-                          osnt <- c(osnt, s.map[new.cells])
-                          tesn <- unique(osnt)
-                          ocot <- c(ocot, new.cells) #tracks coordinates involved in disturbance.
-                        }
-                        
+                        new.cells <- resample(new.cells,(tbsa - tbma))
+                        s.map[new.cells] <- s.map[new.cells]*tesn_t
+                        osnt <- c(osnt, s.map[new.cells])
+                        tesn <- unique(osnt)
+                        ocot <- c(ocot, new.cells) #tracks coordinates involved in disturbance.
                       }
                      
                       #Register mapping data after Loop 4 has finished running for iteration[d].
