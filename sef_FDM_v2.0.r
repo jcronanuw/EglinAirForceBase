@@ -385,7 +385,7 @@ search.set <- matrix(data = 0,48,2)             #Cellular automata input
 search.set[,1] <- c(-1,-1,0,1,1,1,0,-1,-2,-2,-2,-1,0,1,2,2,2,2,2,1,0,-1,-2,-2,
                     -3,-3,-3,-3,-2,-1,0,1,2,3,3,3,3,3,3,3,2,1,0,-1,-2,-3,-3,-3)   
 #Pixels to search (x coordinates, difference from flame front)
--search.set[,2] <- c(0,rows,rows,rows,0,-rows,-rows,-rows,0,rows,(rows*2),(rows*2),(rows*2),(rows*2),(rows*2),rows,0,-rows,(-rows*2),
+search.set[,2] <- c(0,rows,rows,rows,0,-rows,-rows,-rows,0,rows,(rows*2),(rows*2),(rows*2),(rows*2),(rows*2),rows,0,-rows,(-rows*2),
                      (-rows*2),(-rows*2),(-rows*2),(-rows*2),-rows, 
                      0,rows,(rows*2),(rows*3),(rows*3),(rows*3),(rows*3),(rows*3),(rows*3),(rows*3),
                      (rows*2),rows,0,-rows,(-rows*2),(-rows*3),(-rows*3),(-rows*3),(-rows*3),
