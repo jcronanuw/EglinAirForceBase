@@ -2262,43 +2262,14 @@ if(length(diar) == 0)
            
                    #Object shows locations of 48 pixels surrounding each mapped pixel for 
                    #disturbance[e].
-                   
-                   
-                   malo <- matrix(data = sn.seeker(search.set[,1], search.set[,2]),
-                                  length(s.map[s.map %in% tesn]),dcl, byrow = T)
+                   co.1 <- find_neighbors(find_actively_burning_cells_in_smap(), radius = 3)
 
-                   #Obbject shows the upper and lower limits of pixel locations listed in the 'malo' 
-                   #object.
-                   mali <- matrix(data = sn.limit(search.set[,2], search.set[,1]), 
-                                  length(s.map[s.map %in% tesn]),dcl, byrow = T)
-           
-                   #Sets up information in malo and mali objects that replace location values with
-                   #limits values if locations "spill" from map edges.
-                   mixa <- matrix(data = c(malo[,1],malo[,2],mali[,3],mali[,4],mali[,5],mali[,6],mali[,7],
-                                           malo[,8], malo[,9],
-                                           malo[,10],malo[,11],malo[,12],mali[,13],mali[,14],mali[,15],mali[,16],mali[,17],mali[,18],
-                                           mali[,19],mali[,20],mali[,21],malo[,22],malo[,23],malo[,24],malo[,25],malo[,26],malo[,27],
-                                           malo[,28],malo[,29],malo[,30],mali[,31],mali[,32],mali[,33],mali[,34],mali[,35],mali[,36],
-                                           mali[,37],mali[,38],mali[,39],mali[,40],mali[,41],mali[,42],mali[,43],malo[,44],malo[,45],
-                                           malo[,46],malo[,47],malo[,48]), nrow = tsl, ncol = dcl)
-                   
-                   mixb <- matrix(data = c(mali[,1],mali[,2],malo[,3],malo[,4],malo[,5],malo[,6],malo[,7],mali[,8],
-                                           mali[,9],
-                                           mali[,10],mali[,11],mali[,12],malo[,13],malo[,14],malo[,15],malo[,16],malo[,17],malo[,18],
-                                           malo[,19],malo[,20],malo[,21],mali[,22],mali[,23],mali[,24],mali[,25],mali[,26],mali[,27],
-                                           mali[,28],mali[,29],mali[,30],malo[,31],malo[,32],malo[,33],malo[,34],malo[,35],malo[,36],
-                                           malo[,37],malo[,38],malo[,39],malo[,40],malo[,41],malo[,42],malo[,43],mali[,44],mali[,45],
-                                           mali[,46],mali[,47],mali[,48]), nrow = tsl, ncol = dcl)
-                   
-                   #Replaces location values with limit values where necessary (first draft - works
-                   #on top and bottom of map)
-                   co.1 <- matrix(data = ifelse(mixa < mixb,mali,malo), nrow = tsl, ncol = dcl)
-
+                   # TODO: Link size of pr.1 to find_neighbors vector, research whether or not scalar will work
                    pr.1 <- matrix(data = rep(distance.coefficient^((max(0,(maxWindSpd-windSpd))*(1/maxWindSpd))^2),
                                              length(malo[,1])), nrow = tsl, ncol =dcl, 
                                   byrow = T)
 
-  pr.2 <- round(sweep(pr.1, MARGIN = 2, wind, '*')/(max(pr.1 * wind)),3)               
+                   pr.2 <- round(sweep(pr.1, MARGIN = 2, wind, '*')/(max(pr.1 * wind)),3)               
                    #Replace locations currently burning with a zero, they no longer count and can't be
                    #eligible because they will likely have the highest burn probability.
   
@@ -2474,36 +2445,14 @@ breaks <- 1042
    #This statement stops loop 11 when treatment[b] has been fully mapped.
    if((dema + length(ocod)) < desa) 
    { #11.1.1 ---------------------------------------------------------------------------
-
-     
-       #Object shows locations of 8 pixels surrounding each mapped pixel for 
-       #disturbance[e].
-       malo <- matrix(data = sn.seeker(search.set[1:8,1], search.set[1:8,2]),
-                      length(s.map[s.map %in% tesn]),dcl_t, byrow = T)
- 
-       #Object shows the upper and lower limits of pixel locations listed in the 'malo' 
-       #object.
-       mali <- matrix(data = sn.limit(search.set[1:8,2], search.set[1:8,1]), 
-                      length(s.map[s.map %in% tesn]),dcl_t, byrow = T)
-
-       #Sets up information in malo and mali objects that replace location values with
-       #limits values if locations "spill" from map edges.
-       mixa <- c(malo[,1],malo[,2],mali[,3],mali[,4],mali[,5],mali[,6],mali[,7],malo[,8])
-       mixb <- c(mali[,1],mali[,2],malo[,3],malo[,4],malo[,5],malo[,6],malo[,7],mali[,8])
-
-       #Replaces location values with limit values where necessary (first draft - works
-       #on top and bottom of map)
-       fdlo <- ifelse(mixa < mixb,mali,malo)
-
-       #Replaces location values with limit values where necessary (second draft - works
-       #on sides of map)
-       sdlo <- ifelse(fdlo < 1,fdlo + rows,ifelse(fdlo > length(s.map),fdlo - rows,fdlo))
-    
-       #This object shows all unique locations available for establishment by treatment[b].
-       avlo <- unique(as.vector(l.map[sdlo][l.map[sdlo] %in% l.map[b.map %in% f.bun & s.map %in% ss2]]))
+     sdlo <- find_neighbors(find_actively_burning_cells_in_smap(), radius = 1)
+       
+     #This object shows all unique locations available for establishment by treatment[b].
+     avlo <- unique(as.vector(l.map[sdlo][l.map[sdlo] %in% l.map[b.map %in% f.bun & s.map %in% ss2]]))
        
      #Ends loop if there are no more locations available for treatment[b] in the 
      #block[cc] that is currently being mapped.
+     
      if(length(avlo) > 0)
      { #11.2.1 ---------------------------------------------------------------------------
 
