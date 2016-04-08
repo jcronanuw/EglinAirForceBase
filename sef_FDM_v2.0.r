@@ -106,7 +106,7 @@ c.scale <- 0.1#9
 #When wildfires are burned by the block and burn method flammability of fuels is based on
 #probability. The meaning of the scale.factor and dist.curve are flipped and corresponding
 #values are randomly selected from each dataset
-NFR <- c(1554.38,1457.39)#c(54.38,457.39)#Natural fire rotation in years for Eglin, Buffer, and Combined.
+NFR <- c(11554.38,11457.39)#c(54.38,457.39)#Natural fire rotation in years for Eglin, Buffer, and Combined.
 MFS <- c(103.65,5.23)#c(103.65,5.23)#Mean fire size in acres for Eglin, Buffer, and Combined.
 DFS <- c(361.12,13.98)#c(361.12,13.98)#Standard deviation of mean fire size for Eglin and Buffer and Combined.
 Truncate.AAB <- c(50000,25000)#Maximum annual area burned
