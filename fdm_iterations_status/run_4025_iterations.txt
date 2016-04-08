@@ -771,3 +771,14 @@ run_4025_2016-03-25_12.32.06_year_1__wildfire_3__block_1__free_27__.txt
 run_4025_2016-03-25_12.32.08_year_1__wildfire_3__block_1__free_28__.txt
 run_4025_2016-03-25_12.32.09_year_1__wildfire_3__block_1__free_29__.txt
 run_4025_2016-03-25_12.32.11_year_1__wildfire_3__block_1__free_30__.txt
+run_4025_2016-04-05_22.59.52_year_1__rxfire_1__block_1__expansion__1__.txt
+run_4025_2016-04-05_22.59.54_year_1__rxfire_1__block_1__expansion__2__.txt
+run_4025_2016-04-05_22.59.55_year_1__rxfire_1__block_1__expansion__3__.txt
+run_4025_2016-04-06_08.44.09_year_1__rxfire_1__block_1__expansion__1__.txt
+run_4025_2016-04-06_08.44.11_year_1__rxfire_1__block_1__expansion__2__.txt
+run_4025_2016-04-06_08.44.12_year_1__rxfire_1__block_1__expansion__3__.txt
+run_4025_2016-04-06_08.44.20_year_1__rxfire_2__block_1__expansion__1__.txt
+run_4025_2016-04-06_08.44.22_year_1__rxfire_2__block_1__expansion__2__.txt
+run_4025_2016-04-06_08.44.22_year_1__rxfire_2__block_1__expansion__3__.txt
+run_4025_2016-04-06_08.44.30_year_1__rxfire_3__block_1__expansion__1__.txt
+run_4025_2016-04-06_08.44.32_year_1__rxfire_3__block_1__expansion__2__.txt
