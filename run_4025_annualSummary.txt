@@ -1,6 +1,0 @@
-Year:  1 TreatedExpected:  4497 TreatedActual:  5766 BurnedExpected:  146 BurnedActual:  146 
-Year:  1 TreatedExpected:  4497 TreatedActual:  6428 BurnedExpected:  146 BurnedActual:  146 
-Year:  1 TreatedExpected:  4497 TreatedActual:  4745 BurnedExpected:  146 BurnedActual:  146
-Year:  2 TreatedExpected:  4497 TreatedActual:  4587 BurnedExpected:  45 BurnedActual:  45 
-Year:  2 TreatedExpected:  4497 TreatedActual:  5986 BurnedExpected:  45 BurnedActual:  45 
-Year:  2 TreatedExpected:  4497 TreatedActual:  4662 BurnedExpected:  45 BurnedActual:  45

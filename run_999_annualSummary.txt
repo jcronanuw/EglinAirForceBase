@@ -1,3 +1,0 @@
-Year:  1 TreatedExpected:  0 TreatedActual:  0 BurnedExpected:  110 BurnedActual:  110 
-Year:  1 TreatedExpected:  0 TreatedActual:  0 BurnedExpected:  110 BurnedActual:  110 
-Year:  1 TreatedExpected:  4497 TreatedActual:  5037 BurnedExpected:  110 BurnedActual:  110
