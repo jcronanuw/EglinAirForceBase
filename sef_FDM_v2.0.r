@@ -1,4 +1,200 @@
-###START FDM####
+
+
+
+###START FUELBED DYNAMICS MODEL####
+
+#Version 2.0 (Derviced from version 17e, the most recent version withmodel 
+#documentation
+
+
+
+#>>>>>>>>>>>>>>>>>>>          HOW WOULD YOU LIKE TO RUN THE FUELBED DYNAMICS MODEL?
+
+#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+#>>>>>>>>>>>>>>>>>>>          COMPUTING PARAMETERS...
+
+
+#With or without the graphics card as a processor for cellular automata sub-models
+#Yes --- TRUE
+#No ---- FALSE
+USE_GPU <- FALSE
+
+#Would you like to replicate this run?
+#If so use the same seed number for subsequent runs
+#SEED is the starting point for psuedo random number generator
+SEED <- 999
+
+#Select a run ID, this should be a number, ideally unique that will help track this
+#run. Output files are tagged with this ID number.
+RUN <- 4037
+
+#Reporting interval, how often (in model years) should output maps be produced?
+#I.e., once every ... years.
+#Must be less than model run time (YEARS object)
+Interval <- 1
+
+#What is your working directory. I.e. where are your input files coming from?
+input_path <- "C:/Users/jcronan/Documents/GitHub/EglinAirForceBase"
+
+#What is your output directory. I.e., here do you want maps and status reports to 
+#go?
+output_path <- "C:/usfs_sef_outputs_FDM"
+
+#>>>>>>>>>>>>>>>>>>>          DISTURBANCE AND MODEL RUN TIME PARAMETERS...
+
+#Select pre-packaged or manually entered forest management and wildfire regime 
+#parameters + model run time (in years)
+#1 ---  Actual paramater values derived from forest operations and wildfire data 
+#       for the period 2000-2015 and 50 year run
+#2 ---  Testing generates small areas of presribed fire and wildfire annually 
+#       and 2 yearr un.
+#3 ---  Manually enter disturbance parameters. Enter parameters below on 
+#       lines 99-123.
+disturbances <- 2
+
+#Disturbance and time parameters
+if(disturbances == 1)
+  {
+  #Number of years the model should run for.
+  YEARS <- 50
+  
+  #Acres thinned annually.
+  THINNING <- 5000
+  
+  #Acres of herbicide application annually
+  HERBICIDE <- 5000
+  
+  #Acres prescribed burned annually
+  RX_FIRE <- 100000
+  
+  #Natural fire rotation in years for:
+  #Element 1 -- Eglin Air Force Base
+  #Element 2 -- Surrounding 10-km buffer landscape
+  NATURAL_FIRE_ROTATION <- c(54.38,457.39)
+  
+  #Mean fire size in acres for:
+  #Element 1 -- Eglin Air Force Base
+  #Element 2 -- Surrounding 10-km buffer landscape
+  MEAN_FIRE_SIZE <- c(103.65,5.23)        
+  
+  #Standard deviation of mean fire size for:
+  #Element 1 -- Eglin Air Force Base
+  #Element 2 -- Surrounding 10-km buffer landscape
+  STAND_DEV_FIRE_SIZE <- c(361.12,13.98)
+} else 
+{if(disturbances == 2)
+  {
+  #Number of years the model should run for.
+  YEARS <- 2
+  
+  #Acres thinned annually.
+  THINNING <- 0
+  
+  #Acres of herbicide application annually
+  HERBICIDE <- 0
+  
+  #Acres prescribed burned annually
+  RX_FIRE <- 1000
+  
+  #Natural fire rotation in years for:
+  #Element 1 -- Eglin Air Force Base
+  #Element 2 -- Surrounding 10-km buffer landscape
+  NATURAL_FIRE_ROTATION <- c(554.38,10457.39)
+  
+  #Mean fire size in acres for:
+  #Element 1 -- Eglin Air Force Base
+  #Element 2 -- Surrounding 10-km buffer landscape
+  MEAN_FIRE_SIZE <- c(103.65,5.23)        
+  
+  #Standard deviation of mean fire size for:
+  #Element 1 -- Eglin Air Force Base
+  #Element 2 -- Surrounding 10-km buffer landscape
+  STAND_DEV_FIRE_SIZE <- c(361.12,13.98)
+} else
+{
+  #Number of years the model should run for.
+  YEARS <- 0
+  
+  #Acres thinned annually.
+  THINNING <- 0
+  
+  #Acres of herbicide application annually
+  HERBICIDE <- 0
+  
+  #Acres prescribed burned annually
+  RX_FIRE <- 0
+  
+  #Natural fire rotation in years for:
+  #Element 1 -- Eglin Air Force Base
+  #Element 2 -- Surrounding 10-km buffer landscape
+  NATURAL_FIRE_ROTATION <- c(0, 0)
+  
+  #Mean fire size in acres for:
+  #Element 1 -- Eglin Air Force Base
+  #Element 2 -- Surrounding 10-km buffer landscape
+  MEAN_FIRE_SIZE <- c(0, 0)        
+  
+  #Standard deviation of mean fire size for:
+  #Element 1 -- Eglin Air Force Base
+  #Element 2 -- Surrounding 10-km buffer landscape
+  STAND_DEV_FIRE_SIZE <- c(0, 0)
+}}
+
+
+
+#>>>>>>>>>>>>>>>>>>>          FINISHED
+
+#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+
+
+
+#>>>>>>>>>>>>>>>>>>>          HARD-CODED PARAMETERS -- THESE SHOULD NOT BE CHANGED
+
+#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+#>>>>>>>>>>>>>>>>>>>          COMPUTING PARAMTERS...
+
+#Number of iterations for the following nested loops:
+#Loop 2 (var. = b)    -- management actions
+#Loop 3 (var. = cc)   -- blocks (management actions)
+#Loop 4 (var. = d)    -- expansions (management actions)
+#Loop 9 (var. = f)    -- blocks (wildfire)
+#Loop 10 (var. = g)   -- expansions (unsuppressed wildfire)
+#Loop 11 (var. = h)   -- expansions (wildfire with block and burn suppression)
+r.max <- 1000#7
+
+#StarTing stand numbers for...
+#-----------------------------------------------------------------------------------
+#Treatments:
+treat.stand <- 4000000
+
+#Fires:
+fire.stand <- 8000000
+#-----------------------------------------------------------------------------------
+
+#>>>>>>>>>>>>>>>>>>>          ASCII MAP FILE METADATA...
+
+#The number of acres per pixel.
+MapRes <- 0.22239
+
+#Number of rows and columns in ascii map files.
+rows <- 1771
+cols <- 3491
+
+#Number of rows with metadata for each ascii map file.
+fh.adj <- 6  #fuelbed map (f.map)
+sh.adj <- 6  #stand map (s.map)
+bh.adj <- 6  #burn unit map (b.map)
+lh.adj <- 6  #coordinate map (l.map)
+
+#>>>>>>>>>>>>>>>>>>>          R PACKAGES...
+
 #install.packages("Hmisc", repos="http://cran.fhcrc.org/")
 #install.packages("GenKern", repos="http://cran.fhcrc.org/")
 #install.packages("SDMTools", repos="http://cran.fhcrc.org/")
@@ -9,19 +205,123 @@ library(SDMTools)
 library(gtools)  #for combinations()ge
 library(utils)#for Rprof()
 
-#Set working directory
-setwd("C:/Users/jcronan/Documents/GitHub/EglinAirForceBase")
+#>>>>>>>>>>>>>>>>>>>          FOREST MANAGEMENT PARAMTERS...
 
-#Version 17e corresponds with model documentation
+#Vector of burn unit numbers (corresponds with b.map) that are within Eglin but 
+#unmanaged.
+Unmanaged.Unit <- 9999
+#Vector of burn unit numbers (corresponds with b.map) that are within the buffer 
+#perimeter.
+Buffer.Unit <- 8888
+#Vector of burn unit numbers (corresponds with b.map) that are outside of the 
+#Eglin perimeter.
+NoData.Unit <- -9999999
+
+#Number of start/ignition points. Select the proportion of available cells within a 
+#treatment unit to locate seed cells (i.e. start point locations that are fed into 
+#the cellilar automata sub-model.
+#Element 1 -- Thinning
+#Element 1 -- Herbicide Application
+#Element 1 -- Prescribed Fire
+seed.cells <- c(0.50, 0.50, 0.10)
+
+#>>>>>>>>>>>>>>>>>>>          FUELBED PARAMTERS...
+
+#Vector of fuelbed numbers (corresponds with f.map) with a fixed age at zero.
+Fixed.Age <- c(-9999, 1061401, 1069000, 1071401, 5079000, 5089000, 5099000, 6000000)
+
+#Open Water fuelbed
+Open.Water <- 6000000
+
+#Vector of fuelbed numbers (corresponds with f.map) that are non-burnable.
+Non.Flammable <- c(-9999, 5089000, 5099000, 6000000)
+#Key to fuelbeds in two objects above
+#-9999    No Data
+#1061401  Shrub swamp
+#1069000  Cleared wetland
+#1071401  Herbaceous marsh
+#5079000  Rangeland
+#5089000  Agriculture
+#5099000  Developed
+#6000000  Open water
+
+#>>>>>>>>>>>>>>>>>>>          FIRE BEHAVIOR PARAMTERS...
+
+#Do not map wildfires below this value (in acres). Purpose is to reduce model run 
+#time by excluding small fires that do not impact vegetation at the landscape scale.
+fire.cut <- 10
+
+#Ceilings for forest management and wildfire disturbances
+#-----------------------------------------------------------------------------
+#Maximum annual area burned in wildfires
+#Element 1 -- Eglin Air Force Base
+#Element 2 -- 10-km buffer landscape
+Truncate.AAB <- c(50000, 25000)
+
+#Maximum fire size of wildfires 
+#Element 1 -- Eglin Air Force Base
+#Element 2 -- 10-km buffer landscape
+Truncate.Area <- c(12000, 6000)
+
+#Maximum number of fires and treatments in a given year
+#Element 1 -- Eglin Air Force Base
+#Element 2 -- 10-km buffer landscape
+#Element 3 -- Thnning Treatment (Corresponds with THINNING)
+#Element 4 -- Herbicide Application (Corresponds with HERBICIDE)
+#Element 5 -- Prescribed Fire (Corresponds with RX_FIRE)
+Truncate.Number <- c(400, 800, 50, 50, 500)
+#-----------------------------------------------------------------------------
+
+#These two parameters will cause flammability of fuels to slowly equilibrate
+#as annual area burned increases. For these values (c.shape = 1.5 and 
+#s.scale = 0.1) equlibration begins when area burned for a fire in the unmanaged
+#unit (management unit = 9999) or buffer zone (management unit = 8888)
+#almost immediately as fire size grows and all but unburnable fuels equilibrate to  
+#1 by the time fire size equals 1100 acres (5000 pixels).
+#When wildfires are burned by the block and burn method flammability of fuels is 
+#based on probability. The meaning of the scale.factor and dist.curve are flipped 
+#and corresponding values are randomly selected from each dataset
+c.shape <- 1.5
+c.scale <- 0.1
+
+#Values to guide stochastic generation of treatments. Order is thinning, herbicide, and
+#prescribed fire.
+minSize <- c(5, 20, 1)#minimum treated stand size within a treatment unit
+#Shape parameters are used to inform the beta distribution function that determines
+#The percentage of a treatment unit to be effected for each treatment.
+shape1 <- c(30, 30, 10)#shape 1 parameter
+shape2 <- c(5,5, 2.5)#shape 2 parameter
+
+#Flame extinction variable in wildfire loop (loop 10). After cell has burned
+#for the specified number of expansion it burns out.
+burn.out <- 3
+
+#Size threshold where fires are primarily wind driven.
+#Testing, 10,000 acres was my original limit. It seems to high.
+windThresholdSize <- 1000#acres
+
+#>>>>>>>>>>>>>>>>>>>          WIND DATA PARAMTERS...
+
+#Describe probability of wind coming from a given direction.
+#0 = North
+#1 = Northeast
+#2 = East
+#3 = Southeast
+#4 = South
+#5 = SouthWest
+#6 = West
+#7 = Northwest
+windProbs <- c(0.1,0.025,0.01,0.01,0.025,0.05,0.16,0.62)
+
+#>>>>>>>>>>>>>>>>>>>          FINISHED
+
+#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
 ####################################################################################
 ####################################################################################
-#STEP 1: Administrative Information
-
-### FOR MANUAL RUNS ###
-RX_FIRE <- 1000 # area burned annually by wildfire
-SEED <- 999 # starting point for psuedo random number generator
-RUN <- 4035 # unique identifier for run
-USE_GPU <- FALSE
+#STEP 01: Administrative Information
 
 # Reads mutable parameters from AWS user data
 try(host_sim_params <- read.csv("host_sim_params.txt"), silent=TRUE)
@@ -32,6 +332,7 @@ if (exists("host_sim_params") && "run_id" %in% colnames(host_sim_params)) {
   run <- host_sim_params$run_id
 } else if (exists("RUN")) {
   # manual
+  
   run <- RUN
 } else {
   stop("No run id present.")
@@ -59,112 +360,34 @@ if (exists("host_sim_params") && "use_gpu" %in% colnames(host_sim_params)) {
   USE_GPU <- FALSE
 }
 
-#Number of rows and columns in ascii map files
-rows <- 1771
-cols <- 3491
-
-tx <- 4
-
-#Number of years to run model for:
-Years <- 2
-
-#Number of rows with metadata for each ascii map file
-fh.adj <- 6  #fuelbed map (f.map)
-sh.adj <- 6  #stand map (s.map)
-bh.adj <- 6  #burn unit map (b.map)
-lh.adj <- 6  #coordinate map (l.map)
-
-#Do not map fires below this value (in acres). Purpose is to reduce model run time
-#by excluding small fires that do not impact vegetation at the landscape scale.
-fire.cut <- 10
-
-a <- 0
-b <- 0
-cc <- 0
-d <- 0
-e <- 0
-f <- 0
-g <- 0
+#Set working directory if running FDM manually
+if (exists("host_sim_params")) 
+  {
+  # AWS, no need to set working directory
+  } else
+    {
+  # manually running FDM, set working directory
+      setwd(input_path)
+      }
 
 ####################################################################################
 ####################################################################################
-#STEP 2: Operational Parameters
-MapRes <- 0.22239#The number of acres per pixel
-Interval <- 1#6
-if (Interval > Years) {
+#STEP 02: Operational Parameters
+
+
+#Stop model run if map production interval is greater than the number of model years.
+if (Interval > YEARS) {
   stop("Interval too high. Make interval less than year variable.")
 }
-r.max <- 1000#7
-c.shape <- 1.5#8
-c.scale <- 0.1#9
-#These two parameters will cause flammability of fuels to slowly equilibrate
-#as annual area burned increases. For these values (c.shape = 1.5 and 
-#s.scale = 0.1) equlibration begins when area burned for a fire in the unmanaged
-#unit (management unit = 9999) or buffer zone (management unit = 8888)
-#almost immediately as fire size grows and all but unburnable fuels equilibrate to 1
-#by the time fire size equals 1100 acres (5000 pixels).
-#When wildfires are burned by the block and burn method flammability of fuels is based on
-#probability. The meaning of the scale.factor and dist.curve are flipped and corresponding
-#values are randomly selected from each dataset
-NFR <- c(11554.38,11457.39)#c(54.38,457.39)#Natural fire rotation in years for Eglin, Buffer, and Combined.
-MFS <- c(103.65,5.23)#c(103.65,5.23)#Mean fire size in acres for Eglin, Buffer, and Combined.
-DFS <- c(361.12,13.98)#c(361.12,13.98)#Standard deviation of mean fire size for Eglin and Buffer and Combined.
-Truncate.AAB <- c(50000,25000)#Maximum annual area burned
-Truncate.Area <- c(12000,6000)#Maximum fire size
-Truncate.Number <- c(400,800,50,50,500)#Maximum number of fires and treatments in a given year
-#Order is number of fires in Eglin, fires in buffer zone, and treatments (thinning, 
-#herbicide, and prescribed fire) in Eglin.
-
-#Vector of fuelbed numbers (corresponds with f.map) with a fixed age at zero.
-Fixed.Age <- c(-9999,1061401,1069000,1071401,5079000, 5089000, 5099000, 6000000)
-#Open Water fuelbed
-Open.Water <- 6000000
-#Vector of fuelbed numbers (corresponds with f.map) that are non-burnable.
-Non.Flammable <- c(-9999, 5089000, 5099000, 6000000)
-#Key to fuelbeds in two objects above
-#-9999    No Data
-#1061401  Shrub swamp
-#1069000  Cleared wetland
-#1071401  Herbaceous marsh
-#5079000  Rangeland
-#5089000  Agriculture
-#5099000  Developed
-#6000000  Open water
-
-#Size threshold where fires are primarily wind driven
-windThresholdSize <- 1000#acres
-#Testing, 10,000 acres was my original limit. It seems to high.
-
-#Vector of burn unit numbers (corresponds with b.map) that are within Eglin but unmanaged.
-Unmanaged.Unit <- 9999
-#Vector of burn unit numbers (corresponds with b.map) that are within the buffer perimeter.
-Buffer.Unit <- 8888
-#Vector of burn unit numbers (corresponds with b.map) that are outside of the Eglin perimeter.
-NoData.Unit <- -9999999
-
-#Staring stand numbers for...
-#Treatments:
-treat.stand <- 4000000
-#Fires:
-fire.stand <- 8000000
-
-#Values to guide stochastic generation of treatments. Order is thinning, herbicide, and
-#prescribed fire.
-minSize <- c(5,20,1)#minimum treated stand size within a treatment unit
-#Shape parameters are used to inform the beta distribution function that determines
-#The percentage of a treatment unit to be effected for each treatment.
-shape1 <- c(30,30,10)#shape 1 parameter
-shape2 <- c(5,5,2.5)#shape 2 parameter
-
 
 #Average annual area treated for thinning, herbicide, and prescribed fire.
 #Read in third meanTAP parameter from file
 if (exists("RX_FIRE")) {
   # manual
-  meanTAP <- c(0, 0, RX_FIRE)
+  meanTAP <- c(THINNING, HERBICIDE, RX_FIRE)
 } else if (exists("host_sim_params") && "rxfire" %in% host_sim_params) {
   # from AWS
-  meanTAP <- c(0, 0, host_sim_params$rxfire)
+  meanTAP <- c(THINNING, HERBICIDE, host_sim_params$rxfire)
 } else {
   stop("No rxfire parameter found.")
 }
@@ -172,12 +395,9 @@ if (exists("RX_FIRE")) {
 #Convert area in acres to 30 m pixels
 meanTAP <- round(meanTAP/MapRes,0)
 
-#Proportion of available cells within a treatment unit to seed treatment.
-seed.cells <- c(0.50,0.50,0.10)#thinning, herbicide, prescribed fire
-
 ####################################################################################
 ####################################################################################
-#STEP 3: Import Spatial Database (Raster Subset)
+#STEP 03: Import Spatial Database (Raster Subset)
 f.map <- matrix(scan(paste("inputs/sef_fmap_v2_",rows,"x",cols,".txt",
                            sep = ""),skip = fh.adj),ncol=cols,byrow=T)#16
 
@@ -192,7 +412,7 @@ l.map <- matrix(scan(paste("inputs/sef_lmap_",rows,"x",cols,".txt",
 
 ####################################################################################
 ####################################################################################
-#STEP 4: Import Spatial Database (Pseudo-vector Subset)
+#STEP 04: Import Spatial Database (Pseudo-vector Subset)
 Stand.List <- read.table(paste(
   "inputs/sef_StandList_",rows,"x",cols,".txt",
   sep = ""), header=TRUE, 
@@ -309,7 +529,7 @@ mfri_upper.List <- mfri_upper.List[,-1]
 
 ####################################################################################
 ####################################################################################
-#STEP 5: Import Conditional Database
+#STEP 05: Import Conditional Database
 f.path <- read.table("inputs/sef_lut_pathways_succession.csv", header=TRUE, 
                      sep=",", na.strings="NA", dec=".", strip.white=TRUE)
 
@@ -352,14 +572,14 @@ f.start <- read.table("inputs/sef_lut_pathways_fireStart.csv", header=T,
 f.start <- f.start[-1,]#remove first row -- no data unit.
 ####################################################################################
 ####################################################################################
-#STEP 07: Simplify input data.
+#STEP 06: Simplify input data.
 ttxm <- t.post[,-1]#removes the fuelbed column for t.post.
 dtxm <- d.post[,-1]#removes the fuelbed column from d.post.
 pdxm <- pda[,-1]#removes the fuelbed column from pda.
 
 ####################################################################################
 ####################################################################################
-#STEP 08: Generate secondary data.
+#STEP 07: Generate secondary data.
 fblo <- 1:length(t.post$fuelbed)#fuelbed location.
 fbls <- t.post$fuelbed#master list of fuelbeds.
 
@@ -384,12 +604,24 @@ buffer.area <- length(b.map[b.map == Buffer.Unit & !f.map != Open.Water])
 #based on the relative areas of each management level.
 BANSA.Area <- sum(Area.List[MU.List %in% b.block$BurnBlock[b.block$BANSA == 2]])
 
-FF.e <- ((eglin.area*MapRes)/(NFR[1]*MFS[1]))#FF.e = Fire Frequency for Eglin
-FF.b <- ((buffer.area*MapRes)/(NFR[2]*MFS[2]))#FF.b = Fire Frequency for buffer
-Mu.e <- 2*log(MFS[1]) - 0.5*(log(DFS[1]^2 + MFS[1]^2))#mean of log transformed mean fire size
-Mu.b <- 2*log(MFS[2]) - 0.5*(log(DFS[2]^2 + MFS[2]^2))#mean of log transformed mean fire size
-Sigma.e <- sqrt(log(DFS[1]^2 + MFS[1]^2) - 2*log(MFS[1]))#variance of log transformed fire sizes
-Sigma.b <- sqrt(log(DFS[2]^2 + MFS[2]^2) - 2*log(MFS[2]))#variance of log transformed fire sizes
+#FF.e = Fire Frequency for Eglin
+FF.e <- ((eglin.area*MapRes)/(NATURAL_FIRE_ROTATION[1]*MEAN_FIRE_SIZE[1]))
+
+#FF.b = Fire Frequency for buffer
+FF.b <- ((buffer.area*MapRes)/(NATURAL_FIRE_ROTATION[2]*MEAN_FIRE_SIZE[2]))
+
+#mean of log transformed mean fire size
+Mu.e <- 2*log(MEAN_FIRE_SIZE[1]) - 0.5*(log(STAND_DEV_FIRE_SIZE[1]^2 + MEAN_FIRE_SIZE[1]^2))
+
+#mean of log transformed mean fire size
+Mu.b <- 2*log(MEAN_FIRE_SIZE[2]) - 0.5*(log(STAND_DEV_FIRE_SIZE[2]^2 + MEAN_FIRE_SIZE[2]^2))
+
+#variance of log transformed fire sizes
+Sigma.e <- sqrt(log(STAND_DEV_FIRE_SIZE[1]^2 + MEAN_FIRE_SIZE[1]^2) - 2*log(MEAN_FIRE_SIZE[1]))
+
+#variance of log transformed fire sizes
+Sigma.b <- sqrt(log(STAND_DEV_FIRE_SIZE[2]^2 + MEAN_FIRE_SIZE[2]^2) - 2*log(MEAN_FIRE_SIZE[2]))
+
 #Pixels to search (y coordinates, difference from flame front)
 search.set <- matrix(data = 0,48,2)             #Cellular automata input
 search.set[,1] <- c(-1,-1,0,1,1,1,0,-1,-2,-2,-2,-1,0,1,2,2,2,2,2,1,0,-1,-2,-2,
@@ -415,7 +647,6 @@ wind_2a <- f.wind$NorthWind[9:24]
 wind_3a <- f.wind$NorthWind[25:48]
 
 #Code wind directions.
-windDirs <- c(0,1,2,3,4,5,6,7)
 #0 = North
 #1 = Northeast
 #2 = East
@@ -424,9 +655,7 @@ windDirs <- c(0,1,2,3,4,5,6,7)
 #5 = SouthWest
 #6 = West
 #7 = Northwest
-
-#Describe probability of wind coming from a given direction
-windProbs <- c(0.1,0.025,0.01,0.01,0.025,0.05,0.16,0.62)
+windDirs <- c(0,1,2,3,4,5,6,7)
 
 #Map.History <- list()                          #Tracking Database Template.
 #Tracking Database Template. 
@@ -445,7 +674,7 @@ D.List <- cbind(T1E.List, T2E.List, D1E.List, D2E.List)
 
 ####################################################################################
 ####################################################################################
-#STEP 09: Generate functions.
+#STEP 08: Generate functions.
 #This function (grabbed from the r-help site) is the same as the sample()
 #function except if the length of x is one it will just use that number rather than
 #sample from 1:x.
@@ -521,7 +750,7 @@ sn.limit <- function(x,y)
 
 ####################################################################################
 ####################################################################################
-#STEP 10: Fire Regime Simulation for Eglin (excludes buffer zone).
+#STEP 09: Fire Regime Simulation for Eglin (excludes buffer zone).
 
 #Since the buffer zone fire regime is determined by the eglin fire regime just use
 #the Eglin fire regime to drive flammability of fuels.
@@ -565,7 +794,7 @@ assoc.wsp <- (assoc.wsp*5)+1
 
 ####################################################################################
 ####################################################################################
-#STEP 11: Create vectors that list which fuelbeds are eligible for treatment.
+#STEP 10: Create vectors that list which fuelbeds are eligible for treatment.
 
 #Determine available fuelbeds:
 #For thinning treatments
@@ -579,7 +808,7 @@ avfb_fire <- fbls[ttxm[,6] == 2]
 
 ####################################################################################
 ####################################################################################
-#STEP 12: CREATE DETAILED LIST OF ACREAGES FOR EACH MANAGEMENT OPTION
+#STEP 11: CREATE DETAILED LIST OF ACREAGES FOR EACH MANAGEMENT OPTION
 
 #Fill in percent values so perc_cats adds up to one for each level within each treatment
 #type
@@ -605,19 +834,33 @@ for(i in 1:length(meanTAP))
 #mfri categories that do not apply
 b.thresh <- b.thresh[b.thresh$perc_cats > 0,]
 
+
 ####################################################################################
 ####################################################################################
-#STEP 04: RUN MODEL LOOP
+#STEP 12: DEFAULT VALUES
+
+#Set loop values to default (i.e. zero).
+a <- 0
+b <- 0
+cc <- 0
+d <- 0
+e <- 0
+f <- 0
+g <- 0
+
+
+####################################################################################
+####################################################################################
+#STEP 13: RUN MODEL LOOP
 
 #LOOP 111111111111111111111111111111111111111111111111111111111111111111111111111111
 #Loop 1 (by year). This loop encases the entire expression that maps regimes.
-for(a in 1:Years)#a <- 1
+for(a in 1:YEARS)#a <- 1
 { #1.0.0 ---------------------------------------------------------------------------
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>TREATMENTS>>>>>>>>
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>TREATMENTS>>>>>>>>
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>TREATMENTS>>>>>>>>
   #The number of treatments per year is drawn from the normal distribution.
-  #The mean and standard deviation for each treatment type is entered in step 1.
 
   #Null value for t.code. It will be re-assigned a value in the treatment loop (loop 2)
   t.code <- 4
@@ -690,7 +933,7 @@ for(a in 1:Years)#a <- 1
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>FIRES>>>>>>>>>>>>>>>
  
   #The number of fires per year is drawn from the Poisson Distribution (Wimberly 2002)
-  #FF = Annual Fire Frequency. This is calculated in step 1.
+  #FF = Annual Fire Frequency. This is calculated in step 7.
   fino.e <- min(rpois(1,FF.e),Truncate.Number[1])
   #For the buffer zone the number of fires is predicted by the number of fires at
   #Eglin so the severity of the wildfire season is synchronized.
@@ -992,7 +1235,7 @@ if(sum(meanTAP) <= 0)
     if(t.code == 3)
     {
       #Prescribed fire: Initiate treatment in the proportion of available pixels specified 
-      #in step 1 (cuts)
+      #at the beginning of the script.
       sct <- vector(mode = "numeric", length = 0)
       sct <- l.map[b.map == bun & s.map %in% elst]
       f_sct <- f.map[match(sct, l.map)]
@@ -1004,7 +1247,7 @@ if(sum(meanTAP) <= 0)
     } else
     {
       #Silvicultural treatments: Initiate treatment in the proportion of available pixels specified 
-      #in step 1 (cuts)
+      #at the beginning of the script.
       sct <- vector(mode = "numeric", length = 0)
       sct <- resample(l.map[b.map == bun & s.map %in% elst], 
                       round(max((tbsa * seed.cells[t.code]), 1),0), replace = T)
@@ -1248,7 +1491,7 @@ if(sum(meanTAP) <= 0)
                         
                         cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__", f.treatments$TreatmentName[t.code], 
                                   "_",b, "__block_",cc,"__expansion_" , "_",d,"__.txt",sep = ""), 
-                            file = paste("run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
+                            file = paste(output_path, "/fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
                         
                         breaks <- 432  
                         break
@@ -1273,7 +1516,7 @@ tm <- format(Sys.time(), format = "%H.%M.%S",
 
 cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__", f.treatments$TreatmentName[t.code], 
           "_",b, "__block_",cc,"__expansion_" , "_",d,"__.txt",sep = ""), 
-    file = paste("run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
+    file = paste(output_path, "/fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
 
 breaks <- 422  
 break
@@ -1293,7 +1536,7 @@ tm <- format(Sys.time(), format = "%H.%M.%S",
              tz = "", usetz = FALSE)
 cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__", f.treatments$TreatmentName[t.code], 
           "_",b, "__block_",cc,"__expansion_" , "_",d,"__.txt",sep = ""), 
-    file = paste("fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
+    file = paste(output_path, "/fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
 
 breaks <- 412    
 break
@@ -1305,7 +1548,7 @@ tm <- format(Sys.time(), format = "%H.%M.%S",
              tz = "", usetz = FALSE)
 cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__", f.treatments$TreatmentName[t.code], 
           "_",b, "__block_",cc,"__expansion_" , "_",d,"__.txt",sep = ""), 
-    file = paste("fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
+    file = paste(output_path, "/fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
                 } #4.0.0 ---------------------------------------------------------------------------
 #Find unique fuelbeds in each management unit
 
@@ -1396,7 +1639,7 @@ t.summary <- paste(
   "HiStandNo: ", max(nebc)) 
 
 #Save run data.
-cat(t.summary, file = paste("fdm_disturbances_status/run_", run, "_disturbances.txt", 
+cat(t.summary, file = paste(output_path, "/fdm_disturbances_status/run_", run, "_disturbances.txt", 
                             sep = ""), fill = T, append = T)#
 
         } else #2.4.1 ----------------------------------------------------------------------
@@ -1444,7 +1687,7 @@ cat(t.summary, file = paste("fdm_disturbances_status/run_", run, "_disturbances.
     "HiStandNo: ", max(nebc)) 
   
   #Save run data.
-  cat(t.summary, file = paste("fdm_disturbances_status/run_", run, "_disturbances.txt", 
+  cat(t.summary, file = paste(output_path, "/fdm_disturbances_status/run_", run, "_disturbances.txt", 
                               sep = ""), fill = T, append = T)#
   
 } #2.4.2 ---------------------------------------------------------------------------
@@ -1475,7 +1718,7 @@ cat(t.summary, file = paste("fdm_disturbances_status/run_", run, "_disturbances.
     "HiStandNo: ", max(nebc)) 
 
   #Save run data.
-  cat(t.summary, file = paste("fdm_disturbances_status/run_", run, "_disturbances.txt", 
+  cat(t.summary, file = paste(output_path, "/fdm_disturbances_status/run_", run, "_disturbances.txt", 
                               sep = ""), fill = T, append = T)#
   
   #Move to next row code and t code.
@@ -1509,26 +1752,26 @@ cat(t.summary, file = paste("fdm_disturbances_status/run_", run, "_disturbances.
     "HiStandNo: ", max(nebc))  
 
   #Save run data.
-  cat(t.summary, file = paste("fdm_disturbances_status/run_", run, "_disturbances.txt", 
+  cat(t.summary, file = paste(output_path, "/fdm_disturbances_status/run_", run, "_disturbances.txt", 
                               sep = ""), fill = T, append = T)#
   breaks <- 222
   break
-} #2.2.2-----------------------------------------------------------------------------
-} #2.1.2-----------------------------------------------------------------------------
-    } #2.0.0 ---------------------------------------------------------------------------
-  } #1.1.2-----------------------------------------------------------------------------
+} #2.2.2----------------------------------------------------------------------------
+} #2.1.2----------------------------------------------------------------------------
+    } #2.0.0 -----------------------------------------------------------------------
+  } #1.1.2--------------------------------------------------------------------------
 
 #Update time-since-last-fire to include latest treatments and add one year
 #treatments include herbicide and thinning
 TSLFxUnits[b.unit$unit %in% c.bun] <- 0
 TSLFxUnits <- TSLFxUnits + 1
   
-#Post run step 1>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+#Post-forest management treatment processing >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 #Update files if there were treatments in year[a].
 if(length(loopB.new_stand) > 0)
 {
 
-  #Object shows fuelbeds associated with each new stand number created by treatments 
+  #Object shows fuelbeds associated with each new stand number created by treatments
   #in year[a].
   #ufxTa <- mapply(function(x) unique(f.map[s.map == x]), loopB.new_stand)
   ufxTa_1 <- Fuelbed.List[Stand.List %in% loopB$old_stand]
@@ -1542,7 +1785,8 @@ if(length(loopB.new_stand) > 0)
 #Sort data frame by new stands
 loopB <- loopB[order(loopB$new_stand),]#probably unecessary
 
-#seperate out new stands from s.map, lists occurrences of new stands from min to max coords.
+#seperate out new stands from s.map, lists occurrences of new stands from min to max
+#coords.
 vs.map_a7 <- s.map[s.map %in% loopB$new_stand]
 
 #List of row numbers in t.post where fuelbeds need to be updated based on treatment
@@ -1554,12 +1798,13 @@ LL1 <- t.post$fuelbed[t.post$fuelbed %in% ufxTa]
 #row numbers in t.post corresponding with each existing fuelbed in each new stand 
 LL2 <- FL1[match(loopB$ufxTa, LL1)]
 
-#Use row numbers (LL2) and column numbers (loopB.treat_type) to calculate "coordinate" in t.post
+#Use row numbers (LL2) and column numbers (loopB.treat_type) to calculate 
+#"coordinate" in t.post
 LL3 <- ((loopB.treat_type - 1) * length(t.post$fuelbed)) + LL2
 
 
-#Convert t.post (ttxm is t.post) from a data.frame into a matrix so new fuelbeds can be identified 
-#by coordinates that corresond with row and column numbers.
+#Convert t.post (ttxm is t.post) from a data.frame into a matrix so new fuelbeds 
+#can be identified by coordinates that corresond with row and column numbers.
 am_ttxm <- as.matrix(ttxm)  
 
 #Idenintify new fuelbed for each new stand.
@@ -1577,31 +1822,36 @@ f.map[s.map %in% loopB$new_stand] <- v.newFB_a7
 newAGE_a7_1 <- Age.List[Stand.List %in% loopB$old_stand]
 newAGE_a7 <- newAGE_a7_1[match(loopB$old_stand, usxTa_1)]
 
-#Re-order loopB data frame by old stands because that is the order of ages in newAGE_a7.
+#Re-order loopB data frame by old stands because that is the order of ages in 
+#newAGE_a7.
 loopB <- loopB[order(loopB$old_stand),]
 
 #Add newAGE_a7 to loopB data.frame
 loopB <- data.frame(loopB, newAGE_a7 = newAGE_a7)
 
-  #List stands that have been altered by treatments.
-  ss1 <- (loopB.old_stand*-1)
-  stands <- sort(unique(ss1))#there can be duplicates, this will mess up the shortcut in a9
-  sa <- summarize(loopB.new_area,ss1,sum)#sum areas for duplicates.
-  sareas <- as.vector(sa[,2])
-  tt <- summarize(loopB.treat_type, ss1, min)
-  stype <- as.vector(tt[,2])
+#List stands that have been altered by treatments.
+ss1 <- (loopB.old_stand*-1)
+
+#There can be duplicates, this will mess up the shortcut in a9
+stands <- sort(unique(ss1))
+
+#Sum areas for duplicates.
+sa <- summarize(loopB.new_area,ss1,sum)
+sareas <- as.vector(sa[,2])
+tt <- summarize(loopB.treat_type, ss1, min)
+stype <- as.vector(tt[,2])
   
-  #Shelve fire history for stands that have been impacted by disturbance
-  new_mfri_vec <- mapply(function(y) mfri.Matrix[Stand.List == y,], ss1)
-  nmv <- t(new_mfri_vec)
+#Shelve fire history for stands that have been impacted by disturbance
+new_mfri_vec <- mapply(function(y) mfri.Matrix[Stand.List == y,], ss1)
+nmv <- t(new_mfri_vec)
   
-  #Add a fire for stands that were prescrib burned
-  nmv[,30] <- ifelse(loopB.treat_type == 3,1,0)
+#Add a fire for stands that were prescrib burned
+nmv[,30] <- ifelse(loopB.treat_type == 3,1,0)
   
-  #Change stand properties as needed for treatments.
-  Area.List[Stand.List %in% stands] <- Area.List[Stand.List %in% stands] - sareas
+#Change stand properties as needed for treatments.
+Area.List[Stand.List %in% stands] <- Area.List[Stand.List %in% stands] - sareas
   
-  #Update list to remove any stands that have been overwritten.
+#Update list to remove any stands that have been overwritten.
   Stand.List <- Stand.List[(Area.List == 0) == F]
   Fuelbed.List <- Fuelbed.List[(Area.List == 0) == F]
   Age.List <- Age.List[(Area.List == 0) == F]
@@ -1666,8 +1916,10 @@ loopB <- data.frame(loopB, newAGE_a7 = newAGE_a7)
   #List corresponding coordinates (l.map) for new stand occurrences in s.map
   vl.map_a11 <- l.map[s.map %in% loopB.new_stand]
 
-  #Use summarize function (w/ min()) to select a single coordinate value for each new stand.
+  #Use summarize function (w/ min()) to select a single coordinate value for each 
+  #new stand.
   v.Coord_a11a <- summarize(vl.map_a11,vs.map_a11,min)
+  
   #Subset coordinates
   v.Coord_a11b <- as.vector(v.Coord_a11a[,2])
 
@@ -2276,7 +2528,6 @@ if(length(diar) == 0)
                   
                   #Measures tesn that are still eligible for buring
                   #tesns in loop 10 have values of -1 to number of loops * -1
-                  burn.out <- 3#iterations after which pixel burns out
                   if(spread.type == 11 & g == 1)
                   {
                     tesn <- tesn_cum
@@ -2324,7 +2575,7 @@ dt <- Sys.Date()
 tm <- format(Sys.time(), format = "%H.%M.%S", 
              tz = "", usetz = FALSE)
 cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__free_",
-          g,"__.txt",sep = ""), file = paste("fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
+          g,"__.txt",sep = ""), file = paste(output_path, "/fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
 breaks <- 1022
  break
 }#10.2.2 --------------------------------------------------------------------------
@@ -2337,7 +2588,7 @@ dt <- Sys.Date()
 tm <- format(Sys.time(), format = "%H.%M.%S", 
              tz = "", usetz = FALSE)
 cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__free_",
-          g,"__.txt",sep = ""), file = paste("fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
+          g,"__.txt",sep = ""), file = paste(output_path, "/fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
 tesn <- -1#reset tesn from zero to -1
 spread.type <- ifelse(spread.type == 11, 0, spread.type)#if spread type is 11, set to 0.
 breaks <- 1031
@@ -2394,7 +2645,7 @@ breaks <- 1031
   tm <- format(Sys.time(), format = "%H.%M.%S", 
                tz = "", usetz = FALSE)
   cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__free_",
-            g,"__.txt",sep = ""), file = paste("fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
+            g,"__.txt",sep = ""), file = paste(output_path, "/fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
   
   breaks <- 1012
   break
@@ -2407,7 +2658,7 @@ if(spread.type == 12)
   tm <- format(Sys.time(), format = "%H.%M.%S", 
                tz = "", usetz = FALSE)
   cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__free_",
-            g,"__.txt",sep = ""), file = paste("fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
+            g,"__.txt",sep = ""), file = paste(output_path, "/fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
   
   breaks <- 1041
   break
@@ -2418,7 +2669,7 @@ dt <- Sys.Date()
 tm <- format(Sys.time(), format = "%H.%M.%S", 
              tz = "", usetz = FALSE)
 cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__free_",
-          g,"__.txt",sep = ""), file = paste("fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
+          g,"__.txt",sep = ""), file = paste(output_path, "/fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
 breaks <- 1042
 }#10.4.2
               } #10.0.0 --------------------------------------------------------------------------
@@ -2544,7 +2795,7 @@ breaks <- 1042
   tm <- format(Sys.time(), format = "%H.%M.%S", 
                tz = "", usetz = FALSE)
   cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__blocked_",
-            h,"__.txt",sep = ""), file = paste("fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
+            h,"__.txt",sep = ""), file = paste(output_path, "/fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
 
 #NOTE (12/6/2015)
 #Fire has burned out and must be reassigned to a new area. Use spread.type = 0 to
@@ -2563,7 +2814,7 @@ breaks <- 1042
   tm <- format(Sys.time(), format = "%H.%M.%S", 
                tz = "", usetz = FALSE)
   cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__blocked_",
-            h,"__.txt",sep = ""), file = paste("fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), append = T)#
+            h,"__.txt",sep = ""), file = paste(output_path, "/fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), append = T)#
   breaks <- 1112
   break
 } #11.1.2 ---------------------------------------------------------------------------
@@ -2578,7 +2829,7 @@ if(spread.type == 11)
   tm <- format(Sys.time(), format = "%H.%M.%S", 
                tz = "", usetz = FALSE)
   cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__blocked_",
-              h,"__.txt",sep = ""), file = paste("fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
+              h,"__.txt",sep = ""), file = paste(output_path, "/fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
   breaks < - 1131
   break
 } else #11.3.1
@@ -2589,7 +2840,7 @@ tm <- format(Sys.time(), format = "%H.%M.%S",
              tz = "", usetz = FALSE)
 
 cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__blocked_",
-          h,"__.txt",sep = ""), file = paste("fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
+          h,"__.txt",sep = ""), file = paste(output_path, "/fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
 
 breaks <- 1132
 }#11.3.2
@@ -2845,7 +3096,7 @@ d.summary <- paste(
  # e.summary <- rbind(e.summary, d.summary)
   
 #Save run data.
-cat(d.summary, file = paste("fdm_disturbances_status/run_", run, "_disturbances.txt", sep = ""), fill = T, append = T)#
+cat(d.summary, file = paste(output_path, "/fdm_disturbances_status/run_", run, "_disturbances.txt", sep = ""), fill = T, append = T)#
 
 ##############################################################################
 ##############################################################################
@@ -2876,7 +3127,7 @@ if(r101 > 0)                                                                 #
 ##############################################################################
 ##############################################################################
 
-#Post run step 2>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+#Post-wildfire processing >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 #Update files if there were disturbances in year[a].
 if(length(loopE.NewStand) > 0)
 {
@@ -3096,7 +3347,7 @@ if(any(c(length(Stand.List),
 {
 }
 
-#Post run step 3>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+#Post-wildfire processing >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 #Update files based on succession
 
 #Identify potential changes in fuelbeds based on succession pathways.
@@ -3129,7 +3380,7 @@ tm <- format(Sys.time(), format = "%H.%M.%S",
 #Save run data.
 cat(paste("Year: ", a, "TreatedExpected: ", meanTAP, "TreatedActual: ", meanTAA, 
           "BurnedExpected: ", desa, "BurnedActual: ", dema), 
-    file = paste("run_", run, "_annualSummary.txt", sep = ""), fill = T, append = T)#
+    file = paste(output_path, "/fdm_annualSummary/run_", run, "_annualSummary.txt", sep = ""), fill = T, append = T)#
 
 #Create maps for interval years.
 if((a %% Interval) == 0)
@@ -3140,13 +3391,13 @@ dt <- Sys.Date()
 tm <- format(Sys.time(), format = "%H.%M.%S", 
              tz = "", usetz = FALSE)
 
-write.table(s.map, file = paste("run_", run,"maps/sef_smap_",
+write.table(s.map, file = paste(output_path, "/fdm_maps/sef_smap_run_", run, "_", 
                                 dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
             append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
             dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
               c("escape", "double"))#
 
-write.table(f.map, file = paste("run_", run,"maps/sef_fmap_",
+write.table(f.map, file = paste(output_path, "/fdm_maps/sef_fmap_run_", run, "_",
                                 dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
             append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
             dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
