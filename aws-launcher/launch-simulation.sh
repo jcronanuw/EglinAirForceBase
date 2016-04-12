@@ -24,13 +24,17 @@ while true; do
 done
 
 # create S3 bucket to hold this simulation's results
-#aws s3 mb s3://bernease/
+# aws s3 mb s3://jcronanuw-wildfire/
 
 # launches instance for each parameter set
 #MAC=`curl http://169.254.169.254/latest/meta-data/mac`
 #SUBNET_ID=`curl http://169.254.169.254/latest/meta-data/network/interfaces/macs/$MAC/subnet-id`
+if [ $2 ]
+  then
+    SUBNET_ID="--subnet-id $2"
+fi
 line=2
 tail -n +2 $1 | while IFS=',' read count params; do
-  aws ec2 run-instances --image-id ami-8c8473ec --key-name bernease --user-data file://$SIM_ID/user_data_$line.ud --instance-type g2.2xlarge --count $count --subnet-id subnet-aac41fcf
+  aws ec2 run-instances --image-id ami-8c8473ec --key-name bernease --user-data file://$SIM_ID/user_data_$line.ud --instance-type g2.2xlarge --count $count $SUBNET_ID
   ((line++))
 done
