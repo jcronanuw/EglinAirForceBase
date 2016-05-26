@@ -15,8 +15,13 @@
 
 #>>>>>>>>>>>>>>>>>>>          COMPUTING PARAMETERS...
 
+#Do you want to install required R packages on this machine?
+#Yes --- TRUE
+#No ---- FALSE
+INSTALL_PACKAGES <- FALSE
 
-#With or without the graphics card as a processor for cellular automata sub-models
+#Enable the graphics card as a processor for cellular automata sub-models?
+#This will only work on machines with a Linux OS
 #Yes --- TRUE
 #No ---- FALSE
 USE_GPU <- FALSE
@@ -28,7 +33,7 @@ SEED <- 999
 
 #Select a run ID, this should be a number, ideally unique that will help track this
 #run. Output files are tagged with this ID number.
-RUN <- 4037
+RUN <- 30
 
 #Reporting interval, how often (in model years) should output maps be produced?
 #I.e., once every ... years.
@@ -36,11 +41,11 @@ RUN <- 4037
 Interval <- 1
 
 #What is your working directory. I.e. where are your input files coming from?
-input_path <- "C:/Users/jcronan/Documents/GitHub/EglinAirForceBase"
+input_path <- "GitHub/"     #"C:/Users/jcronan/Documents/GitHub/EglinAirForceBase/"
 
 #What is your output directory. I.e., here do you want maps and status reports to 
 #go?
-output_path <- "C:/usfs_sef_outputs_FDM"
+output_path <- ""     #"C:/usfs_sef_outputs_FDM/"
 
 #>>>>>>>>>>>>>>>>>>>          DISTURBANCE AND MODEL RUN TIME PARAMETERS...
 
@@ -52,10 +57,10 @@ output_path <- "C:/usfs_sef_outputs_FDM"
 #       and 2 yearr un.
 #3 ---  Manually enter disturbance parameters. Enter parameters below on 
 #       lines 99-123.
-disturbances <- 2
+disturbance_regime <- 3
 
 #Disturbance and time parameters
-if(disturbances == 1)
+if(disturbance_regime == 1)
   {
   #Number of years the model should run for.
   YEARS <- 50
@@ -84,7 +89,7 @@ if(disturbances == 1)
   #Element 2 -- Surrounding 10-km buffer landscape
   STAND_DEV_FIRE_SIZE <- c(361.12,13.98)
 } else 
-{if(disturbances == 2)
+{if(disturbance_regime == 2)
   {
   #Number of years the model should run for.
   YEARS <- 2
@@ -101,45 +106,45 @@ if(disturbances == 1)
   #Natural fire rotation in years for:
   #Element 1 -- Eglin Air Force Base
   #Element 2 -- Surrounding 10-km buffer landscape
-  NATURAL_FIRE_ROTATION <- c(554.38,10457.39)
+  NATURAL_FIRE_ROTATION <- c(554.38, 10457.39)
   
   #Mean fire size in acres for:
   #Element 1 -- Eglin Air Force Base
   #Element 2 -- Surrounding 10-km buffer landscape
-  MEAN_FIRE_SIZE <- c(103.65,5.23)        
+  MEAN_FIRE_SIZE <- c(103.65, 5.23)        
   
   #Standard deviation of mean fire size for:
   #Element 1 -- Eglin Air Force Base
   #Element 2 -- Surrounding 10-km buffer landscape
-  STAND_DEV_FIRE_SIZE <- c(361.12,13.98)
+  STAND_DEV_FIRE_SIZE <- c(361.12, 13.98)
 } else
 {
   #Number of years the model should run for.
-  YEARS <- 0
+  YEARS <- 10
   
   #Acres thinned annually.
-  THINNING <- 0
+  THINNING <- 5000
   
   #Acres of herbicide application annually
-  HERBICIDE <- 0
+  HERBICIDE <- 5000
   
   #Acres prescribed burned annually
-  RX_FIRE <- 0
+  RX_FIRE <- 25000
   
   #Natural fire rotation in years for:
   #Element 1 -- Eglin Air Force Base
   #Element 2 -- Surrounding 10-km buffer landscape
-  NATURAL_FIRE_ROTATION <- c(0, 0)
+  NATURAL_FIRE_ROTATION <- c(154.38,11457.39)
   
   #Mean fire size in acres for:
   #Element 1 -- Eglin Air Force Base
   #Element 2 -- Surrounding 10-km buffer landscape
-  MEAN_FIRE_SIZE <- c(0, 0)        
+  MEAN_FIRE_SIZE <- c(103.65,5.23)    
   
   #Standard deviation of mean fire size for:
   #Element 1 -- Eglin Air Force Base
   #Element 2 -- Surrounding 10-km buffer landscape
-  STAND_DEV_FIRE_SIZE <- c(0, 0)
+  STAND_DEV_FIRE_SIZE <- c(361.12, 13.98)
 }}
 
 
@@ -195,15 +200,47 @@ lh.adj <- 6  #coordinate map (l.map)
 
 #>>>>>>>>>>>>>>>>>>>          R PACKAGES...
 
-#install.packages("Hmisc", repos="http://cran.fhcrc.org/")
-#install.packages("GenKern", repos="http://cran.fhcrc.org/")
-#install.packages("SDMTools", repos="http://cran.fhcrc.org/")
-#install.packages("gtools", repos="http://cran.fhcrc.org/")
-library(Hmisc) #for summarize()
-library(GenKern)#for nearest()
-library(SDMTools)
-library(gtools)  #for combinations()ge
-library(utils)#for Rprof()
+#Manage packages.
+if(INSTALL_PACKAGES == TRUE)
+{
+  #Install packages
+  install.packages("Hmisc", repos="http://cran.fhcrc.org/")
+  install.packages("GenKern", repos="http://cran.fhcrc.org/")
+  install.packages("SDMTools", repos="http://cran.fhcrc.org/")
+  install.packages("gtools", repos="http://cran.fhcrc.org/")
+  #Open libraries
+  library(Hmisc) #for summarize()
+  library(GenKern)#for nearest()
+  library(SDMTools)
+  library(gtools)  #for combinations()ge
+  library(utils)#for Rprof()
+  if(USE_GPU == T)
+  {
+    #Install GPU package
+    install.packages("gmatrix", repos="http://cran.fhcrc.org/")
+    #Open GPU library
+    library(gmatrix)#GPU package, will only work on a Linux machine
+      } else
+  {
+    #nothing
+  }
+} else
+{
+  #Open libraries
+  library(Hmisc) #for summarize()
+  library(GenKern)#for nearest()
+  library(SDMTools)
+  library(gtools)  #for combinations()ge
+  library(utils)#for Rprof()
+  if(USE_GPU == T)
+  {
+    #Open GPU library
+    library(gmatrix)#GPU package, will only work on a Linux machine
+  } else
+  {
+    #nothing
+  }
+}
 
 #>>>>>>>>>>>>>>>>>>>          FOREST MANAGEMENT PARAMTERS...
 
@@ -853,6 +890,9 @@ g <- 0
 ####################################################################################
 #STEP 13: RUN MODEL LOOP
 
+#Measure system.time
+#systemTime <- system.time({
+
 #LOOP 111111111111111111111111111111111111111111111111111111111111111111111111111111
 #Loop 1 (by year). This loop encases the entire expression that maps regimes.
 for(a in 1:YEARS)#a <- 1
@@ -1097,7 +1137,12 @@ if(sum(meanTAP) <= 0)
     #Loop 2 (by treatments within year[a]). This loop runs all treatments for year[a].
     for (b in 1:r.max)#b <- 1
     { #2.0.0 ---------------------------------------------------------------------------
-
+      
+      #Set breaks to a default value
+      #The breaks is used to terminate a disturbance when certain conditions are not being met
+      #Loops will breaks when this object != 400.
+      breaks <- 400
+      
       #Governs loop
       end <- 1# switches to 2 if there is no remaining area available for the last management option
       
@@ -1266,9 +1311,6 @@ if(sum(meanTAP) <= 0)
           #multiple fuelbeds are involved.
           for (cc in 1:r.max)#cc <- 1
           { #3.0.0 ---------------------------------------------------------------------------
-
-            #Set breaks to a default value
-            breaks <- 400
             
             #Updated here in case any original stands have been completely overwritten
             loopA.snO <- sort(unique(as.vector(s.map[!s.map %in% c(NoData.Unit, 
@@ -1418,7 +1460,8 @@ if(sum(meanTAP) <= 0)
                    
                     #Ends loop if there are no more locations available for treatment[b] in the 
                     #block[cc] that is currently being mapped.
-                    if(length(avlo) > 0){
+                    if(length(avlo) > 0)
+                      {#4.2.1 ----------------------------------------------------------------------
 
                       #Reset new.cells object.
                       new.cells <- vector(length=0, mode = "numeric")
@@ -1484,15 +1527,6 @@ if(sum(meanTAP) <= 0)
                         PrctTrmt.Mapped[(length(PrctTrmt.Mapped)+1)] <- round(((Treatment.Area[
                           length(Treatment.Area)]/tbsa)*100),1)
                         
-                        #Save run data.
-                        dt <- Sys.Date()
-                        tm <- format(Sys.time(), format = "%H.%M.%S", 
-                                     tz = "", usetz = FALSE)
-                        
-                        cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__", f.treatments$TreatmentName[t.code], 
-                                  "_",b, "__block_",cc,"__expansion_" , "_",d,"__.txt",sep = ""), 
-                            file = paste(output_path, "/fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
-                        
                         breaks <- 432  
                         break
                       }#4.3.2----------------------------------------------------------------------
@@ -1509,15 +1543,6 @@ if(sum(meanTAP) <= 0)
   PrctTrmt.Mapped[(length(PrctTrmt.Mapped)+1)] <- round(((Treatment.Area[
     length(Treatment.Area)]/tbsa)*100),1)
 
-#Save run data.
-dt <- Sys.Date()
-tm <- format(Sys.time(), format = "%H.%M.%S", 
-             tz = "", usetz = FALSE)
-
-cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__", f.treatments$TreatmentName[t.code], 
-          "_",b, "__block_",cc,"__expansion_" , "_",d,"__.txt",sep = ""), 
-    file = paste(output_path, "/fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
-
 breaks <- 422  
 break
 } #4.2.2 ---------------------------------------------------------------------------
@@ -1530,26 +1555,11 @@ break
   PrctTrmt.Mapped[(length(PrctTrmt.Mapped)+1)] <- round(((Treatment.Area[
     length(Treatment.Area)]/tbsa)*100),1)
 
-#Save run data.
-dt <- Sys.Date()
-tm <- format(Sys.time(), format = "%H.%M.%S", 
-             tz = "", usetz = FALSE)
-cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__", f.treatments$TreatmentName[t.code], 
-          "_",b, "__block_",cc,"__expansion_" , "_",d,"__.txt",sep = ""), 
-    file = paste(output_path, "/fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
-
 breaks <- 412    
 break
 } #4.1.2 ---------------------------------------------------------------------------
 
-#Save run data.
-dt <- Sys.Date()
-tm <- format(Sys.time(), format = "%H.%M.%S", 
-             tz = "", usetz = FALSE)
-cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__", f.treatments$TreatmentName[t.code], 
-          "_",b, "__block_",cc,"__expansion_" , "_",d,"__.txt",sep = ""), 
-    file = paste(output_path, "/fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
-                } #4.0.0 ---------------------------------------------------------------------------
+               } #4.0.0 ---------------------------------------------------------------------------
 #Find unique fuelbeds in each management unit
 
 #Unique old stands
@@ -1630,16 +1640,16 @@ t.summary <- paste(
   " Name: ", f.treatments$TreatmentTitle[t.code], 
   "MgmtOp: ", b.thresh$management_type[row.code], 
   "BurnBlock: ", bun, 
-  "PercentBlack: ", round(tbsa/sum(Area.List[MU.List == bun]), 1), 
+  "PercentBlack: ", round(sum(loopB.new_area)/sum(Area.List[MU.List == bun]), 1), 
   " TreatedArea_Expected: ", tbsa, 
-  " TreatedArea_Actual: ", tbma,
+  " TreatedArea_Actual: ", sum(loopB.new_area),
   "Untreated_Area: ", b.untreated[row.code], 
   " Blocks: ", cc, 
   " Expansions: ", d.d, 
   "HiStandNo: ", max(nebc)) 
 
 #Save run data.
-cat(t.summary, file = paste(output_path, "/fdm_disturbances_status/run_", run, "_disturbances.txt", 
+cat(t.summary, file = paste(output_path, "fdm_disturbances_status/run_", run, "_disturbances.txt", 
                             sep = ""), fill = T, append = T)#
 
         } else #2.4.1 ----------------------------------------------------------------------
@@ -1687,7 +1697,7 @@ cat(t.summary, file = paste(output_path, "/fdm_disturbances_status/run_", run, "
     "HiStandNo: ", max(nebc)) 
   
   #Save run data.
-  cat(t.summary, file = paste(output_path, "/fdm_disturbances_status/run_", run, "_disturbances.txt", 
+  cat(t.summary, file = paste(output_path, "fdm_disturbances_status/run_", run, "_disturbances.txt", 
                               sep = ""), fill = T, append = T)#
   
 } #2.4.2 ---------------------------------------------------------------------------
@@ -1718,7 +1728,7 @@ cat(t.summary, file = paste(output_path, "/fdm_disturbances_status/run_", run, "
     "HiStandNo: ", max(nebc)) 
 
   #Save run data.
-  cat(t.summary, file = paste(output_path, "/fdm_disturbances_status/run_", run, "_disturbances.txt", 
+  cat(t.summary, file = paste(output_path, "fdm_disturbances_status/run_", run, "_disturbances.txt", 
                               sep = ""), fill = T, append = T)#
   
   #Move to next row code and t code.
@@ -1752,13 +1762,14 @@ cat(t.summary, file = paste(output_path, "/fdm_disturbances_status/run_", run, "
     "HiStandNo: ", max(nebc))  
 
   #Save run data.
-  cat(t.summary, file = paste(output_path, "/fdm_disturbances_status/run_", run, "_disturbances.txt", 
+  cat(t.summary, file = paste(output_path, "fdm_disturbances_status/run_", run, "_disturbances.txt", 
                               sep = ""), fill = T, append = T)#
   breaks <- 222
   break
 } #2.2.2----------------------------------------------------------------------------
 } #2.1.2----------------------------------------------------------------------------
-    } #2.0.0 -----------------------------------------------------------------------
+
+} #2.0.0 -----------------------------------------------------------------------
   } #1.1.2--------------------------------------------------------------------------
 
 #Update time-since-last-fire to include latest treatments and add one year
@@ -1801,7 +1812,6 @@ LL2 <- FL1[match(loopB$ufxTa, LL1)]
 #Use row numbers (LL2) and column numbers (loopB.treat_type) to calculate 
 #"coordinate" in t.post
 LL3 <- ((loopB.treat_type - 1) * length(t.post$fuelbed)) + LL2
-
 
 #Convert t.post (ttxm is t.post) from a data.frame into a matrix so new fuelbeds 
 #can be identified by coordinates that corresond with row and column numbers.
@@ -1849,8 +1859,19 @@ nmv <- t(new_mfri_vec)
 nmv[,30] <- ifelse(loopB.treat_type == 3,1,0)
   
 #Change stand properties as needed for treatments.
-Area.List[Stand.List %in% stands] <- Area.List[Stand.List %in% stands] - sareas
-  
+#Create a data.frame so you can switch order from stand number to
+#order in which stand was added.
+ID1.List <- 1:length(Stand.List)
+TL1 <- data.frame(ID = ID1.List, Stand = Stand.List, Area = Area.List)
+#Order by stand number
+TL1 <- TL1[order(TL1$Stand),]
+#Subtract area of new stands from corresponding old stands
+TL1$Area[TL1$Stand %in% stands] <- TL1$Area[TL1$Stand %in% stands] - sareas
+#Reorder by order stands were added
+TL1 <- TL1[order(TL1$ID),]
+#Replace Area.List with updated object
+Area.List <- TL1$Area
+
 #Update list to remove any stands that have been overwritten.
   Stand.List <- Stand.List[(Area.List == 0) == F]
   Fuelbed.List <- Fuelbed.List[(Area.List == 0) == F]
@@ -1967,7 +1988,7 @@ if(any(c(length(Stand.List),
   break
 } else
 {
-  r101 <- 0   
+  r101 <- ifelse(any(s.map < 0 & s.map > -9999),44,0)   
 } 
 
 } else
@@ -1994,7 +2015,7 @@ if(length(diar) == 0)
   #year[a].
   for (e in tdn[tdy == a])#e <- 2
   { #8.0.0 ---------------------------------------------------------------------------
-   
+  
     ### 
    forceBurnOut <- 0
     
@@ -2570,12 +2591,6 @@ if(length(diar) == 0)
   spread.type <- 0# necessary because this loop isn't producing new burnable area and you
   #need to relocate the fire.
 
-#Save run data.
-dt <- Sys.Date()
-tm <- format(Sys.time(), format = "%H.%M.%S", 
-             tz = "", usetz = FALSE)
-cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__free_",
-          g,"__.txt",sep = ""), file = paste(output_path, "/fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
 breaks <- 1022
  break
 }#10.2.2 --------------------------------------------------------------------------
@@ -2583,15 +2598,11 @@ breaks <- 1022
 if(all(pr.3[,2] == 0))
   
 {#10.3.1 --------------------------------------------------------------------------
-#Save run data.
-dt <- Sys.Date()
-tm <- format(Sys.time(), format = "%H.%M.%S", 
-             tz = "", usetz = FALSE)
-cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__free_",
-          g,"__.txt",sep = ""), file = paste(output_path, "/fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
-tesn <- -1#reset tesn from zero to -1
-spread.type <- ifelse(spread.type == 11, 0, spread.type)#if spread type is 11, set to 0.
-breaks <- 1031
+ #Reset tesn from zero to -1
+ tesn <- -1
+ #If spread type is 11, set to 0.
+ spread.type <- ifelse(spread.type == 11, 0, spread.type)
+ breaks <- 1031
  break
 } else #10.3.1 ---------------------------------------------------------------------
 { #10.3.2 --------------------------------------------------------------------------
@@ -2606,72 +2617,65 @@ breaks <- 1031
   #that the mapped regime does not exceed its prescribed area.
   fual <- s.profile[match(f.map[l.map %in% pr.3[,1]], f.probability[,1])]
 
+  #Multiply wind probability of spread by fuel-based probability of spread
   pr.5 <- pr.4 * fual
-
-  #Produces a list with locations selected for each fuelbed.
-  new.cells <- unlist(mapply(function(y){
-    pr.3[y,1][resample(c(0,1), size = 1, replace = T, prob = c(1-pr.5[y], pr.5[y])) == 1]
-  },1:length(pr.3[,1])))
-
-  #Scale back the number of new cells if it will exceed area to be burned.
-  if((dema + length(ocod) + length(new.cells)) <= desa)
-  {
-    new.cells <- new.cells
-  } else
-  {
-    #If the number of new cells + dema exceeds dema then reduce the number of new cells.
-    new.cells <- resample(new.cells, (desa-(dema + length(ocod))))
-  }
-
-  osnd <- c(osnd, s.map[new.cells]) #tracks stand numbers involved in disturbance.
-  ocod <- c(ocod, new.cells) #tracks coordinates involved in disturbance.
-  s.map[new.cells] <- ((g*-1)-1) #maps disturbance.
-
-  if(spread.type == 11 & g >= 4 & length(unique(b.map[l.map %in% ocod])) > length(burned.units))
-  {
-    spread.type <- 12
-    tesn_cum <- c(tesn_cum,((g*-1)-1))#update values representing pixels burned in this fire.
-  } else
-  {
-    tesn_cum <- c(tesn_cum,((g*-1)-1))#update values representing pixels burned in this fire.
-  }
-
   
+  #Ends loop if there are no more locations available for disturbance[e].
+  if(all(pr.5 == 0))
+    {#10.4.1 --------------------------------------------------------------------------
+     #Reset tesn from zero to -1
+     tesn <- -1
+     spread.type <- ifelse(spread.type == 11, 0, spread.type)#if spread type is 11, set to 0.
+     breaks <- 1041
+     break
+     } else #10.4.1 ---------------------------------------------------------------------
+  { #10.4.2 --------------------------------------------------------------------------
+    #Rescale probability of spread to 1, this makes model run more efficiently without
+    #sacrificing differences in fuel/wind field properties.
+    pr.6 <- pr.5/max(pr.5)
+    #Produces a list with locations selected for each fuelbed.
+    new.cells <- unlist(mapply(function(y){
+      pr.3[y,1][resample(c(0,1), size = 1, replace = T, prob = c(1-pr.6[y], pr.6[y])) == 1]
+    },1:length(pr.3[,1])))
+    
+    #Scale back the number of new cells if it will exceed area to be burned.
+    if((dema + length(ocod) + length(new.cells)) <= desa)
+    {
+      new.cells <- new.cells
+    } else
+    {
+      #If the number of new cells + dema exceeds dema then reduce the number of new cells.
+      new.cells <- resample(new.cells, (desa-(dema + length(ocod))))
+    }
+    
+    osnd <- c(osnd, s.map[new.cells]) #tracks stand numbers involved in disturbance.
+    ocod <- c(ocod, new.cells) #tracks coordinates involved in disturbance.
+    s.map[new.cells] <- ((g*-1)-1) #maps disturbance.
+    
+    if(spread.type == 11 & g >= 4 & length(unique(b.map[l.map %in% ocod])) > length(burned.units))
+      {
+      spread.type <- 12
+      tesn_cum <- c(tesn_cum,((g*-1)-1))#update values representing pixels burned in this fire.
+      } else
+        {
+          tesn_cum <- c(tesn_cum,((g*-1)-1))#update values representing pixels burned in this fire.
+        }
+    } #10.4.2 --------------------------------------------------------------------------
 } #10.3.2 --------------------------------------------------------------------------
                 } else #10.1.1 ---------------------------------------------------------------------
-{ #10.1.2 --------------------------------------------------------------------------
-  #Save run data.
-  dt <- Sys.Date()
-  tm <- format(Sys.time(), format = "%H.%M.%S", 
-               tz = "", usetz = FALSE)
-  cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__free_",
-            g,"__.txt",sep = ""), file = paste(output_path, "/fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
-  
+{ #10.1.2 -------------------------------------------------------------------------- 
   breaks <- 1012
   break
 } #10.1.2 --------------------------------------------------------------------------
 
 if(spread.type == 12)
-{#10.4.1
-  #Save run data.
-  dt <- Sys.Date()
-  tm <- format(Sys.time(), format = "%H.%M.%S", 
-               tz = "", usetz = FALSE)
-  cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__free_",
-            g,"__.txt",sep = ""), file = paste(output_path, "/fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
-  
-  breaks <- 1041
+{#10.5.1
+  breaks <- 1051
   break
-} else#10.4.1
-{#10.4.2
-#Save run data.
-dt <- Sys.Date()
-tm <- format(Sys.time(), format = "%H.%M.%S", 
-             tz = "", usetz = FALSE)
-cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__free_",
-          g,"__.txt",sep = ""), file = paste(output_path, "/fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
-breaks <- 1042
-}#10.4.2
+} else#10.5.1
+{#10.5.2
+breaks <- 1052
+}#10.5.2
               } #10.0.0 --------------------------------------------------------------------------
 } else #9.7.1 (WILDFIRE LOOP)--------------------------------------------------------------
 {#9.7.2 (RX FIRE LOOP)--------------------------------------------------------------
@@ -2790,13 +2794,6 @@ breaks <- 1042
      } else #11.2.1 ----------------------------------------------------------------------
      
 {#11.2.2
-  #Save run data.
-  dt <- Sys.Date()
-  tm <- format(Sys.time(), format = "%H.%M.%S", 
-               tz = "", usetz = FALSE)
-  cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__blocked_",
-            h,"__.txt",sep = ""), file = paste(output_path, "/fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
-
 #NOTE (12/6/2015)
 #Fire has burned out and must be reassigned to a new area. Use spread.type = 0 to
 #direct loop 9 into section that will locate anew scd
@@ -2809,13 +2806,7 @@ breaks <- 1042
    } else #11.1.1 ----------------------------------------------------------------------
 
 { #11.1.2 ---------------------------------------------------------------------------
-  #Save run data.
-  dt <- Sys.Date()
-  tm <- format(Sys.time(), format = "%H.%M.%S", 
-               tz = "", usetz = FALSE)
-  cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__blocked_",
-            h,"__.txt",sep = ""), file = paste(output_path, "/fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), append = T)#
-  breaks <- 1112
+ breaks <- 1112
   break
 } #11.1.2 ---------------------------------------------------------------------------
 
@@ -2824,24 +2815,10 @@ if(spread.type == 11)
   #Save units that where burned so far.
   burned.units <- c(burned.units, f.bun)
 
-  #Save run data.
-  dt <- Sys.Date()
-  tm <- format(Sys.time(), format = "%H.%M.%S", 
-               tz = "", usetz = FALSE)
-  cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__blocked_",
-              h,"__.txt",sep = ""), file = paste(output_path, "/fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
   breaks < - 1131
   break
 } else #11.3.1
 {#11.3.2
-#Save run data.
-dt <- Sys.Date()
-tm <- format(Sys.time(), format = "%H.%M.%S", 
-             tz = "", usetz = FALSE)
-
-cat(paste("run_", run,"_", dt,"_",tm,"_year_",a,"__wildfire_",e, "__block_",f,"__blocked_",
-          h,"__.txt",sep = ""), file = paste(output_path, "/fdm_iterations_status/run_", run, "_iterations.txt", sep = ""), fill = T, append = T)#
-
 breaks <- 1132
 }#11.3.2
  } #11.0.0 ---------------------------------------------------------------------------
@@ -2917,7 +2894,7 @@ if(length(unique(loopF.NewStand)) != length(loopF.NewStand) |
   break
 } else
 {
-  r101 <- 0 
+  r101 <- ifelse(any(s.map < 0 & s.map > -9999),22,0) 
 } 
 
 #TEMPOARY -- FORCES FDM TO CRASH IF -1 IS ASSSIGNED TO S.MAP
@@ -3008,7 +2985,7 @@ if(length(s.map[s.map < 0 & s.map > -9999]) > 0)
     r101 <- 8
   } else
   {
-    r101 <- 0 
+    r101 <- ifelse(any(s.map < 0 & s.map > -9999),88,0) 
   } 
   
   #TEMPOARY -- FORCES FDM TO CRASH IF -1 IS ASSSIGNED TO S.MAP
@@ -3087,8 +3064,8 @@ d.summary <- paste(
   "MgmtOp: ", "N/A", 
   "BurnBlock: ", "N/A", 
   " BurnedArea_Expected: ", desa, 
-  " BurnedArea_Actual: ", dema, 
-  "UnBurned_Area: ", desa-dema, 
+  " BurnedArea_Actual: ", sum(loopE.Area), 
+  "UnBurned_Area: ", desa-sum(loopE.Area), 
   " Blocks: ", f, 
   " Expansions: ", g.g, 
   "HiStandNo: ", max(neef))
@@ -3096,7 +3073,7 @@ d.summary <- paste(
  # e.summary <- rbind(e.summary, d.summary)
   
 #Save run data.
-cat(d.summary, file = paste(output_path, "/fdm_disturbances_status/run_", run, "_disturbances.txt", sep = ""), fill = T, append = T)#
+cat(d.summary, file = paste(output_path, "fdm_disturbances_status/run_", run, "_disturbances.txt", sep = ""), fill = T, append = T)#
 
 ##############################################################################
 ##############################################################################
@@ -3111,10 +3088,10 @@ if(r101 > 0)                                                                 #
 {                                                                            #
   r101 <- r101
 }                                                                            #
-                                                                             #
+#                                                                            #
   } #8.0.0 ------------------------------------------------------------------#
 }                                                                            #
-                                                                             #
+#
 if(r101 > 0)                                                                 #
 {                                                                            #
   r101 <- r101
@@ -3194,11 +3171,18 @@ if(length(loopE.NewStand) > 0)
   nmvd[,30] <- 1
 
 #Change stand properties as needed for treatments.
-for(i in 1:length(standd))
-  {
-    Area.List[Stand.List == standd[i]] <- 
-                Area.List[Stand.List == standd[i]] - saread[i]
-  }
+#Create a data.frame so you can switch order from stand number to
+#order in which stand was added.
+ID2.List <- 1:length(Stand.List)
+TL2 <- data.frame(ID = ID2.List, Stand = Stand.List, Area = Area.List)
+#Order by stand number
+TL2 <- TL2[order(TL2$Stand),]
+#Subtract area of new stands from corresponding old stands
+TL2$Area[TL2$Stand %in% standd] <- TL2$Area[TL2$Stand %in% standd] - saread
+#Reorder by order stands were added
+TL2 <- TL2[order(TL2$ID),]
+#Replace Area.List with updated object
+Area.List <- TL2$Area
 
   #Update list to remove any stands that have been overwritten.
   Stand.List <- Stand.List[(Area.List == 0) == F]
@@ -3320,7 +3304,7 @@ if(any(c(length(Stand.List),
   break
 } else
 {
-  r101 <- 0   
+  r101 <- ifelse(any(s.map < 0 & s.map > -9999),33,0) 
 } 
 ##############################################################################
 ##############################################################################
@@ -3372,16 +3356,6 @@ Fuelbed.List[Stand.List %in% s.SL2] <- pmuf2
 #Update D.List
 D.List <- cbind(T1E.List, T2E.List, D1E.List, D2E.List)
 
-#Save run data.
-dt <- Sys.Date()
-tm <- format(Sys.time(), format = "%H.%M.%S", 
-             tz = "", usetz = FALSE)
-
-#Save run data.
-cat(paste("Year: ", a, "TreatedExpected: ", meanTAP, "TreatedActual: ", meanTAA, 
-          "BurnedExpected: ", desa, "BurnedActual: ", dema), 
-    file = paste(output_path, "/fdm_annualSummary/run_", run, "_annualSummary.txt", sep = ""), fill = T, append = T)#
-
 #Create maps for interval years.
 if((a %% Interval) == 0)
 {
@@ -3391,18 +3365,34 @@ dt <- Sys.Date()
 tm <- format(Sys.time(), format = "%H.%M.%S", 
              tz = "", usetz = FALSE)
 
-write.table(s.map, file = paste(output_path, "/fdm_maps/sef_smap_run_", run, "_", 
+write.table(s.map, file = paste(output_path, "fdm_maps/sef_smap_run_", run, "_", 
                                 dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
             append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
             dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
               c("escape", "double"))#
 
-write.table(f.map, file = paste(output_path, "/fdm_maps/sef_fmap_run_", run, "_",
+write.table(Stand.List, file = paste(output_path, "fdm_maps/sef_sList_run_", run, "_", 
                                 dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
             append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
             dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
               c("escape", "double"))#
+
+#write.table(f.map, file = paste(output_path, "fdm_maps/sef_fmap_run_", run, "_",
+#                                dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
+#            append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
+#            dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
+#              c("escape", "double"))#
 
 }
-
 } #1.0.0 ---------------------------------------------------------------------------
+#})
+
+#Save system time file
+#Date and time
+#dt <- Sys.Date()
+#tm <- format(Sys.time(), format = "%H.%M.%S", 
+#             tz = "", usetz = FALSE)
+
+#Save run data.
+#cat(systemTime, file = paste(output_path, "fdm_systemTime_status/run_", run, "_systemTime.txt", 
+#                            sep = ""), fill = T, append = T)#
