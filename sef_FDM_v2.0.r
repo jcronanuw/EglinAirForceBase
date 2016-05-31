@@ -397,6 +397,8 @@ if (exists("host_sim_params") && "use_gpu" %in% colnames(host_sim_params)) {
   USE_GPU <- FALSE
 }
 
+# TODO bernease: Pull INSTALL_PACKAGES variable from host_sim_params, similar to use_gpu
+
 #Set working directory if running FDM manually
 if (exists("host_sim_params")) 
   {
@@ -742,25 +744,22 @@ find_neighbors <- function(x, radius, row_cnt = rows, col_cnt = cols)
   #             shift(seq(1,20), 0, 1, row_cnt=5) = c(2,3,4,5,5,7,8,9,10,10,12,13,14,15,15,17,18,19,20,20)
   #             shift(seq(1,20), -3, 2, row_cnt=5) = c(1,2,3,11,12,6,7,8,16,17,11,12,13,14,15,16,17,18,19,20)
   params <- expand.grid(x, seq(-radius,radius,1), seq(-radius,radius,1))
-  params <- params[!(params[,2]==0 & params[,3]==0),]
+  params <- as.matrix(params[!(params[,2]==0 & params[,3]==0),])
   x_row = ifelse(params[,1] %% row_cnt == 0, row_cnt, params[,1] %% row_cnt)  # row number
   x_col = ifelse(params[,1] %% row_cnt == 0, params[,1] %/% row_cnt, params[,1] %/% row_cnt + 1)  # column number
   if (USE_GPU) {
-    params <- g(params)
-    x_row <- g(x_row)
-    x_col <- g(x_col)
-    row_cnt <- g(row_cnt)
-    col_cnt <- g(col_cnt)
-  }
+    g_params <- as.gmatrix(params)
+    g_x_row <- as.gmatrix(x_row)
+    g_x_col <- as.gmatrix(x_col)
+    result <- ifelse(g_x_row + g_params[,2] > 0 & g_x_row + g_params[,2] <= row_cnt & g_x_col + g_params[,3] > 0 & g_x_col + g_params[,3] <= col_cnt,
+                     g_params[,1] + g_params[,3]*row_cnt + g_params[,2], 0)
+    result <- h(result)
+    result <- as.vector(result)
+  } else {
   result <- ifelse(x_row + params[,2] > 0 & x_row + params[,2] <= row_cnt & x_col + params[,3] > 0 & x_col + params[,3] <= col_cnt,
                             params[,1] + params[,3]*row_cnt + params[,2], 0)
-  if (USE_GPU) {
-    params <- h(params)
-    x_row <- h(x_row)
-    x_col <- h(x_col)
-    row_cnt <- h(row_cnt)
-    col_cnt <- h(col_cnt)
   }
+  
   return (result)
 }
 
