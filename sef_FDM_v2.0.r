@@ -342,10 +342,14 @@ if (exists("host_sim_params") && "seed" %in% colnames(host_sim_params)) {
   set.seed(seed)  # replace seed with manual seed if desired
 }
 
+if (exists("host_sim_params") && "rx_fire" %in% colnames(host_sim_params)) {
+  # from AWS user data
+  RX_FIRE <- host_sim_params$rx_fire
+}
+
 if (exists("host_sim_params") && "use_gpu" %in% colnames(host_sim_params)) {
   # from AWS user data
   USE_GPU <- host_sim_params$use_gpu
-  RX_FIRE <- host_sim_params$rx_fire
 } else if (exists("USE_GPU")) {
   # manual, no need to do anything
 } else {
@@ -353,6 +357,16 @@ if (exists("host_sim_params") && "use_gpu" %in% colnames(host_sim_params)) {
 }
 
 # TODO bernease: Pull INSTALL_PACKAGES variable from host_sim_params, similar to use_gpu
+
+if (exists("host_sim_params") && "input_path" %in% colnames(host_sim_params)) {
+  # from AWS user data
+  input_path <- host_sim_params$input_path
+}
+
+if (exists("host_sim_params") && "output_path" %in% colnames(host_sim_params)) {
+  # from AWS user data
+  output_path <- host_sim_params$output_path
+}
 
 #Set working directory if running FDM manually
 if (exists("host_sim_params")) 
