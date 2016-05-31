@@ -22,12 +22,12 @@ INSTALL_PACKAGES <- FALSE
 #This will only work on machines with a Linux OS
 #Yes --- TRUE
 #No ---- FALSE
-#USE_GPU <- FALSE
+USE_GPU <- FALSE
 
 #Would you like to replicate this run?
 #If so use the same seed number for subsequent runs
 #SEED is the starting point for psuedo random number generator
-#SEED <- 999
+SEED <- 999
 
 #Select a run ID, this should be a number, ideally unique that will help track this
 #run. Output files are tagged with this ID number.
@@ -36,7 +36,7 @@ RUN <- 6
 #Reporting interval, how often (in model years) should output maps be produced?
 #I.e., once every ... years.
 #Must be less than model run time (YEARS object)
-Interval <- 1
+Interval <- 2
 
 #What is your working directory. I.e. where are your input files coming from?
 input_path <- ""     
@@ -55,7 +55,7 @@ output_path <- ""
 #       and 2 yearr un.
 #3 ---  Manually enter disturbance parameters. Enter parameters below on 
 #       lines 99-123.
-disturbance_regime <- 2
+disturbance_regime <- 3
 
 #Disturbance and time parameters
 if(disturbance_regime == 1)
@@ -132,7 +132,7 @@ if(disturbance_regime == 1)
   #Natural fire rotation in years for:
   #Element 1 -- Eglin Air Force Base
   #Element 2 -- Surrounding 10-km buffer landscape
-  NATURAL_FIRE_ROTATION <- c(154.38,11457.39)
+  NATURAL_FIRE_ROTATION <- c(54.38,457.39)
   
   #Mean fire size in acres for:
   #Element 1 -- Eglin Air Force Base
@@ -145,16 +145,10 @@ if(disturbance_regime == 1)
   STAND_DEV_FIRE_SIZE <- c(361.12, 13.98)
 }}
 
-
-
 #>>>>>>>>>>>>>>>>>>>          FINISHED
 
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-
-
 
 #>>>>>>>>>>>>>>>>>>>          HARD-CODED PARAMETERS -- THESE SHOULD NOT BE CHANGED
 
