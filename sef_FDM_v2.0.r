@@ -31,7 +31,7 @@ INSTALL_PACKAGES <- FALSE
 
 #Select a run ID, this should be a number, ideally unique that will help track this
 #run. Output files are tagged with this ID number.
-RUN <- 5
+RUN <- 6
 
 #Reporting interval, how often (in model years) should output maps be produced?
 #I.e., once every ... years.
@@ -39,11 +39,11 @@ RUN <- 5
 Interval <- 1
 
 #What is your working directory. I.e. where are your input files coming from?
-input_path <- "C:/Users/jcronan/Documents/GitHub/EglinAirForceBase/"#     "GitHub/"     
+input_path <- ""     
 
 #What is your output directory. I.e., here do you want maps and status reports to 
 #go?
-output_path <- "C:/usfs_sef_outputs_FDM/"     #""
+output_path <- ""
 
 #>>>>>>>>>>>>>>>>>>>          DISTURBANCE AND MODEL RUN TIME PARAMETERS...
 
@@ -315,8 +315,8 @@ windProbs <- c(0.1,0.025,0.01,0.01,0.025,0.05,0.16,0.62)
 #STEP 01: Administrative Information
 
 # Reads mutable parameters from AWS user data
-try(host_sim_params <- read.table("inputs/host_sim_params.csv"), silent=TRUE)
-host_sim_params <- read.csv("inputs/host_sim_params.csv")
+try(host_sim_params <- read.table("host_sim_params.txt"), silent=TRUE)
+host_sim_params <- read.csv("host_sim_params.txt")
 
 if (exists("host_sim_params") && "run_id" %in% colnames(host_sim_params)) {
   # from AWS user data
