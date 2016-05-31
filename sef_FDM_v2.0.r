@@ -57,7 +57,7 @@ output_path <- ""     #"C:/usfs_sef_outputs_FDM/"
 #       and 2 yearr un.
 #3 ---  Manually enter disturbance parameters. Enter parameters below on 
 #       lines 99-123.
-disturbance_regime <- 3
+disturbance_regime <- 2
 
 #Disturbance and time parameters
 if(disturbance_regime == 1)
@@ -1648,7 +1648,7 @@ t.summary <- paste(
   "HiStandNo: ", max(nebc)) 
 
 #Save run data.
-cat(t.summary, file = paste(output_path, "fdm_disturbances_status/run_", run, "_disturbances.txt", 
+cat(t.summary, file = paste(output_path, "run_", run, "_disturbances.txt", 
                             sep = ""), fill = T, append = T)#
 
         } else #2.4.1 ----------------------------------------------------------------------
@@ -1696,7 +1696,7 @@ cat(t.summary, file = paste(output_path, "fdm_disturbances_status/run_", run, "_
     "HiStandNo: ", max(nebc)) 
   
   #Save run data.
-  cat(t.summary, file = paste(output_path, "fdm_disturbances_status/run_", run, "_disturbances.txt", 
+  cat(t.summary, file = paste(output_path, "run_", run, "_disturbances.txt", 
                               sep = ""), fill = T, append = T)#
   
 } #2.4.2 ---------------------------------------------------------------------------
@@ -1727,7 +1727,7 @@ cat(t.summary, file = paste(output_path, "fdm_disturbances_status/run_", run, "_
     "HiStandNo: ", max(nebc)) 
 
   #Save run data.
-  cat(t.summary, file = paste(output_path, "fdm_disturbances_status/run_", run, "_disturbances.txt", 
+  cat(t.summary, file = paste(output_path, "run_", run, "_disturbances.txt", 
                               sep = ""), fill = T, append = T)#
   
   #Move to next row code and t code.
@@ -1761,7 +1761,7 @@ cat(t.summary, file = paste(output_path, "fdm_disturbances_status/run_", run, "_
     "HiStandNo: ", max(nebc))  
 
   #Save run data.
-  cat(t.summary, file = paste(output_path, "fdm_disturbances_status/run_", run, "_disturbances.txt", 
+  cat(t.summary, file = paste(output_path, "run_", run, "_disturbances.txt", 
                               sep = ""), fill = T, append = T)#
   breaks <- 222
   break
@@ -3072,7 +3072,7 @@ d.summary <- paste(
  # e.summary <- rbind(e.summary, d.summary)
   
 #Save run data.
-cat(d.summary, file = paste(output_path, "fdm_disturbances_status/run_", run, "_disturbances.txt", sep = ""), fill = T, append = T)#
+cat(d.summary, file = paste(output_path, "run_", run, "_disturbances.txt", sep = ""), fill = T, append = T)#
 
 ##############################################################################
 ##############################################################################
