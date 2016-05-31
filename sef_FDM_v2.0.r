@@ -1,6 +1,4 @@
 
-
-
 ###START FUELBED DYNAMICS MODEL####
 
 #Version 2.0 (Derviced from version 17e, the most recent version withmodel 
@@ -24,16 +22,16 @@ INSTALL_PACKAGES <- FALSE
 #This will only work on machines with a Linux OS
 #Yes --- TRUE
 #No ---- FALSE
-USE_GPU <- FALSE
+#USE_GPU <- FALSE
 
 #Would you like to replicate this run?
 #If so use the same seed number for subsequent runs
 #SEED is the starting point for psuedo random number generator
-SEED <- 999
+#SEED <- 999
 
 #Select a run ID, this should be a number, ideally unique that will help track this
 #run. Output files are tagged with this ID number.
-RUN <- 30
+RUN <- 5
 
 #Reporting interval, how often (in model years) should output maps be produced?
 #I.e., once every ... years.
@@ -41,11 +39,11 @@ RUN <- 30
 Interval <- 1
 
 #What is your working directory. I.e. where are your input files coming from?
-input_path <- "GitHub/"     #"C:/Users/jcronan/Documents/GitHub/EglinAirForceBase/"
+input_path <- "C:/Users/jcronan/Documents/GitHub/EglinAirForceBase/"#     "GitHub/"     
 
 #What is your output directory. I.e., here do you want maps and status reports to 
 #go?
-output_path <- ""     #"C:/usfs_sef_outputs_FDM/"
+output_path <- "C:/usfs_sef_outputs_FDM/"     #""
 
 #>>>>>>>>>>>>>>>>>>>          DISTURBANCE AND MODEL RUN TIME PARAMETERS...
 
@@ -72,7 +70,7 @@ if(disturbance_regime == 1)
   HERBICIDE <- 5000
   
   #Acres prescribed burned annually
-  RX_FIRE <- 100000
+  #RX_FIRE <- 100000
   
   #Natural fire rotation in years for:
   #Element 1 -- Eglin Air Force Base
@@ -101,12 +99,12 @@ if(disturbance_regime == 1)
   HERBICIDE <- 0
   
   #Acres prescribed burned annually
-  RX_FIRE <- 1000
+  #RX_FIRE <- 1000
   
   #Natural fire rotation in years for:
   #Element 1 -- Eglin Air Force Base
   #Element 2 -- Surrounding 10-km buffer landscape
-  NATURAL_FIRE_ROTATION <- c(554.38, 10457.39)
+  NATURAL_FIRE_ROTATION <- c(10554.38, 10457.39)
   
   #Mean fire size in acres for:
   #Element 1 -- Eglin Air Force Base
@@ -129,7 +127,7 @@ if(disturbance_regime == 1)
   HERBICIDE <- 5000
   
   #Acres prescribed burned annually
-  RX_FIRE <- 25000
+  #RX_FIRE <- 25000
   
   #Natural fire rotation in years for:
   #Element 1 -- Eglin Air Force Base
@@ -197,50 +195,6 @@ fh.adj <- 6  #fuelbed map (f.map)
 sh.adj <- 6  #stand map (s.map)
 bh.adj <- 6  #burn unit map (b.map)
 lh.adj <- 6  #coordinate map (l.map)
-
-#>>>>>>>>>>>>>>>>>>>          R PACKAGES...
-
-#Manage packages.
-if(INSTALL_PACKAGES == TRUE)
-{
-  #Install packages
-  install.packages("Hmisc", repos="http://cran.fhcrc.org/")
-  install.packages("GenKern", repos="http://cran.fhcrc.org/")
-  install.packages("SDMTools", repos="http://cran.fhcrc.org/")
-  install.packages("gtools", repos="http://cran.fhcrc.org/")
-  #Open libraries
-  library(Hmisc) #for summarize()
-  library(GenKern)#for nearest()
-  library(SDMTools)
-  library(gtools)  #for combinations()ge
-  library(utils)#for Rprof()
-  if(USE_GPU == T)
-  {
-    #Install GPU package
-    install.packages("gmatrix", repos="http://cran.fhcrc.org/")
-    #Open GPU library
-    library(gmatrix)#GPU package, will only work on a Linux machine
-      } else
-  {
-    #nothing
-  }
-} else
-{
-  #Open libraries
-  library(Hmisc) #for summarize()
-  library(GenKern)#for nearest()
-  library(SDMTools)
-  library(gtools)  #for combinations()ge
-  library(utils)#for Rprof()
-  if(USE_GPU == T)
-  {
-    #Open GPU library
-    library(gmatrix)#GPU package, will only work on a Linux machine
-  } else
-  {
-    #nothing
-  }
-}
 
 #>>>>>>>>>>>>>>>>>>>          FOREST MANAGEMENT PARAMTERS...
 
@@ -361,8 +315,8 @@ windProbs <- c(0.1,0.025,0.01,0.01,0.025,0.05,0.16,0.62)
 #STEP 01: Administrative Information
 
 # Reads mutable parameters from AWS user data
-try(host_sim_params <- read.csv("host_sim_params.txt"), silent=TRUE)
-host_sim_params <- read.csv("host_sim_params.txt")
+try(host_sim_params <- read.table("inputs/host_sim_params.csv"), silent=TRUE)
+host_sim_params <- read.csv("inputs/host_sim_params.csv")
 
 if (exists("host_sim_params") && "run_id" %in% colnames(host_sim_params)) {
   # from AWS user data
@@ -391,6 +345,7 @@ if (exists("host_sim_params") && "seed" %in% colnames(host_sim_params)) {
 if (exists("host_sim_params") && "use_gpu" %in% colnames(host_sim_params)) {
   # from AWS user data
   USE_GPU <- host_sim_params$use_gpu
+  RX_FIRE <- host_sim_params$rx_fire
 } else if (exists("USE_GPU")) {
   # manual, no need to do anything
 } else {
@@ -408,6 +363,50 @@ if (exists("host_sim_params"))
   # manually running FDM, set working directory
       setwd(input_path)
       }
+
+#>>>>>>>>>>>>>>>>>>>          R PACKAGES...
+
+#Manage packages.
+if(INSTALL_PACKAGES == TRUE)
+{
+  #Install packages
+  install.packages("Hmisc", repos="http://cran.fhcrc.org/")
+  install.packages("GenKern", repos="http://cran.fhcrc.org/")
+  install.packages("SDMTools", repos="http://cran.fhcrc.org/")
+  install.packages("gtools", repos="http://cran.fhcrc.org/")
+  #Open libraries
+  library(Hmisc) #for summarize()
+  library(GenKern)#for nearest()
+  library(SDMTools)
+  library(gtools)  #for combinations()ge
+  library(utils)#for Rprof()
+  if(USE_GPU == T)
+  {
+    #Install GPU package
+    install.packages("gmatrix", repos="http://cran.fhcrc.org/")
+    #Open GPU library
+    library(gmatrix)#GPU package, will only work on a Linux machine
+  } else
+  {
+    #nothing
+  }
+} else
+{
+  #Open libraries
+  library(Hmisc) #for summarize()
+  library(GenKern)#for nearest()
+  library(SDMTools)
+  library(gtools)  #for combinations()ge
+  library(utils)#for Rprof()
+  if(USE_GPU == T)
+  {
+    #Open GPU library
+    library(gmatrix)#GPU package, will only work on a Linux machine
+  } else
+  {
+    #nothing
+  }
+}
 
 ####################################################################################
 ####################################################################################
@@ -3364,13 +3363,13 @@ dt <- Sys.Date()
 tm <- format(Sys.time(), format = "%H.%M.%S", 
              tz = "", usetz = FALSE)
 
-write.table(s.map, file = paste(output_path, "fdm_maps/sef_smap_run_", run, "_", 
+write.table(s.map, file = paste(output_path, "sef_smap_run_", run, "_", 
                                 dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
             append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
             dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
               c("escape", "double"))#
 
-write.table(Stand.List, file = paste(output_path, "fdm_maps/sef_sList_run_", run, "_", 
+write.table(Stand.List, file = paste(output_path, "sef_sList_run_", run, "_", 
                                 dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
             append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
             dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
