@@ -57,7 +57,7 @@ output_path <- ""     #"C:/usfs_sef_outputs_FDM/"
 #       and 2 yearr un.
 #3 ---  Manually enter disturbance parameters. Enter parameters below on 
 #       lines 99-123.
-disturbance_regime <- 3
+disturbance_regime <- 2
 
 #Disturbance and time parameters
 if(disturbance_regime == 1)
