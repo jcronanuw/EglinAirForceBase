@@ -118,13 +118,13 @@ if(disturbance_regime == 1)
 } else
 {
   #Number of years the model should run for.
-  YEARS <- 10
+  YEARS <- 2
   
   #Acres thinned annually.
-  THINNING <- 5000
+  THINNING <- 0
   
   #Acres of herbicide application annually
-  HERBICIDE <- 5000
+  HERBICIDE <- 0
   
   #Acres prescribed burned annually
   #RX_FIRE <- 25000
@@ -132,7 +132,7 @@ if(disturbance_regime == 1)
   #Natural fire rotation in years for:
   #Element 1 -- Eglin Air Force Base
   #Element 2 -- Surrounding 10-km buffer landscape
-  NATURAL_FIRE_ROTATION <- c(54.38,457.39)
+  NATURAL_FIRE_ROTATION <- c(10054.38,10457.39)
   
   #Mean fire size in acres for:
   #Element 1 -- Eglin Air Force Base
