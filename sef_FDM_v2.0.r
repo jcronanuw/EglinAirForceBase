@@ -31,19 +31,19 @@ SEED <- 999
 
 #Select a run ID, this should be a number, ideally unique that will help track this
 #run. Output files are tagged with this ID number.
-RUN <- 6
+RUN <- 52
 
 #Reporting interval, how often (in model years) should output maps be produced?
 #I.e., once every ... years.
 #Must be less than model run time (YEARS object)
-Interval <- 2
+Interval <- 10
 
 #What is your working directory. I.e. where are your input files coming from?
-input_path <- ""     
+input_path <- "C:/Users/jcronan/Documents/GitHub/EglinAirForceBase"     
 
 #What is your output directory. I.e., here do you want maps and status reports to 
 #go?
-output_path <- ""
+output_path <- "C:/usfs_sef_outputs_FDM/"
 
 #>>>>>>>>>>>>>>>>>>>          DISTURBANCE AND MODEL RUN TIME PARAMETERS...
 
@@ -118,7 +118,7 @@ if(disturbance_regime == 1)
 } else
 {
   #Number of years the model should run for.
-  YEARS <- 10
+  YEARS <- 1
   
   #Acres thinned annually.
   THINNING <- 5000
@@ -127,12 +127,12 @@ if(disturbance_regime == 1)
   HERBICIDE <- 5000
   
   #Acres prescribed burned annually
-  #RX_FIRE <- 25000
+  RX_FIRE <- 1000
   
   #Natural fire rotation in years for:
   #Element 1 -- Eglin Air Force Base
   #Element 2 -- Surrounding 10-km buffer landscape
-  NATURAL_FIRE_ROTATION <- c(54.38,457.39)
+  NATURAL_FIRE_ROTATION <- c(254.38,1457.39)
   
   #Mean fire size in acres for:
   #Element 1 -- Eglin Air Force Base
@@ -424,6 +424,7 @@ if(INSTALL_PACKAGES == TRUE)
 #Stop model run if map production interval is greater than the number of model years.
 if (Interval > YEARS) {
   stop("Interval too high. Make interval less than year variable.")
+  quit(save = "no")
 }
 
 #Average annual area treated for thinning, herbicide, and prescribed fire.
@@ -2673,15 +2674,14 @@ if(all(pr.3[,2] == 0))
   breaks <- 1012
   break
 } #10.1.2 --------------------------------------------------------------------------
-
-if(spread.type == 12)
-{#10.5.1
-  breaks <- 1051
-  break
-} else#10.5.1
-{#10.5.2
-breaks <- 1052
-}#10.5.2
+                if(spread.type == 12)
+                {#10.5.1
+                  breaks <- 1051
+                  break
+                } else#10.5.1
+                {#10.5.2
+                  breaks <- 1052
+                }#10.5.2
               } #10.0.0 --------------------------------------------------------------------------
 } else #9.7.1 (WILDFIRE LOOP)--------------------------------------------------------------
 {#9.7.2 (RX FIRE LOOP)--------------------------------------------------------------
@@ -2760,12 +2760,20 @@ breaks <- 1052
            {#-----------------------------------------------------------------A-TRUE
            if((dema + length(ocod) + length(avlo)) <= desa)#------------------B
              {#---------------------------------------------------------------B-TRUE
-             new.cells <- avlo
+             initial.new.cells <- avlo
+             fual <- f.map[match(initial.new.cells, l.map)]
+             ss.n <- length(fual)
+             ss <- rbinom(ss.n, 1,  f.probability[,2][match(fual, f.probability[,1])])
+             new.cells <- initial.new.cells[ss == 1]
              s.map[new.cells] <- s.map[new.cells]*tesn_t
              tesn <- unique(s.map[s.map < 0 & s.map > NoData.Unit])
              } else#----------------------------------------------------------B-TRUE
                {#-------------------------------------------------------------B-FALSE
-                 new.cells <- resample(avlo,(desa - (dema + length(ocod))))
+                 initial.new.cells <- resample(avlo,(desa - (dema + length(ocod))))
+                 fual <- f.map[match(initial.new.cells, l.map)]
+                 ss.n <- length(fual)
+                 ss <- rbinom(ss.n, 1,  f.probability[,2][match(fual, f.probability[,1])])
+                 new.cells <- initial.new.cells[ss == 1]
                  s.map[new.cells] <- s.map[new.cells]*tesn_t
                  tesn <- unique(s.map[s.map < 0 & s.map > NoData.Unit])
                  }#-----------------------------------------------------------B-FALSE
@@ -2773,7 +2781,11 @@ breaks <- 1052
              {#---------------------------------------------------------------A-FALSE
                if((dema + length(ocod) + length(avlo)) <= desa)#--------------C
                  {#-----------------------------------------------------------C-TRUE
-                 new.cells <- resample(avlo,(a.bun - length(ocod)))
+                 initial.new.cells <- resample(avlo,(a.bun - length(ocod)))
+                 fual <- f.map[match(initial.new.cells, l.map)]
+                 ss.n <- length(fual)
+                 ss <- rbinom(ss.n, 1,  f.probability[,2][match(fual, f.probability[,1])])
+                 new.cells <- initial.new.cells[ss == 1]
                  s.map[new.cells] <- s.map[new.cells]*tesn_t
                  tesn <- unique(s.map[s.map < 0 & s.map > NoData.Unit])
                  spread.type <- 11
@@ -2781,13 +2793,21 @@ breaks <- 1052
                    {#---------------------------------------------------------C-FALSE
                      if(a.bun < desa)#----------------------------------------D
                        {#-----------------------------------------------------D-TRUE
-                       new.cells <- resample(avlo,(a.bun - length(ocod)))
+                       initial.new.cells <- resample(avlo,(a.bun - length(ocod)))
+                       fual <- f.map[match(initial.new.cells, l.map)]
+                       ss.n <- length(fual)
+                       ss <- rbinom(ss.n, 1,  f.probability[,2][match(fual, f.probability[,1])])
+                       new.cells <- initial.new.cells[ss == 1]
                        s.map[new.cells] <- s.map[new.cells]*tesn_t
                        tesn <- unique(s.map[s.map < 0 & s.map > NoData.Unit])
                        spread.type <- 11
                        } else#------------------------------------------------D-TRUE
                          {#---------------------------------------------------D-FALSE
-                           new.cells <- resample(avlo,(desa - (dema + length(ocod))))
+                           initial.new.cells <- resample(avlo,(desa - (dema + length(ocod))))
+                           fual <- f.map[match(initial.new.cells, l.map)]
+                           ss.n <- length(fual)
+                           ss <- rbinom(ss.n, 1,  f.probability[,2][match(fual, f.probability[,1])])
+                           new.cells <- initial.new.cells[ss == 1]
                            s.map[new.cells] <- s.map[new.cells]*tesn_t
                            tesn <- unique(s.map[s.map < 0 & s.map > NoData.Unit])
                            }#-------------------------------------------------D-FALSE
@@ -3377,28 +3397,12 @@ write.table(s.map, file = paste(output_path, "sef_smap_run_", run, "_",
             dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
               c("escape", "double"))#
 
-write.table(Stand.List, file = paste(output_path, "sef_sList_run_", run, "_", 
+write.table(f.map, file = paste(output_path, "fdm_maps/sef_fmap_run_", run, "_",
                                 dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
             append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
             dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
               c("escape", "double"))#
 
-#write.table(f.map, file = paste(output_path, "fdm_maps/sef_fmap_run_", run, "_",
-#                                dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
-#            append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
-#            dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
-#              c("escape", "double"))#
-
 }
 } #1.0.0 ---------------------------------------------------------------------------
 #})
-
-#Save system time file
-#Date and time
-#dt <- Sys.Date()
-#tm <- format(Sys.time(), format = "%H.%M.%S", 
-#             tz = "", usetz = FALSE)
-
-#Save run data.
-#cat(systemTime, file = paste(output_path, "fdm_systemTime_status/run_", run, "_systemTime.txt", 
-#                            sep = ""), fill = T, append = T)#
