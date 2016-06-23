@@ -309,8 +309,8 @@ entireScript <- function() {
   #STEP 01: Administrative Information
   
   # Reads mutable parameters from AWS user data
-  try(host_sim_params <- read.table("host_sim_params.txt"), silent=TRUE)
-  host_sim_params <- read.csv("host_sim_params.txt")
+  try(host_sim_params <- read.table("host_sim_params.csv"), silent=TRUE)
+  host_sim_params <- read.csv("host_sim_params.csv")
   
   if (exists("host_sim_params") && "run_id" %in% colnames(host_sim_params)) {
     # from AWS user data
