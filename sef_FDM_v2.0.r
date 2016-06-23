@@ -362,15 +362,8 @@ entireScript <- function() {
     output_path <- host_sim_params$output_path
   }
   
-  #Set working directory if running FDM manually
-  if (exists("host_sim_params")) 
-    {
-    # AWS, no need to set working directory
-    } else
-      {
-    # manually running FDM, set working directory
-        setwd(input_path)
-        }
+  #Set working directory
+  setwd(input_path)
   
   #>>>>>>>>>>>>>>>>>>>          R PACKAGES...
   
