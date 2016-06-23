@@ -314,10 +314,9 @@ entireScript <- function() {
   
   if (exists("host_sim_params") && "run_id" %in% colnames(host_sim_params)) {
     # from AWS user data
-    run <- host_sim_params$run_id
+    run <- as.character(host_sim_params$run_id)
   } else if (exists("RUN")) {
     # manual
-    
     run <- RUN
   } else {
     stop("No run id present.")
@@ -354,12 +353,12 @@ entireScript <- function() {
   
   if (exists("host_sim_params") && "input_path" %in% colnames(host_sim_params)) {
     # from AWS user data
-    input_path <- host_sim_params$input_path
+    input_path <- as.character(host_sim_params$input_path)
   }
   
   if (exists("host_sim_params") && "output_path" %in% colnames(host_sim_params)) {
     # from AWS user data
-    output_path <- host_sim_params$output_path
+    output_path <- as.character(host_sim_params$output_path)
   }
   
   #Set working directory
