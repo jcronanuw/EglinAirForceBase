@@ -20,11 +20,11 @@ BEGIN { instance_count = 0 }
    # Add appropriate folders
    print "mkdir /home/ubuntu/" sim_id > file;
    print "mkdir /home/ubuntu/" sim_id "/$RUN_ID" > file;
-   print "output_path=/home/ubuntu/" sim_id "/$RUN_ID" > file;"
+   print "output_path=/home/ubuntu/" sim_id "/$RUN_ID" > file;
 
    # Create host-specific simulation parameters csv file
    print "echo \"" header ",sim_id,run_id,input_path,output_path\" > host_sim_params.csv" > file;
-   print "echo \"" $0 "," sim_id ",$RUN_ID,$PWD,output_path\" > host_sim_params.csv" > file;
+   print "echo \"" $0 "," sim_id ",$RUN_ID,$PWD,$output_path\" > host_sim_params.csv" >> file;
 
    # Run R script
    print "Rscript sef_FDM_v2.0.r" > file;
