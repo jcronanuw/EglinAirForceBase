@@ -1,2 +1,2 @@
 InstancesToLaunch,seed,use_gpu,rx_fire
-1,13,TRUE,100000
+1,13,FALSE,1000
