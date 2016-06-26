@@ -33,7 +33,7 @@
   
   #Select a run ID, this should be a number, ideally unique that will help track this
   #run. Output files are tagged with this ID number.
-  RUN <- 59
+  RUN <- 62
   
   #Reporting interval, how often (in model years) should output maps be produced?
   #I.e., once every ... years.
@@ -2801,6 +2801,24 @@
              }
        }
    
+  #For fires determine and apply growth rate cutoff
+  #Pick a cutoff growth rate between 0.5% and 5% from an exponential
+  #prob den function... that is much higher chance of the treatment
+  #being cutoff at 5% growth over 0.5% growth.
+  
+  #Object is a list of cut off growth rates from 0.5% to 5%
+  list.of.cutoff.growth.rates <- seq(0.5,5,0.1)
+  #Object is a vector of probabilites from an inverse exponential function.
+  list.of.cutoff.probabilities <- sort(mapply(function(y) 
+  {
+    exp(-5*y)
+  },
+  seq(0.01,1,1/length(list.of.cutoff.growth.rates))))
+  
+  cutoff.growth.rate <- resample(list.of.cutoff.growth.rates,
+                                 1,
+                                 prob = list.of.cutoff.probabilities)
+  
   #LOOP 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 
    #Loop 11 (by iterations). This loop keeps growing fire[e] in block[f] 
    #until growth stops.
@@ -2917,6 +2935,17 @@
            osnd <- c(osnd, s.map[new.cells]) #tracks stand numbers involved in disturbance.
            ocod <- c(ocod, new.cells) #tracks coordinates involved in disturbance.
            ocod_crown <- c(ocod_crown, new.cells[initial.cells.with.crown.fire == 1])
+           
+           #Stop loop if growth rate slows below cutoff rate
+           treatment.growth <- (length(new.cells)/a.bun)*100
+           if(treatment.growth > cutoff.growth.rate)
+           {#11.4.1----------------------------------------------------------------------
+             d <- d#placeholder
+           } else#11.4.1-----------------------------------------------------------------
+           {#11.4.2----------------------------------------------------------------------
+             breaks <- 1142  
+             break
+           }#11.4.2----------------------------------------------------------------------
            
        } else #11.2.1 ----------------------------------------------------------------------
        
