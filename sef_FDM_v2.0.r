@@ -33,7 +33,7 @@
   
   #Select a run ID, this should be a number, ideally unique that will help track this
   #run. Output files are tagged with this ID number.
-  RUN <- 62
+  RUN <- 63
   
   #Reporting interval, how often (in model years) should output maps be produced?
   #I.e., once every ... years.
@@ -509,35 +509,7 @@
   #Restore rows and cols.
   mm4 <- matrix(data = mm3, nrow = length(mm1[,1]), ncol = length(mm1[1,]))
   mfri.Matrix <- mm4
-  
-  T1E.List <- read.table(paste(
-    "inputs/sef_T1EList_",rows,"x",cols,".txt",
-    sep = ""), header=TRUE, 
-    sep=",", na.strings="NA", dec=".", strip.white=TRUE)
-  T1E.List <- as.vector(T1E.List[,2], mode = "numeric")#24
-  T1E.List <- T1E.List[-1]
-  
-  T2E.List <- read.table(paste(
-    "inputs/sef_T2EList_",rows,"x",cols,".txt",
-    sep = ""), header=TRUE, 
-    sep=",", na.strings="NA", dec=".", strip.white=TRUE)
-  T2E.List <- as.vector(T2E.List[,2], mode = "numeric")#24
-  T2E.List <- T2E.List[-1]
-  
-  D1E.List <- read.table(paste(
-    "inputs/sef_D1EList_",rows,"x",cols,".txt",
-    sep = ""), header=TRUE, 
-    sep=",", na.strings="NA", dec=".", strip.white=TRUE)
-  D1E.List <- as.vector(D1E.List[,2], mode = "numeric")#25
-  D1E.List <- D1E.List[-1]
-  
-  D2E.List <- read.table(paste(
-    "inputs/sef_D2EList_",rows,"x",cols,".txt",
-    sep = ""), header=TRUE, 
-    sep=",", na.strings="NA", dec=".", strip.white=TRUE)
-  D2E.List <- as.vector(D2E.List[,2], mode = "numeric")#25
-  D2E.List <- D2E.List[-1]
-  
+
   MU.List <- read.table(paste(
     "inputs/sef_MUList_",rows,"x",cols,".txt",
     sep = ""), header=TRUE, 
@@ -598,9 +570,6 @@
   d.post <- read.table("inputs/sef_lut_pathways_fire.csv", header=TRUE, 
                        sep=",", na.strings="NA", dec=".", strip.white=TRUE)
   
-  pda <- read.table("inputs/sef_lut_thresholds_disturbances.csv", header=TRUE, 
-                    sep=",", na.strings="NA", dec=".", strip.white=TRUE)
-  
   f.probability <- read.table("inputs/sef_lut_prob_burning.csv", header=TRUE, 
                               sep=",", na.strings="NA", dec=".", strip.white=TRUE, stringsAsFactors = F)
   
@@ -623,20 +592,10 @@
   f.start <- read.table("inputs/sef_lut_pathways_fireStart.csv", header=T, 
                         sep=",", na.strings="NA", dec=".", strip.white=TRUE)
   f.start <- f.start[-1,]#remove first row -- no data unit.
+
   ####################################################################################
   ####################################################################################
-  #STEP 06: Simplify input data.
-  ttxm <- t.post[,-1]#removes the fuelbed column for t.post.
-  dtxm <- d.post[,-1]#removes the fuelbed column from d.post.
-  pdxm <- pda[,-1]#removes the fuelbed column from pda.
-  
-  ####################################################################################
-  ####################################################################################
-  #STEP 07: Generate secondary data.
-  fblo <- 1:length(t.post$fuelbed)#fuelbed location.
-  fbls <- t.post$fuelbed#master list of fuelbeds.
-  
-  trls <- 1:length(f.treatments$TreatmentName)#Creates a numeric code for treatments.
+  #STEP 06: Generate secondary data.
   
   #Temporary stand numbers
   #The first will be used to seed disturbance and the second will be used in the fire
@@ -720,14 +679,14 @@
   
   #Combine fuelbed shift lists. Makes selecting between them more efficient (i.e. no if/then
   #statments needed to select an object)
-  D.List <- cbind(T1E.List, T2E.List, D1E.List, D2E.List)
+  #D.List <- cbind(T1E.List, T2E.List, D1E.List, D2E.List)
   
   #This will be used to log run times for disturbance loops.
   #e.summary <- data.frame()
   
   ####################################################################################
   ####################################################################################
-  #STEP 08: Generate functions.
+  #STEP 07: Generate functions.
   #This function (grabbed from the r-help site) is the same as the sample()
   #function except if the length of x is one it will just use that number rather than
   #sample from 1:x.
@@ -800,7 +759,7 @@
   
   ####################################################################################
   ####################################################################################
-  #STEP 09: Fire Regime Simulation for Eglin (excludes buffer zone).
+  #STEP 08: Fire Regime Simulation for Eglin (excludes buffer zone).
   
   #Since the buffer zone fire regime is determined by the eglin fire regime just use
   #the Eglin fire regime to drive flammability of fuels.
@@ -844,21 +803,21 @@
   
   ####################################################################################
   ####################################################################################
-  #STEP 10: Create vectors that list which fuelbeds are eligible for treatment.
+  #STEP 09: Create vectors that list which fuelbeds are eligible for treatment.
   
   #Determine available fuelbeds:
   #For thinning treatments
-  avfb_thin <- fbls[ttxm[,4] == 2]
+  eligible.for_Thinning <- t.post$fuelbed[t.post[,5] == 2]
   
   #For herbicide treatments
-  avfb_herb <- fbls[ttxm[,5] == 2]
+  eligible.for_Herbicide <- t.post$fuelbed[t.post[,6] == 2]
   
   #For prescribed fire treatments
-  avfb_fire <- fbls[ttxm[,6] == 2]
+  eligible.for_RxFire <- t.post$fuelbed[t.post[,7] == 2]
   
   ####################################################################################
   ####################################################################################
-  #STEP 11: CREATE DETAILED LIST OF ACREAGES FOR EACH MANAGEMENT OPTION
+  #STEP 10: CREATE DETAILED LIST OF ACREAGES FOR EACH MANAGEMENT OPTION
   
   #Fill in percent values so perc_cats adds up to one for each level within each treatment
   #type
@@ -886,7 +845,7 @@
   
   ####################################################################################
   ####################################################################################
-  #STEP 12: DEFAULT VALUES
+  #STEP 11: DEFAULT VALUES
   
   #Set loop values to default (i.e. zero).
   a <- 0
@@ -899,7 +858,7 @@
   
   ####################################################################################
   ####################################################################################
-  #STEP 13: RUN MODEL LOOP
+  #STEP 12: RUN MODEL LOOP
   
   #LOOP 111111111111111111111111111111111111111111111111111111111111111111111111111111
   #Loop 1 (by year). This loop encases the entire expression that maps regimes.
@@ -934,36 +893,57 @@
     
     #Determine priority of management units for thinning treatments
     #Lists percentage of unit with eligible fuelbeds
+    #pri.thin <- mapply(function(y)
+    #{
+    #  sum(Area.List[Age.List >= D.List[,1] & 
+    #                  Fuelbed.List %in% eligible.for_Thinning & 
+    #                  MU.List == b.unit[y,1]])/b.unit[y,2]
+    #}, 1:length(b.unit$unit))
+    
     pri.thin <- mapply(function(y)
     {
-      sum(Area.List[Age.List >= D.List[,1] & 
-                      Fuelbed.List %in% avfb_thin & 
+      sum(Area.List[Fuelbed.List %in% eligible.for_Thinning & 
                       MU.List == b.unit[y,1]])/b.unit[y,2]
     }, 1:length(b.unit$unit))
+    
     #Incorporate hard rules for eligibility specified in management unit table (access through
     #ArcMap; file buun_map_9.raster).
     pri.thin[b.unit$thin == 1] <- 0#set to zero if management unit is not eligible for treatment
     
     #Determine priority of management units for herbicide treatments
     #Lists percentage of unit with eligible fuelbeds
+    #pri.herb <- mapply(function(y)
+    #{
+    #  sum(Area.List[Age.List >= D.List[,2] & 
+    #                  Fuelbed.List %in% eligible.for_Herbicide & 
+    #                  MU.List == b.unit[y,1]])/b.unit[y,2]
+    #}, 1:length(b.unit$unit))
+    
     pri.herb <- mapply(function(y)
     {
-      sum(Area.List[Age.List >= D.List[,2] & 
-                      Fuelbed.List %in% avfb_herb & 
+      sum(Area.List[Fuelbed.List %in% eligible.for_Herbicide & 
                       MU.List == b.unit[y,1]])/b.unit[y,2]
     }, 1:length(b.unit$unit))
+    
     #Incorporate hard rules for eligibility specified in management unit table (access through
     #ArcMap; file buun_map_9.raster).
     pri.herb[b.unit$herb == 1] <- 0#set to zero if management unit is not eligible for treatment
     
     #Determine priority of management units for prescribed fire treatments
     #Lists percentage of unit with eligible fuelbeds
+    #pri.fire <- mapply(function(y)
+    #{
+    #  sum(Area.List[Age.List >= D.List[,3] & 
+    #                  Fuelbed.List %in% eligible.for_RxFire & 
+    #                  MU.List == b.unit[y,1]])/b.unit[y,2]
+    #}, 1:length(b.unit$unit))
+    
     pri.fire <- mapply(function(y)
     {
-      sum(Area.List[Age.List >= D.List[,3] & 
-                      Fuelbed.List %in% avfb_fire & 
+      sum(Area.List[Fuelbed.List %in% eligible.for_RxFire & 
                       MU.List == b.unit[y,1]])/b.unit[y,2]
     }, 1:length(b.unit$unit))
+    
     #Incorporate hard rules for eligibility specified in management unit table (access through
     #ArcMap; file buun_map_9.raster).
     pri.fire[b.unit$fire == 1] <- 0#set to zero if management unit is not eligible for treatment
@@ -1209,12 +1189,12 @@
           PrctTrmt.Mapped[cc+1] <- 0
           
           #Determine available fuelbeds.
-          avfb <- fbls[ttxm[,t.code + 3] == 2]
+          treatable.fuelbeds <- t.post$fuelbed[t.post[,t.code + 4] == 2]
           
     #Find eligible stands with eligible fuelbeds
     elst <- sort(unique(s.map[!b.map %in% c(NoData.Unit, Buffer.Unit, 
                                             Unmanaged.Unit) & 
-                                      f.map %in% avfb & s.map %in% loopA.snO]))
+                                      f.map %in% treatable.fuelbeds & s.map %in% loopA.snO]))
           
     #Determine how management options will impact selection of burn unit selected based on area
     #treated for current treatment type
@@ -1368,7 +1348,7 @@
                   
                   #List eligible stands in burn block
                   elst <- sort(unique(s.map[!b.map %in% c(NoData.Unit, Buffer.Unit, Unmanaged.Unit) & 
-                                              f.map %in% avfb & s.map %in% loopA.snO]))
+                                              f.map %in% treatable.fuelbeds & s.map %in% loopA.snO]))
                   
                   #Reset seed cells
                   sct <- vector(mode = "numeric", length = 0)
@@ -1835,7 +1815,7 @@
   
   #Convert t.post (ttxm is t.post) from a data.frame into a matrix so new fuelbeds 
   #can be identified by coordinates that corresond with row and column numbers.
-  am_ttxm <- as.matrix(ttxm)  
+  am_ttxm <- as.matrix(t.post[,-1])  
   
   #Idenintify new fuelbed for each new stand.
   newFB_a7 <- am_ttxm[LL3]
@@ -1895,10 +1875,10 @@
     Stand.List <- Stand.List[(Area.List == 0) == F]
     Fuelbed.List <- Fuelbed.List[(Area.List == 0) == F]
     Age.List <- Age.List[(Area.List == 0) == F]
-    T1E.List <- T1E.List[(Area.List == 0) == F]
-    T2E.List <- T2E.List[(Area.List == 0) == F]
-    D1E.List <- D1E.List[(Area.List == 0) == F]
-    D2E.List <- D2E.List[(Area.List == 0) == F]
+    #T1E.List <- T1E.List[(Area.List == 0) == F]
+    #T2E.List <- T2E.List[(Area.List == 0) == F]
+    #D1E.List <- D1E.List[(Area.List == 0) == F]
+    #D2E.List <- D2E.List[(Area.List == 0) == F]
     Coord.List <- Coord.List[(Area.List == 0) == F]
     MU.List <- MU.List[(Area.List == 0) == F]
     mfri.Matrix <- mfri.Matrix[(Area.List == 0) == F,]
@@ -1912,43 +1892,43 @@
     Age.List <- c(Age.List,newAGE_a7)
     
     #List fuelbeds that need to be updated.
-    pdaFB <- pda$pre[pda$pre %in% newFB_a7]
+    #pdaFB <- pda$pre[pda$pre %in% newFB_a7]
     
     #List corresponding updated age restrictions
-    pdaTH <- pda$thin[pda$pre %in% newFB_a7]
+    #pdaTH <- pda$thin[pda$pre %in% newFB_a7]
     
     #List occurences of age restriction for each new stand
-    v.THIN <- pdaTH[match(newFB_a7,pdaFB)]
+    #v.THIN <- pdaTH[match(newFB_a7,pdaFB)]
   
     #Update
-    T1E.List <- c(T1E.List,v.THIN)
+    #T1E.List <- c(T1E.List,v.THIN)
     
     #List corresponding updated age restrictions
-    pdaHE <- pda$herb[pda$pre %in% newFB_a7]
+    #pdaHE <- pda$herb[pda$pre %in% newFB_a7]
     
     #List occurences of age restriction for each new stand
-    v.HERB <- pdaHE[match(newFB_a7,pdaFB)]
+    #v.HERB <- pdaHE[match(newFB_a7,pdaFB)]
     
     #Update
-    T2E.List <- c(T2E.List, v.HERB)
+    #T2E.List <- c(T2E.List, v.HERB)
   
     #List corresponding updated age restrictions
-    pdaSF <- pda$sfire[pda$pre %in% newFB_a7]
+    #pdaSF <- pda$sfire[pda$pre %in% newFB_a7]
     
     #List occurences of age restriction for each new stand
-    v.SFIRE <- pdaSF[match(newFB_a7,pdaFB)]
+    #v.SFIRE <- pdaSF[match(newFB_a7,pdaFB)]
     
     #Update
-    D1E.List <- c(D1E.List, v.SFIRE)
+    #D1E.List <- c(D1E.List, v.SFIRE)
     
     #List corresponding updated age restrictions
-    pdaCF <- pda$cfire[pda$pre %in% newFB_a7]
+    #pdaCF <- pda$cfire[pda$pre %in% newFB_a7]
     
     #List occurences of age restriction for each new stand
-    v.CFIRE <- pdaCF[match(newFB_a7,pdaFB)]
+    #v.CFIRE <- pdaCF[match(newFB_a7,pdaFB)]
     
     #Update
-    D2E.List <- c(D2E.List, v.CFIRE)
+    #D2E.List <- c(D2E.List, v.CFIRE)
   
     #List new stand occurrences in s.map
     vs.map_a11 <- s.map[s.map %in% loopB.new_stand]
@@ -2007,10 +1987,10 @@
   if(any(c(length(Stand.List),
            length(Fuelbed.List),
            length(MU.List),
-           length(T1E.List),
-           length(T2E.List),
-           length(D1E.List),
-           length(D2E.List),
+           #length(T1E.List),
+           #length(T2E.List),
+           #length(D1E.List),
+           #length(D2E.List),
            length(Area.List),
            length(mfri.Matrix[,1]), 
            length(Age.List),
@@ -2087,14 +2067,14 @@
         desa <- round(tda[e],0)
         
         #Object shows fuelbeds available for establishment by disturbance[e].
-        avfb <- fbls[!fbls %in% Non.Flammable]
+        flammable.fuelbeds <- t.post$fuelbed[!t.post$fuelbed %in% Non.Flammable]
         
         #End script for disturbance[e] if there are no available cells to establish.
         #1) must not be a wilderness area (in w.map 2 = wilderness, 1 non-wilderness, 
         #and 0 = area that are null in f.map.
         #2) fuelbed must be applicable to disturbance type.
         #3) must be a stand that was not created during year[a].
-        if(length(f.map[f.map %in% avfb & s.map %in% loopA.snO]) > 0)
+        if(length(f.map[f.map %in% flammable.fuelbeds & s.map %in% loopA.snO]) > 0)
         { #8.1.1 ---------------------------------------------------------------------------
           
           #LOOP 999999999999999999999999999999999999999999999999999999999999999999999999999999
@@ -2163,7 +2143,8 @@
               
               #Then find stands within this subset that meet minimum age requirements for
               #the disturbance/treatment.
-              ss2 <- Stand.List[Stand.List %in% ss1 & Age.List >= D1E.List]
+              #ss2 <- Stand.List[Stand.List %in% ss1 & Age.List >= D1E.List]
+              ss2 <- Stand.List[Stand.List %in% ss1]
               
               if(tdc[e] == 1)
               { #EAFB -----------------------------------------------------------
@@ -2266,7 +2247,7 @@
   } #9.2.2---------------------------------------------------------------
               #Ends loop if there are no locations to establish disturbance[e] where fuelbed 
               #requirements, wilderness designations, and stand numbers check out. 
-              if(length(f.map[f.map %in% dtxm[,2] & s.map %in% loopA.snO]) > 0)
+              if(length(f.map[f.map %in% d.post[,3] & s.map %in% loopA.snO]) > 0)
                 #need something that measures previously assigned cells
               { #9.3.1 ---------------------------------------------------------------------------
                 if(length(fire.start) > 0)
@@ -3460,10 +3441,10 @@
     Stand.List <- Stand.List[(Area.List == 0) == F]
     Fuelbed.List <- Fuelbed.List[(Area.List == 0) == F]
     Age.List <- Age.List[(Area.List == 0) == F]
-    T1E.List <- T1E.List[(Area.List == 0) == F]
-    T2E.List <- T2E.List[(Area.List == 0) == F]
-    D1E.List <- D1E.List[(Area.List == 0) == F]
-    D2E.List <- D2E.List[(Area.List == 0) == F]
+    #T1E.List <- T1E.List[(Area.List == 0) == F]
+    #T2E.List <- T2E.List[(Area.List == 0) == F]
+    #D1E.List <- D1E.List[(Area.List == 0) == F]
+    #D2E.List <- D2E.List[(Area.List == 0) == F]
     Coord.List <- Coord.List[(Area.List == 0) == F]
     MU.List <- MU.List[(Area.List == 0) == F]
     mfri.Matrix <- mfri.Matrix[(Area.List == 0) == F,]
@@ -3477,43 +3458,43 @@
     Age.List <- c(Age.List, loopE_allFire$newAge)
   
     #List fuelbeds that need to be updated.
-    pdaFB_a20 <- pda$pre[pda$pre %in% loopE_allFire$newFuelbed]
+    #pdaFB_a20 <- pda$pre[pda$pre %in% loopE_allFire$newFuelbed]
     
     #List corresponding updated age restrictions
-    pdaTH_a20 <- pda$thin[pda$pre %in% loopE_allFire$newFuelbed]
+    #pdaTH_a20 <- pda$thin[pda$pre %in% loopE_allFire$newFuelbed]
     
     #List occurences of age restriction for each new stand
-    v.THIN_a20 <- pdaTH_a20[match(loopE_allFire$newFuelbed,pdaFB_a20)]
+    #v.THIN_a20 <- pdaTH_a20[match(loopE_allFire$newFuelbed,pdaFB_a20)]
     
     #Update
-    T1E.List <- c(T1E.List,v.THIN_a20)
+    #T1E.List <- c(T1E.List,v.THIN_a20)
     
     #List corresponding updated age restrictions
-    pdaHE_a20 <- pda$herb[pda$pre %in% loopE_allFire$newFuelbed]
+    #pdaHE_a20 <- pda$herb[pda$pre %in% loopE_allFire$newFuelbed]
     
     #List occurences of age restriction for each new stand
-    v.HERB_a20 <- pdaHE_a20[match(loopE_allFire$newFuelbed,pdaFB_a20)]
+    #v.HERB_a20 <- pdaHE_a20[match(loopE_allFire$newFuelbed,pdaFB_a20)]
     
     #Update
-    T2E.List <- c(T2E.List, v.HERB_a20)
+    #T2E.List <- c(T2E.List, v.HERB_a20)
     
     #List corresponding updated age restrictions
-    pdaSF_a20 <- pda$sfire[pda$pre %in% loopE_allFire$newFuelbed]
+    #pdaSF_a20 <- pda$sfire[pda$pre %in% loopE_allFire$newFuelbed]
     
     #List occurences of age restriction for each new stand
-    v.SFIRE_a20 <- pdaSF_a20[match(loopE_allFire$newFuelbed,pdaFB_a20)]
+    #v.SFIRE_a20 <- pdaSF_a20[match(loopE_allFire$newFuelbed,pdaFB_a20)]
     
     #Update
-    D1E.List <- c(D1E.List, v.SFIRE_a20)
+    #D1E.List <- c(D1E.List, v.SFIRE_a20)
     
     #List corresponding updated age restrictions
-    pdaCF_a20 <- pda$cfire[pda$pre %in% loopE_allFire$newFuelbed]
+    #pdaCF_a20 <- pda$cfire[pda$pre %in% loopE_allFire$newFuelbed]
     
     #List occurences of age restriction for each new stand
-    v.CFIRE_a20 <- pdaCF_a20[match(loopE_allFire$newFuelbed,pdaFB_a20)]
+    #v.CFIRE_a20 <- pdaCF_a20[match(loopE_allFire$newFuelbed,pdaFB_a20)]
     
     #Update
-    D2E.List <- c(D2E.List, v.CFIRE_a20)
+    #D2E.List <- c(D2E.List, v.CFIRE_a20)
   
     #List new stand occurrences in s.map
     vs.map_a20 <- s.map[s.map %in% loopE.NewStand]
@@ -3581,10 +3562,10 @@
            length(Fuelbed.List),
            length(mfri.List),
            length(MU.List),
-           length(T1E.List),
-           length(T2E.List),
-           length(D1E.List),
-           length(D2E.List),
+           #length(T1E.List),
+           #length(T2E.List),
+           #length(D1E.List),
+           #length(D2E.List),
            length(Area.List),
            length(mfri_lower.List),
            length(mfri_upper.List), 
@@ -3721,7 +3702,7 @@
   Fuelbed.List[Stand.List %in% s.SL2] <- pmuf2
   
   #Update D.List
-  D.List <- cbind(T1E.List, T2E.List, D1E.List, D2E.List)
+  #D.List <- cbind(T1E.List, T2E.List, D1E.List, D2E.List)
   
   #Create maps for interval years.
   if((a %% Interval) == 0)
