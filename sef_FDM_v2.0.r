@@ -1,4 +1,6 @@
-entireScript <- function() {
+
+#entireScript <- function() {
+  
   ###START FUELBED DYNAMICS MODEL####
   
   #Version 2.0 (Derviced from version 17e, the most recent version withmodel 
@@ -31,7 +33,7 @@ entireScript <- function() {
   
   #Select a run ID, this should be a number, ideally unique that will help track this
   #run. Output files are tagged with this ID number.
-  RUN <- 6
+  RUN <- 63
   
   #Reporting interval, how often (in model years) should output maps be produced?
   #I.e., once every ... years.
@@ -39,11 +41,11 @@ entireScript <- function() {
   Interval <- 2
   
   #What is your working directory. I.e. where are your input files coming from?
-  input_path <- ""     
+  input_path <- "C:/Users/jcronan/Documents/GitHub/EglinAirForceBase"     
   
   #What is your output directory. I.e., here do you want maps and status reports to 
   #go?
-  output_path <- ""
+  output_path <- "C:/usfs_sef_outputs_FDM/"
   
   #>>>>>>>>>>>>>>>>>>>          DISTURBANCE AND MODEL RUN TIME PARAMETERS...
   
@@ -61,8 +63,8 @@ entireScript <- function() {
   if(disturbance_regime == 1)
     {
     #Number of years the model should run for.
-    YEARS <- 1
-    
+    YEARS <- 50
+  
     #Acres thinned annually.
     THINNING <- 5000
     
@@ -121,18 +123,18 @@ entireScript <- function() {
     YEARS <- 2
     
     #Acres thinned annually.
-    THINNING <- 0
+    THINNING <- 1000
     
     #Acres of herbicide application annually
-    HERBICIDE <- 0
+    HERBICIDE <- 1000
     
     #Acres prescribed burned annually
-    #RX_FIRE <- 25000
+    RX_FIRE <- 2500
     
     #Natural fire rotation in years for:
     #Element 1 -- Eglin Air Force Base
     #Element 2 -- Surrounding 10-km buffer landscape
-    NATURAL_FIRE_ROTATION <- c(10054.38,10457.39)
+    NATURAL_FIRE_ROTATION <- c(1054.38,10457.39)
     
     #Mean fire size in acres for:
     #Element 1 -- Eglin Air Force Base
@@ -412,7 +414,6 @@ entireScript <- function() {
   ####################################################################################
   #STEP 02: Operational Parameters
   
-  
   #Stop model run if map production interval is greater than the number of model years.
   if (Interval > YEARS) {
     cat("Interval too high. Make interval less than year variable.")
@@ -508,35 +509,7 @@ entireScript <- function() {
   #Restore rows and cols.
   mm4 <- matrix(data = mm3, nrow = length(mm1[,1]), ncol = length(mm1[1,]))
   mfri.Matrix <- mm4
-  
-  T1E.List <- read.table(paste(
-    "inputs/sef_T1EList_",rows,"x",cols,".txt",
-    sep = ""), header=TRUE, 
-    sep=",", na.strings="NA", dec=".", strip.white=TRUE)
-  T1E.List <- as.vector(T1E.List[,2], mode = "numeric")#24
-  T1E.List <- T1E.List[-1]
-  
-  T2E.List <- read.table(paste(
-    "inputs/sef_T2EList_",rows,"x",cols,".txt",
-    sep = ""), header=TRUE, 
-    sep=",", na.strings="NA", dec=".", strip.white=TRUE)
-  T2E.List <- as.vector(T2E.List[,2], mode = "numeric")#24
-  T2E.List <- T2E.List[-1]
-  
-  D1E.List <- read.table(paste(
-    "inputs/sef_D1EList_",rows,"x",cols,".txt",
-    sep = ""), header=TRUE, 
-    sep=",", na.strings="NA", dec=".", strip.white=TRUE)
-  D1E.List <- as.vector(D1E.List[,2], mode = "numeric")#25
-  D1E.List <- D1E.List[-1]
-  
-  D2E.List <- read.table(paste(
-    "inputs/sef_D2EList_",rows,"x",cols,".txt",
-    sep = ""), header=TRUE, 
-    sep=",", na.strings="NA", dec=".", strip.white=TRUE)
-  D2E.List <- as.vector(D2E.List[,2], mode = "numeric")#25
-  D2E.List <- D2E.List[-1]
-  
+
   MU.List <- read.table(paste(
     "inputs/sef_MUList_",rows,"x",cols,".txt",
     sep = ""), header=TRUE, 
@@ -562,7 +535,17 @@ entireScript <- function() {
     sep=",", na.strings="NA", dec=".", strip.white=TRUE)
   mfri_upper.List <- mfri_upper.List[,-1]
   
-  
+  #nslt.List <- read.table(paste(
+  #  "inputs/sef_NSLTList_",rows,"x",cols,".txt",
+  #  sep = ""), header=TRUE, 
+  #  sep=",", na.strings="NA", dec=".", strip.white=TRUE)
+  #nslt.List <- nslt.List[,-1]
+  tslt.List <- rep(1,length(Stand.List))
+  tslt.Stands <- Stand.List
+  tslt.Fuelbeds <- Fuelbed.List
+  tslt.List <- tslt.List[Fuelbed.List == 4016204]
+  tslt.Stands <- Stand.List[Fuelbed.List == 4016204]
+  tslt.Fuelbeds <- Fuelbed.List[Fuelbed.List == 4016204]
   #Last line removes the first integer from the .List objects which contain the NoDate
   #area and will not match up with any date in f.path, resulting in an error.
   
@@ -570,6 +553,9 @@ entireScript <- function() {
   ####################################################################################
   #STEP 05: Import Conditional Database
   f.path <- read.table("inputs/sef_lut_pathways_succession.csv", header=TRUE, 
+                       sep=",", na.strings="NA", dec=".", strip.white=TRUE)
+  
+  t.path <- read.table("inputs/sef_lut_pathways_treatmentsuccession.csv", header=TRUE, 
                        sep=",", na.strings="NA", dec=".", strip.white=TRUE)
   
   f.treatments <- read.table("inputs/sef_lut_menu_treatment.csv", header=TRUE, 
@@ -583,9 +569,6 @@ entireScript <- function() {
   
   d.post <- read.table("inputs/sef_lut_pathways_fire.csv", header=TRUE, 
                        sep=",", na.strings="NA", dec=".", strip.white=TRUE)
-  
-  pda <- read.table("inputs/sef_lut_thresholds_disturbances.csv", header=TRUE, 
-                    sep=",", na.strings="NA", dec=".", strip.white=TRUE)
   
   f.probability <- read.table("inputs/sef_lut_prob_burning.csv", header=TRUE, 
                               sep=",", na.strings="NA", dec=".", strip.white=TRUE, stringsAsFactors = F)
@@ -609,20 +592,10 @@ entireScript <- function() {
   f.start <- read.table("inputs/sef_lut_pathways_fireStart.csv", header=T, 
                         sep=",", na.strings="NA", dec=".", strip.white=TRUE)
   f.start <- f.start[-1,]#remove first row -- no data unit.
+
   ####################################################################################
   ####################################################################################
-  #STEP 06: Simplify input data.
-  ttxm <- t.post[,-1]#removes the fuelbed column for t.post.
-  dtxm <- d.post[,-1]#removes the fuelbed column from d.post.
-  pdxm <- pda[,-1]#removes the fuelbed column from pda.
-  
-  ####################################################################################
-  ####################################################################################
-  #STEP 07: Generate secondary data.
-  fblo <- 1:length(t.post$fuelbed)#fuelbed location.
-  fbls <- t.post$fuelbed#master list of fuelbeds.
-  
-  trls <- 1:length(f.treatments$TreatmentName)#Creates a numeric code for treatments.
+  #STEP 06: Generate secondary data.
   
   #Temporary stand numbers
   #The first will be used to seed disturbance and the second will be used in the fire
@@ -706,14 +679,14 @@ entireScript <- function() {
   
   #Combine fuelbed shift lists. Makes selecting between them more efficient (i.e. no if/then
   #statments needed to select an object)
-  D.List <- cbind(T1E.List, T2E.List, D1E.List, D2E.List)
+  #D.List <- cbind(T1E.List, T2E.List, D1E.List, D2E.List)
   
   #This will be used to log run times for disturbance loops.
   #e.summary <- data.frame()
   
   ####################################################################################
   ####################################################################################
-  #STEP 08: Generate functions.
+  #STEP 07: Generate functions.
   #This function (grabbed from the r-help site) is the same as the sample()
   #function except if the length of x is one it will just use that number rather than
   #sample from 1:x.
@@ -786,7 +759,7 @@ entireScript <- function() {
   
   ####################################################################################
   ####################################################################################
-  #STEP 09: Fire Regime Simulation for Eglin (excludes buffer zone).
+  #STEP 08: Fire Regime Simulation for Eglin (excludes buffer zone).
   
   #Since the buffer zone fire regime is determined by the eglin fire regime just use
   #the Eglin fire regime to drive flammability of fuels.
@@ -830,21 +803,21 @@ entireScript <- function() {
   
   ####################################################################################
   ####################################################################################
-  #STEP 10: Create vectors that list which fuelbeds are eligible for treatment.
+  #STEP 09: Create vectors that list which fuelbeds are eligible for treatment.
   
   #Determine available fuelbeds:
   #For thinning treatments
-  avfb_thin <- fbls[ttxm[,4] == 2]
+  eligible.for_Thinning <- t.post$fuelbed[t.post[,5] == 2]
   
   #For herbicide treatments
-  avfb_herb <- fbls[ttxm[,5] == 2]
+  eligible.for_Herbicide <- t.post$fuelbed[t.post[,6] == 2]
   
   #For prescribed fire treatments
-  avfb_fire <- fbls[ttxm[,6] == 2]
+  eligible.for_RxFire <- t.post$fuelbed[t.post[,7] == 2]
   
   ####################################################################################
   ####################################################################################
-  #STEP 11: CREATE DETAILED LIST OF ACREAGES FOR EACH MANAGEMENT OPTION
+  #STEP 10: CREATE DETAILED LIST OF ACREAGES FOR EACH MANAGEMENT OPTION
   
   #Fill in percent values so perc_cats adds up to one for each level within each treatment
   #type
@@ -870,10 +843,9 @@ entireScript <- function() {
   #mfri categories that do not apply
   b.thresh <- b.thresh[b.thresh$perc_cats > 0,]
   
-  
   ####################################################################################
   ####################################################################################
-  #STEP 12: DEFAULT VALUES
+  #STEP 11: DEFAULT VALUES
   
   #Set loop values to default (i.e. zero).
   a <- 0
@@ -884,13 +856,9 @@ entireScript <- function() {
   f <- 0
   g <- 0
   
-  
   ####################################################################################
   ####################################################################################
-  #STEP 13: RUN MODEL LOOP
-  
-  #Measure system.time
-  #systemTime <- system.time({
+  #STEP 12: RUN MODEL LOOP
   
   #LOOP 111111111111111111111111111111111111111111111111111111111111111111111111111111
   #Loop 1 (by year). This loop encases the entire expression that maps regimes.
@@ -925,36 +893,57 @@ entireScript <- function() {
     
     #Determine priority of management units for thinning treatments
     #Lists percentage of unit with eligible fuelbeds
+    #pri.thin <- mapply(function(y)
+    #{
+    #  sum(Area.List[Age.List >= D.List[,1] & 
+    #                  Fuelbed.List %in% eligible.for_Thinning & 
+    #                  MU.List == b.unit[y,1]])/b.unit[y,2]
+    #}, 1:length(b.unit$unit))
+    
     pri.thin <- mapply(function(y)
     {
-      sum(Area.List[Age.List >= D.List[,1] & 
-                      Fuelbed.List %in% avfb_thin & 
+      sum(Area.List[Fuelbed.List %in% eligible.for_Thinning & 
                       MU.List == b.unit[y,1]])/b.unit[y,2]
     }, 1:length(b.unit$unit))
+    
     #Incorporate hard rules for eligibility specified in management unit table (access through
     #ArcMap; file buun_map_9.raster).
     pri.thin[b.unit$thin == 1] <- 0#set to zero if management unit is not eligible for treatment
     
     #Determine priority of management units for herbicide treatments
     #Lists percentage of unit with eligible fuelbeds
+    #pri.herb <- mapply(function(y)
+    #{
+    #  sum(Area.List[Age.List >= D.List[,2] & 
+    #                  Fuelbed.List %in% eligible.for_Herbicide & 
+    #                  MU.List == b.unit[y,1]])/b.unit[y,2]
+    #}, 1:length(b.unit$unit))
+    
     pri.herb <- mapply(function(y)
     {
-      sum(Area.List[Age.List >= D.List[,2] & 
-                      Fuelbed.List %in% avfb_herb & 
+      sum(Area.List[Fuelbed.List %in% eligible.for_Herbicide & 
                       MU.List == b.unit[y,1]])/b.unit[y,2]
     }, 1:length(b.unit$unit))
+    
     #Incorporate hard rules for eligibility specified in management unit table (access through
     #ArcMap; file buun_map_9.raster).
     pri.herb[b.unit$herb == 1] <- 0#set to zero if management unit is not eligible for treatment
     
     #Determine priority of management units for prescribed fire treatments
     #Lists percentage of unit with eligible fuelbeds
+    #pri.fire <- mapply(function(y)
+    #{
+    #  sum(Area.List[Age.List >= D.List[,3] & 
+    #                  Fuelbed.List %in% eligible.for_RxFire & 
+    #                  MU.List == b.unit[y,1]])/b.unit[y,2]
+    #}, 1:length(b.unit$unit))
+    
     pri.fire <- mapply(function(y)
     {
-      sum(Area.List[Age.List >= D.List[,3] & 
-                      Fuelbed.List %in% avfb_fire & 
+      sum(Area.List[Fuelbed.List %in% eligible.for_RxFire & 
                       MU.List == b.unit[y,1]])/b.unit[y,2]
     }, 1:length(b.unit$unit))
+    
     #Incorporate hard rules for eligibility specified in management unit table (access through
     #ArcMap; file buun_map_9.raster).
     pri.fire[b.unit$fire == 1] <- 0#set to zero if management unit is not eligible for treatment
@@ -1068,6 +1057,14 @@ entireScript <- function() {
     mfri.Matrix <- cbind(mfri.Matrix, rep(0,length(mfri.Matrix[,1])))
     mfri.Matrix <- mfri.Matrix[,-1]
     
+    #Update the time-since-last-treatment list
+    tslt.List <- tslt.List + min(a-1,1)
+    
+    #Order tslt objects by stand number
+    tslt.List <- tslt.List[order(tslt.Stands)]
+    tslt.Fuelbeds <- tslt.Fuelbeds[order(tslt.Stands)]
+    tslt.Stands <- sort(tslt.Stands)
+    
     #Common disturbance file lists areas of disturbances
     diar <- c(fiar.e, fiar.b)
     tda <- c(tda,diar)
@@ -1113,6 +1110,10 @@ entireScript <- function() {
     loopE.F_no <- vector(mode = "numeric", length = 0)
     loopE.G_no <- vector(mode = "numeric", length = 0)
     
+    #This object tracks weather the fire affecting the stand was a surface fire (1)
+    #or crown fire (2).
+    loopE.fireType <- vector(mode = "numeric", length = 0)
+    
     #This object lists starting stand numbers in year[a] before the mapping loops
     #(loop 2, treatments in this case) run. This is used to keep treatments from 
     #overwriting a stand that was created within the same mapping loop. NOTE, this 
@@ -1146,7 +1147,8 @@ entireScript <- function() {
         end <- 1# switches to 2 if there is no remaining area available for the last management option
         
         #Lists treatment code for current treatment
-        t.code <- ifelse(length(which((meanTAA + meanUAA) < meanTAP)) == 0,4,min(which((meanTAA + meanUAA) < meanTAP)))
+        t.code <- ifelse(length(which((meanTAA + meanUAA) < meanTAP)) == 0,
+                         4,min(which((meanTAA + meanUAA) < meanTAP)))
         
         if(t.code == 4)
         { #2.1.1-----------------------------------------------------------------------------
@@ -1187,12 +1189,12 @@ entireScript <- function() {
           PrctTrmt.Mapped[cc+1] <- 0
           
           #Determine available fuelbeds.
-          avfb <- fbls[ttxm[,t.code + 3] == 2]
+          treatable.fuelbeds <- t.post$fuelbed[t.post[,t.code + 4] == 2]
           
     #Find eligible stands with eligible fuelbeds
     elst <- sort(unique(s.map[!b.map %in% c(NoData.Unit, Buffer.Unit, 
                                             Unmanaged.Unit) & 
-                                      f.map %in% avfb & s.map %in% loopA.snO]))
+                                      f.map %in% treatable.fuelbeds & s.map %in% loopA.snO]))
           
     #Determine how management options will impact selection of burn unit selected based on area
     #treated for current treatment type
@@ -1346,7 +1348,7 @@ entireScript <- function() {
                   
                   #List eligible stands in burn block
                   elst <- sort(unique(s.map[!b.map %in% c(NoData.Unit, Buffer.Unit, Unmanaged.Unit) & 
-                                              f.map %in% avfb & s.map %in% loopA.snO]))
+                                              f.map %in% treatable.fuelbeds & s.map %in% loopA.snO]))
                   
                   #Reset seed cells
                   sct <- vector(mode = "numeric", length = 0)
@@ -1791,7 +1793,6 @@ entireScript <- function() {
     #Add ufxTa to loopB data frame
     loopB <- data.frame(loopB, ufxTa = ufxTa)
   
-    
   #Sort data frame by new stands
   loopB <- loopB[order(loopB$new_stand),]#probably unecessary
   
@@ -1814,7 +1815,7 @@ entireScript <- function() {
   
   #Convert t.post (ttxm is t.post) from a data.frame into a matrix so new fuelbeds 
   #can be identified by coordinates that corresond with row and column numbers.
-  am_ttxm <- as.matrix(ttxm)  
+  am_ttxm <- as.matrix(t.post[,-1])  
   
   #Idenintify new fuelbed for each new stand.
   newFB_a7 <- am_ttxm[LL3]
@@ -1831,12 +1832,11 @@ entireScript <- function() {
   newAGE_a7_1 <- Age.List[Stand.List %in% loopB$old_stand]
   newAGE_a7 <- newAGE_a7_1[match(loopB$old_stand, usxTa_1)]
   
-  #Re-order loopB data frame by old stands because that is the order of ages in 
-  #newAGE_a7.
-  loopB <- loopB[order(loopB$old_stand),]
-  
   #Add newAGE_a7 to loopB data.frame
   loopB <- data.frame(loopB, newAGE_a7 = newAGE_a7)
+  
+  #Add newFB_a7 to loopB data.frame
+  loopB <- data.frame(loopB, newFB_a7 = newFB_a7)
   
   #List stands that have been altered by treatments.
   ss1 <- (loopB.old_stand*-1)
@@ -1875,10 +1875,10 @@ entireScript <- function() {
     Stand.List <- Stand.List[(Area.List == 0) == F]
     Fuelbed.List <- Fuelbed.List[(Area.List == 0) == F]
     Age.List <- Age.List[(Area.List == 0) == F]
-    T1E.List <- T1E.List[(Area.List == 0) == F]
-    T2E.List <- T2E.List[(Area.List == 0) == F]
-    D1E.List <- D1E.List[(Area.List == 0) == F]
-    D2E.List <- D2E.List[(Area.List == 0) == F]
+    #T1E.List <- T1E.List[(Area.List == 0) == F]
+    #T2E.List <- T2E.List[(Area.List == 0) == F]
+    #D1E.List <- D1E.List[(Area.List == 0) == F]
+    #D2E.List <- D2E.List[(Area.List == 0) == F]
     Coord.List <- Coord.List[(Area.List == 0) == F]
     MU.List <- MU.List[(Area.List == 0) == F]
     mfri.Matrix <- mfri.Matrix[(Area.List == 0) == F,]
@@ -1892,43 +1892,43 @@ entireScript <- function() {
     Age.List <- c(Age.List,newAGE_a7)
     
     #List fuelbeds that need to be updated.
-    pdaFB <- pda$pre[pda$pre %in% newFB_a7]
+    #pdaFB <- pda$pre[pda$pre %in% newFB_a7]
     
     #List corresponding updated age restrictions
-    pdaTH <- pda$thin[pda$pre %in% newFB_a7]
+    #pdaTH <- pda$thin[pda$pre %in% newFB_a7]
     
     #List occurences of age restriction for each new stand
-    v.THIN <- pdaTH[match(newFB_a7,pdaFB)]
+    #v.THIN <- pdaTH[match(newFB_a7,pdaFB)]
   
     #Update
-    T1E.List <- c(T1E.List,v.THIN)
+    #T1E.List <- c(T1E.List,v.THIN)
     
     #List corresponding updated age restrictions
-    pdaHE <- pda$herb[pda$pre %in% newFB_a7]
+    #pdaHE <- pda$herb[pda$pre %in% newFB_a7]
     
     #List occurences of age restriction for each new stand
-    v.HERB <- pdaHE[match(newFB_a7,pdaFB)]
+    #v.HERB <- pdaHE[match(newFB_a7,pdaFB)]
     
     #Update
-    T2E.List <- c(T2E.List, v.HERB)
+    #T2E.List <- c(T2E.List, v.HERB)
   
     #List corresponding updated age restrictions
-    pdaSF <- pda$sfire[pda$pre %in% newFB_a7]
+    #pdaSF <- pda$sfire[pda$pre %in% newFB_a7]
     
     #List occurences of age restriction for each new stand
-    v.SFIRE <- pdaSF[match(newFB_a7,pdaFB)]
+    #v.SFIRE <- pdaSF[match(newFB_a7,pdaFB)]
     
     #Update
-    D1E.List <- c(D1E.List, v.SFIRE)
+    #D1E.List <- c(D1E.List, v.SFIRE)
     
     #List corresponding updated age restrictions
-    pdaCF <- pda$cfire[pda$pre %in% newFB_a7]
+    #pdaCF <- pda$cfire[pda$pre %in% newFB_a7]
     
     #List occurences of age restriction for each new stand
-    v.CFIRE <- pdaCF[match(newFB_a7,pdaFB)]
+    #v.CFIRE <- pdaCF[match(newFB_a7,pdaFB)]
     
     #Update
-    D2E.List <- c(D2E.List, v.CFIRE)
+    #D2E.List <- c(D2E.List, v.CFIRE)
   
     #List new stand occurrences in s.map
     vs.map_a11 <- s.map[s.map %in% loopB.new_stand]
@@ -1970,13 +1970,27 @@ entireScript <- function() {
     #Update
     mfri_upper.List <- c(mfri_upper.List, less)
   
+    #Re-order loopB by new stand for tslt objects.
+    loopB <- loopB[order(loopB$new_stand),]
+    
+    #Remove stands that have been overwritten
+    tslt.List <- tslt.List[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
+    tslt.Fuelbeds <- tslt.Fuelbeds[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
+    tslt.Stands <- tslt.Stands[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
+    
+    
+    #Update time-since-last-treatment list and associated stand list
+    tslt.List <- c(tslt.List, rep(0, length(loopB$new_stand[loopB$treat_type %in% c(2,3)])))
+    tslt.Fuelbeds <- c(tslt.Fuelbeds, loopB$newFB_a7[loopB$treat_type %in% c(2,3)])
+    tslt.Stands <- c(tslt.Stands, loopB$new_stand[loopB$treat_type %in% c(2,3)])
+    
   if(any(c(length(Stand.List),
            length(Fuelbed.List),
            length(MU.List),
-           length(T1E.List),
-           length(T2E.List),
-           length(D1E.List),
-           length(D2E.List),
+           #length(T1E.List),
+           #length(T2E.List),
+           #length(D1E.List),
+           #length(D2E.List),
            length(Area.List),
            length(mfri.Matrix[,1]), 
            length(Age.List),
@@ -2043,6 +2057,9 @@ entireScript <- function() {
         loopF.F_no <- vector(mode = "numeric", length = 0)
         loopF.G_no <- vector(mode = "numeric", length = 0)
         
+        #This object tracks which stands are surface fires and which are crown fires.
+        loopF.fireType <- vector(mode = "numeric", length = 0)
+        
         #Pre-run Loop 9 number (used in tracking devices).
         f <- 0
         
@@ -2050,14 +2067,14 @@ entireScript <- function() {
         desa <- round(tda[e],0)
         
         #Object shows fuelbeds available for establishment by disturbance[e].
-        avfb <- fbls[!fbls %in% Non.Flammable]
+        flammable.fuelbeds <- t.post$fuelbed[!t.post$fuelbed %in% Non.Flammable]
         
         #End script for disturbance[e] if there are no available cells to establish.
         #1) must not be a wilderness area (in w.map 2 = wilderness, 1 non-wilderness, 
         #and 0 = area that are null in f.map.
         #2) fuelbed must be applicable to disturbance type.
         #3) must be a stand that was not created during year[a].
-        if(length(f.map[f.map %in% avfb & s.map %in% loopA.snO]) > 0)
+        if(length(f.map[f.map %in% flammable.fuelbeds & s.map %in% loopA.snO]) > 0)
         { #8.1.1 ---------------------------------------------------------------------------
           
           #LOOP 999999999999999999999999999999999999999999999999999999999999999999999999999999
@@ -2080,12 +2097,17 @@ entireScript <- function() {
               g <- 0
               h <- 0
               
+              #Reset cumulative temporary stand numbers
+              tesn_cum <- vector()
+              
               #Set up an intra loop tracking device for overwritten stand numbers.
               #This will be fed into loopE.ReplacedStands
               osnd <- vector(length = 0, mode = "numeric")
+              osnd_crown <- vector(length = 0, mode = "numeric")
               
               #Set up an intra loop tracking device for overwritten coordinates.
               ocod <- vector(length = 0, mode = "numeric")
+              ocod_crown <- vector(length = 0, mode = "numeric")
               
               #Tracks the highest stand number. Used to assign stand numbers to new disturbance.
               #beneath loop 7. Can't place this below loop 7 in case disturbance erases stand with
@@ -2121,7 +2143,8 @@ entireScript <- function() {
               
               #Then find stands within this subset that meet minimum age requirements for
               #the disturbance/treatment.
-              ss2 <- Stand.List[Stand.List %in% ss1 & Age.List >= D1E.List]
+              #ss2 <- Stand.List[Stand.List %in% ss1 & Age.List >= D1E.List]
+              ss2 <- Stand.List[Stand.List %in% ss1]
               
               if(tdc[e] == 1)
               { #EAFB -----------------------------------------------------------
@@ -2224,7 +2247,7 @@ entireScript <- function() {
   } #9.2.2---------------------------------------------------------------
               #Ends loop if there are no locations to establish disturbance[e] where fuelbed 
               #requirements, wilderness designations, and stand numbers check out. 
-              if(length(f.map[f.map %in% dtxm[,2] & s.map %in% loopA.snO]) > 0)
+              if(length(f.map[f.map %in% d.post[,3] & s.map %in% loopA.snO]) > 0)
                 #need something that measures previously assigned cells
               { #9.3.1 ---------------------------------------------------------------------------
                 if(length(fire.start) > 0)
@@ -2548,14 +2571,30 @@ entireScript <- function() {
                     
                     #Measures tesn that are still eligible for buring
                     #tesns in loop 10 have values of -1 to number of loops * -1
-                    if(spread.type == 11 & g == 1)
+                    if(any(c(11,12) == spread.type))
                     {
-                      tesn <- tesn_cum
+                      if(g == 1)
+                      {
+                        tesn <- tesn_cum
+                      } else
+                      {
+                        if(g <= burn.out)
+                        {
+                          tesn <- c(tesn_cum, 
+                                    sort(unique(as.vector(s.map[s.map < min(0,((g*-1)+burn.out)) & s.map > NoData.Unit]))))
+                        } else
+                        {
+                          tesn <- sort(unique(as.vector(s.map[s.map < min(0,((g*-1)+burn.out)) & s.map > NoData.Unit])))
+                        }
+                      }
                     } else
                     {
-                    tesn <- sort(unique(as.vector(s.map[s.map < min(0,((g*-1)+burn.out)) & s.map > NoData.Unit])))
+                      tesn <- sort(unique(as.vector(s.map[s.map < min(0,((g*-1)+burn.out)) & s.map > NoData.Unit])))
                     }
                     
+                    #If spread type is 12, set to zero of this loop will cut out on the first iteration
+                    spread.type <- ifelse(spread.type == 12, 0, spread.type)
+      
                       if(length(tesn) > 0)
                     {#10.2.1 --------------------------------------------------------------------------
                      
@@ -2616,8 +2655,24 @@ entireScript <- function() {
     #that the mapped regime does not exceed its prescribed area.
     fual <- s.profile[match(f.map[l.map %in% pr.3[,1]], f.probability[,1])]
   
+    #Show unadjusted probability for each cell
+    sProb <- f.probability[,2][match(f.map[l.map %in% pr.3[,1]], f.probability[,1])]
+    
     #Multiply wind probability of spread by fuel-based probability of spread
     pr.5 <- pr.4 * fual
+    
+    #Calculate the probability of crown fire. This is a somewhat arbitary application
+    #of probability to my understanding of fire severity. The higher the difference
+    #between the fuel and weather driven affects on fire spread, the higher than
+    #chance of crown fire. This is mediated by the location along the fire flank
+    #The larger the difference between unadjusted pronability of ignition and wind-adjusted
+    #probability of ignition, the lower the chance of crown fire (i.e. fires on the
+    #flank and back will have lower probability of crown fire than the same fuels at
+    #the head of the fire)
+    crownProb <- (fual - sProb) - (fual - pr.5)
+    
+    #If prob is less than zero, change to zero
+    crownProb[crownProb < 0] <- 0
     
     #Ends loop if there are no more locations available for disturbance[e].
     if(all(pr.5 == 0))
@@ -2633,59 +2688,66 @@ entireScript <- function() {
       #sacrificing differences in fuel/wind field properties.
       pr.6 <- pr.5/max(pr.5)
       #Produces a list with locations selected for each fuelbed.
-      new.cells <- unlist(mapply(function(y){
+      initial.new.cells <- unlist(mapply(function(y){
         pr.3[y,1][resample(c(0,1), size = 1, replace = T, prob = c(1-pr.6[y], pr.6[y])) == 1]
       },1:length(pr.3[,1])))
       
       #Scale back the number of new cells if it will exceed area to be burned.
       if((dema + length(ocod) + length(new.cells)) <= desa)
       {
-        new.cells <- new.cells
+        new.cells <- initial.new.cells
       } else
       {
         #If the number of new cells + dema exceeds dema then reduce the number of new cells.
-        new.cells <- resample(new.cells, (desa-(dema + length(ocod))))
+        new.cells <- resample(initial.new.cells, (desa-(dema + length(ocod))))
       }
       
       osnd <- c(osnd, s.map[new.cells]) #tracks stand numbers involved in disturbance.
       ocod <- c(ocod, new.cells) #tracks coordinates involved in disturbance.
       s.map[new.cells] <- ((g*-1)-1) #maps disturbance.
       
+      #Determines cells that experienced crown fire
+      binom.response_crownFire <- rbinom(length(pr.3[,1]),1,crownProb)
+      binom.response_crownFire_for.new.cells <- binom.response_crownFire[match(new.cells, pr.3[,1])]
+      
+      #Remove cells that were not selected for burning
+      ocod_crown <- c(ocod_crown, new.cells[binom.response_crownFire_for.new.cells == 1])
+      
       if(spread.type == 11 & g >= 4 & length(unique(b.map[l.map %in% ocod])) > length(burned.units))
         {
         spread.type <- 12
         tesn_cum <- c(tesn_cum,((g*-1)-1))#update values representing pixels burned in this fire.
-        } else
-          {
-            tesn_cum <- c(tesn_cum,((g*-1)-1))#update values representing pixels burned in this fire.
-          }
-      } #10.4.2 --------------------------------------------------------------------------
-  } #10.3.2 --------------------------------------------------------------------------
-                  } else #10.1.1 ---------------------------------------------------------------------
-  { #10.1.2 -------------------------------------------------------------------------- 
-    breaks <- 1012
-    break
-  } #10.1.2 --------------------------------------------------------------------------
-  
-  if(spread.type == 12)
-  {#10.5.1
-    breaks <- 1051
-    break
-  } else#10.5.1
-  {#10.5.2
-  breaks <- 1052
-  }#10.5.2
-                } #10.0.0 --------------------------------------------------------------------------
-  } else #9.7.1 (WILDFIRE LOOP)--------------------------------------------------------------
-  {#9.7.2 (RX FIRE LOOP)--------------------------------------------------------------
-  
-   #Establish disturbance[e] in s.map and record old stand number
-   if(spread.type == 12)
-     {
-     osnd <- c(osnd,s.map[scd])
-     ocod <- c(ocod, scd)
-     s.map[scd] <- s.map[scd] * tesn_t
-     } else
+      } else
+      {
+          tesn_cum <- c(tesn_cum,((g*-1)-1))#update values representing pixels burned in this fire.
+        }
+    } #10.4.2 --------------------------------------------------------------------------
+} #10.3.2 --------------------------------------------------------------------------
+                } else #10.1.1 ---------------------------------------------------------------------
+{ #10.1.2 -------------------------------------------------------------------------- 
+  breaks <- 1012
+  break
+} #10.1.2 --------------------------------------------------------------------------
+                if(spread.type == 12)
+                {#10.5.1
+                  breaks <- 1051
+                  break
+                } else#10.5.1
+                {#10.5.2
+                  breaks <- 1052
+                }#10.5.2
+              } #10.0.0 --------------------------------------------------------------------------
+} else #9.7.1 (WILDFIRE LOOP)--------------------------------------------------------------
+{#9.7.2 (RX FIRE LOOP)--------------------------------------------------------------
+
+ #Establish disturbance[e] in s.map and record old stand number
+ if(spread.type == 12)
+   {
+   osnd <- c(osnd,s.map[scd])
+   ocod <- c(ocod, scd)
+   s.map[scd] <- s.map[scd] * tesn_t
+   tesn <- unique(s.map[s.map < 0 & s.map > NoData.Unit])
+   } else
        {
          if(spread.type == 0)
            {
@@ -2720,6 +2782,24 @@ entireScript <- function() {
              }
        }
    
+  #For fires determine and apply growth rate cutoff
+  #Pick a cutoff growth rate between 0.5% and 5% from an exponential
+  #prob den function... that is much higher chance of the treatment
+  #being cutoff at 5% growth over 0.5% growth.
+  
+  #Object is a list of cut off growth rates from 0.5% to 5%
+  list.of.cutoff.growth.rates <- seq(0.5,5,0.1)
+  #Object is a vector of probabilites from an inverse exponential function.
+  list.of.cutoff.probabilities <- sort(mapply(function(y) 
+  {
+    exp(-5*y)
+  },
+  seq(0.01,1,1/length(list.of.cutoff.growth.rates))))
+  
+  cutoff.growth.rate <- resample(list.of.cutoff.growth.rates,
+                                 1,
+                                 prob = list.of.cutoff.probabilities)
+  
   #LOOP 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 
    #Loop 11 (by iterations). This loop keeps growing fire[e] in block[f] 
    #until growth stops.
@@ -2744,6 +2824,7 @@ entireScript <- function() {
        { #11.2.1 ---------------------------------------------------------------------------
   
          #Reset new.cells object.
+         inital.new.cells <- vector(length=0, mode = "numeric")
          new.cells <- vector(length=0, mode = "numeric")
                    
            #This expression picks out which location values are of the same stand and are 
@@ -2753,47 +2834,103 @@ entireScript <- function() {
              {#-----------------------------------------------------------------A-TRUE
              if((dema + length(ocod) + length(avlo)) <= desa)#------------------B
                {#---------------------------------------------------------------B-TRUE
-               new.cells <- avlo
+               initial.new.cells <- avlo
+               fual <- f.map[match(initial.new.cells, l.map)]
+               ss.n <- length(fual)
+               ss <- rbinom(ss.n, 1,  f.probability[,2][match(fual, f.probability[,1])])
+               new.cells <- initial.new.cells[ss == 1]
                s.map[new.cells] <- s.map[new.cells]*tesn_t
                tesn <- unique(s.map[s.map < 0 & s.map > NoData.Unit])
+               fual10 <- s.profile[match(f.map[l.map %in% new.cells], f.probability[,1])]
+               sProb <- f.probability[,2][match(f.map[l.map %in% new.cells], f.probability[,1])]
+               crownProb <- (fual10 - sProb)
+               crownProb[crownProb < 0] <- 0
+               initial.cells.with.crown.fire <- rbinom(length(new.cells),1,crownProb)
                } else#----------------------------------------------------------B-TRUE
                  {#-------------------------------------------------------------B-FALSE
-                   new.cells <- resample(avlo,(desa - (dema + length(ocod))))
+                   initial.new.cells <- resample(avlo,(desa - (dema + length(ocod))))
+                   fual <- f.map[match(initial.new.cells, l.map)]
+                   ss.n <- length(fual)
+                   ss <- rbinom(ss.n, 1,  f.probability[,2][match(fual, f.probability[,1])])
+                   new.cells <- initial.new.cells[ss == 1]
                    s.map[new.cells] <- s.map[new.cells]*tesn_t
                    tesn <- unique(s.map[s.map < 0 & s.map > NoData.Unit])
+                   fual10 <- s.profile[match(f.map[l.map %in% new.cells], f.probability[,1])]
+                   sProb <- f.probability[,2][match(f.map[l.map %in% new.cells], f.probability[,1])]
+                   crownProb <- (fual10 - sProb)
+                   crownProb[crownProb < 0] <- 0
+                   initial.cells.with.crown.fire <- rbinom(length(new.cells),1,crownProb)
                    }#-----------------------------------------------------------B-FALSE
              } else #-----------------------------------------------------------A-TRUE
                {#---------------------------------------------------------------A-FALSE
                  if((dema + length(ocod) + length(avlo)) <= desa)#--------------C
                    {#-----------------------------------------------------------C-TRUE
-                   new.cells <- resample(avlo,(a.bun - length(ocod)))
+                   initial.new.cells <- resample(avlo,(a.bun - length(ocod)))
+                   fual <- f.map[match(initial.new.cells, l.map)]
+                   ss.n <- length(fual)
+                   ss <- rbinom(ss.n, 1,  f.probability[,2][match(fual, f.probability[,1])])
+                   new.cells <- initial.new.cells[ss == 1]
                    s.map[new.cells] <- s.map[new.cells]*tesn_t
                    tesn <- unique(s.map[s.map < 0 & s.map > NoData.Unit])
+                   fual10 <- s.profile[match(f.map[l.map %in% new.cells], f.probability[,1])]
+                   sProb <- f.probability[,2][match(f.map[l.map %in% new.cells], f.probability[,1])]
+                   crownProb <- (fual10 - sProb)
+                   crownProb[crownProb < 0] <- 0
+                   initial.cells.with.crown.fire <- rbinom(length(new.cells),1,crownProb)
                    spread.type <- 11
                    } else#------------------------------------------------------C-TRUE
                      {#---------------------------------------------------------C-FALSE
                        if(a.bun < desa)#----------------------------------------D
                          {#-----------------------------------------------------D-TRUE
-                         new.cells <- resample(avlo,(a.bun - length(ocod)))
+                         initial.new.cells <- resample(avlo,(a.bun - length(ocod)))
+                         fual <- f.map[match(initial.new.cells, l.map)]
+                         ss.n <- length(fual)
+                         ss <- rbinom(ss.n, 1,  f.probability[,2][match(fual, f.probability[,1])])
+                         new.cells <- initial.new.cells[ss == 1]
                          s.map[new.cells] <- s.map[new.cells]*tesn_t
                          tesn <- unique(s.map[s.map < 0 & s.map > NoData.Unit])
+                         fual10 <- s.profile[match(f.map[l.map %in% new.cells], f.probability[,1])]
+                         sProb <- f.probability[,2][match(f.map[l.map %in% new.cells], f.probability[,1])]
+                         crownProb <- (fual10 - sProb)
+                         crownProb[crownProb < 0] <- 0
+                         initial.cells.with.crown.fire <- rbinom(length(new.cells),1,crownProb)
                          spread.type <- 11
                          } else#------------------------------------------------D-TRUE
                            {#---------------------------------------------------D-FALSE
-                             new.cells <- resample(avlo,(desa - (dema + length(ocod))))
+                             initial.new.cells <- resample(avlo,(desa - (dema + length(ocod))))
+                             fual <- f.map[match(initial.new.cells, l.map)]
+                             ss.n <- length(fual)
+                             ss <- rbinom(ss.n, 1,  f.probability[,2][match(fual, f.probability[,1])])
+                             new.cells <- initial.new.cells[ss == 1]
                              s.map[new.cells] <- s.map[new.cells]*tesn_t
                              tesn <- unique(s.map[s.map < 0 & s.map > NoData.Unit])
+                             fual10 <- s.profile[match(f.map[l.map %in% new.cells], f.probability[,1])]
+                             sProb <- f.probability[,2][match(f.map[l.map %in% new.cells], f.probability[,1])]
+                             crownProb <- (fual10 - sProb)
+                             crownProb[crownProb < 0] <- 0
+                             initial.cells.with.crown.fire <- rbinom(length(new.cells),1,crownProb)
                              }#-------------------------------------------------D-FALSE
                        }#-------------------------------------------------------C-FALSE
                  }#-------------------------------------------------------------A-FALSE
   
            osnd <- c(osnd, s.map[new.cells]) #tracks stand numbers involved in disturbance.
            ocod <- c(ocod, new.cells) #tracks coordinates involved in disturbance.
-  
+           ocod_crown <- c(ocod_crown, new.cells[initial.cells.with.crown.fire == 1])
+           
+           #Stop loop if growth rate slows below cutoff rate
+           treatment.growth <- (length(new.cells)/a.bun)*100
+           if(treatment.growth > cutoff.growth.rate)
+           {#11.4.1----------------------------------------------------------------------
+             d <- d#placeholder
+           } else#11.4.1-----------------------------------------------------------------
+           {#11.4.2----------------------------------------------------------------------
+             breaks <- 1142  
+             break
+           }#11.4.2----------------------------------------------------------------------
+           
        } else #11.2.1 ----------------------------------------------------------------------
        
   {#11.2.2
-  #NOTE (12/6/2015)
   #Fire has burned out and must be reassigned to a new area. Use spread.type = 0 to
   #direct loop 9 into section that will locate anew scd
     spread.type <- 0
@@ -2822,60 +2959,130 @@ entireScript <- function() {
   }#11.3.2
    } #11.0.0 ---------------------------------------------------------------------------
   }#9.7.2 (RX FIRE LOOP)--------------------------------------------------------------
-  
-  #NEW F.1.2---------------------------------------------------------------
-  
+
   #Reset tesn, it should be -1 for FDM, except in loop 10 where it must include multiple
   #values to support the burn out function.
   tesn <- -1#temporary stand number.
   
   osnd <- abs(osnd)
   
-  #Show fuelbeds associated with stands affected by fire
-  fb_f12 <- Fuelbed.List[Stand.List %in% osnd]
+  #Find affected stands that affected by crown fire.
+  pos_crown <- which(is.na(match(ocod, ocod_crown)) == F)
+  osnd_crown <- osnd[pos_crown]
   
-  #List corresponding stand numbers.
-  osno <- Stand.List[Stand.List %in% osnd]
-  
-  #Expand fuelbeds to include each occurence of stand number in osnd
-  effb <- fb_f12[match(osnd, osno)]
-  
-  #Calculate number of new stands
-  noef <- length(osno)
-  
-  #Determine new stand numbers for treatment[b], block[cc].
-  if(noef == 0)
+  #Pare new stand and corresponding location objects to remove stands burned in crown fire.
+  if(length(osnd_crown) == 0)
   {
-    neef <- 0
+    osnd_surface <- osnd
+    ocod_surface <- ocod
   } else
   {
-    neef <- seq((mudn + 1), (mudn + noef), 1)
+    osnd_surface <- osnd[-pos_crown]
+    ocod_surface <- ocod[-pos_crown]
   }
   
-  #Map new stands
-    od <- data.frame(ocod, osnd)
-    od <- od[order(od$ocod),]
-    v.neef <- neef[match(od$osnd, osno)]
-    s.map[l.map %in% od$ocod] <- v.neef
-      
-    if(sum(neef) == 0)
+  neef_surface <- vector()
+  neef_crown <- vector()
+  
+  #SURFACE FIRE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  if(length(osnd_surface) > 0)
+  {
+    #Show fuelbeds associated with stands affected by fire
+    fb_f12_surface <- Fuelbed.List[Stand.List %in% osnd_surface]
+    
+    #List corresponding stand numbers.
+    osno_surface <- Stand.List[Stand.List %in% osnd_surface]
+    
+    #Expand fuelbeds to include each occurence of stand number in osnd
+    effb_surface <- fb_f12_surface[match(osnd_surface, osno_surface)]
+    
+    #Calculate number of new stands
+    noef_surface <- length(osno_surface)
+    
+    #Determine new stand numbers for treatment[b], block[cc].
+    if(noef_surface == 0)
     {
-      loopF.NewStand <- loopF.NewStand
-      loopF.Area <- loopF.Area
+      neef_surface <- 0
     } else
     {
-      loopF.NewStand <- c(loopF.NewStand,neef)
-      l.neef <- rep(1,length(v.neef))
-      s.neef_a <- summarize(l.neef, v.neef, sum)
-      s.neef <- as.vector(s.neef_a[,2])
-      loopF.Area <- c(loopF.Area, s.neef)
+      neef_surface <- seq((mudn + 1), (mudn + noef_surface), 1)
     }
     
-  loopF.ReplacedStand <- c(loopF.ReplacedStand, osno)
-  loopF.E_no <- c(loopF.E_no, rep(e, length(osno)))
-  loopF.F_no <- c(loopF.F_no, rep(f, length(osno)))
-  loopF.G_no <- c(loopF.G_no, rep(g, length(osno)))
+    #Map new stands
+    ods <- data.frame(ocod_surface, osnd_surface)
+    ods <- ods[order(ods$ocod_surface),]
+    v.neef_surface <- neef_surface[match(ods$osnd_surface, osno_surface)]
+    s.map[l.map %in% ods$ocod_surface] <- v.neef_surface
+    
+    #
+    osno_all <- osno_surface
+  } else
+  {
+    osno_surface <- vector()
+    osno_all <- osno_surface
+    v.neef_surface <- vector()
+  }
   
+  #CROWN FIRE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  if(length(osnd_crown) > 0)
+  {
+    #Show fuelbeds associated with stands affected by fire
+    fb_f12_crown <- Fuelbed.List[Stand.List %in% osnd_crown]
+    
+    #List corresponding stand numbers.
+    osno_crown <- Stand.List[Stand.List %in% osnd_crown]
+    
+    #Expand fuelbeds to include each occurence of stand number in osnd
+    effb_crown <- fb_f12_crown[match(osnd_crown, osno_crown)]
+    
+    #Crown Fire
+    #Calculate number of new stands
+    noef_crown <- length(osno_crown)
+    
+    #Determine new stand numbers for treatment[b], block[cc].
+    if(noef_crown == 0)
+    {
+      neef_crown <- 0
+    } else
+    {
+      neef_crown <- seq(ifelse(length(neef_surface) == 0, mudn, max(neef_surface) + 1), 
+                        (ifelse(length(neef_surface) == 0, mudn + noef_crown, max(neef_surface) + noef_crown)), 1)
+    }
+    
+    #Map new stands
+    odc <- data.frame(ocod_crown, osnd_crown)
+    odc <- odc[order(odc$ocod_crown),]
+    v.neef_crown <- neef_crown[match(odc$osnd_crown, osno_crown)]
+    s.map[l.map %in% odc$ocod_crown] <- v.neef_crown
+    
+    #
+    osno_all <- c(osno_all, osno_crown)
+  } else
+  {
+    osno_crown <- vector()
+    osno_all <- c(osno_all, osno_crown)
+    v.neef_crown <- vector()
+  }
+  
+  if(sum(neef_surface,neef_crown) == 0)
+  {
+    loopF.NewStand <- loopF.NewStand
+    loopF.Area <- loopF.Area
+  } else
+  {
+    loopF.NewStand <- c(loopF.NewStand,neef_surface, neef_crown)
+    l.neef <- rep(1,length(v.neef_surface) + length(v.neef_crown))
+    s.neef_a <- summarize(l.neef, c(v.neef_surface, v.neef_crown), sum)
+    s.neef <- as.vector(s.neef_a[,2])
+    loopF.Area <- c(loopF.Area, s.neef)
+  }
+  
+  loopF.ReplacedStand <- c(loopF.ReplacedStand, osno_all)
+  loopF.E_no <- c(loopF.E_no, rep(e, length(osno_all)))
+  loopF.F_no <- c(loopF.F_no, rep(f, length(osno_all)))
+  loopF.G_no <- c(loopF.G_no, rep(g, length(osno_all)))
+  loopF.fireType <- c(loopF.fireType, 
+                      c(rep(1, length(osno_surface)), rep(2, length(osno_crown))))
   
     g.g <- sum(g.g, ifelse(g == 0,h,g))#tracks expansions
   
@@ -2887,7 +3094,7 @@ entireScript <- function() {
   
   if(length(unique(loopF.NewStand)) != length(loopF.NewStand) | 
        length(loopF.ReplacedStand) != length(loopF.NewStand) | 
-       length(v.neef) != length(s.map[l.map %in% od$ocod]))
+     length(v.neef_surface) + length(v.neef_crown) != length(s.map[l.map %in% c(ocod_surface,ocod_crown)]))
   {  
     r101 <- 2
     break
@@ -2914,63 +3121,69 @@ entireScript <- function() {
               } else #9.3.1 ----------------------------------------------------------------------
   { #9.3.2 ---------------------------------------------------------------------------
   
+    #I DON'T THINK THE CODE IN THIS SECTION IS NECESSARY ANYMORE. NO SCENRAIO
+    #WHERE UNASSIGNED CELLS WOULD END UP HERE BECAUSE CELL ASSIGNMENTS ARE MADE IN 9.3.1
+    #TEST TO FIND A SITUATION WHERE 9.3.2 IS HIT AND RE-RUN MODEL TO STOP JUST BEFORE
+    #SO YOU CAN TEST FOR UNASSIGNED CELLS
+    r101 <- 8
+    
     #Reset tesn, it should be -1 for FDM, except in loop 10 where it must include multiple
       #values to support the burn out function.
-      tesn <- -1#temporary stand number.
+      #tesn <- -1#temporary stand number.
       
-      osnd <- abs(osnd)
+      #osnd <- abs(osnd)
       
       #Show fuelbeds associated with stands affected by fire
-      fb_f12 <- Fuelbed.List[Stand.List %in% osnd]
+      #fb_f12 <- Fuelbed.List[Stand.List %in% osnd]
       
       #List corresponding stand numbers.
-      osno <- Stand.List[Stand.List %in% osnd]
+      #osno <- Stand.List[Stand.List %in% osnd]
       
       #Expand fuelbeds to include each occurence of stand number in osnd
-      effb <- fb_f12[match(osnd, osno)]
+      #effb <- fb_f12[match(osnd, osno)]
   
       #Unique old stands
-      osno <- sort(unique(osnd))
+      #osno <- sort(unique(osnd))
       
       #Calculate number of new stands
-      noef <- length(osno)
+      #noef <- length(osno)
       
       #Determine new stand numbers for treatment[b], block[cc].
-      if(noef == 0)
-      {
-        neef <- 0
-      } else
-      {
-        neef <- seq((mudn + 1), (mudn + noef), 1)
-      }
+      #if(noef == 0)
+      #{
+      #  neef <- 0
+      #} else
+      #{
+      #  neef <- seq((mudn + 1), (mudn + noef), 1)
+      #}
     
       #Map new stands
-      od <- data.frame(osnd = osnd, ocod = ocod)
-      od <- od[order(od$ocod),]
-      v.neef <- neef[match(od.b$osnd, osno)]
-      s.map[s.map %in% osno] <- v.neef
+      #od <- data.frame(osnd = osnd, ocod = ocod)
+      #od <- od[order(od$ocod),]
+      #v.neef <- neef[match(od.b$osnd, osno)]
+      #s.map[s.map %in% osno] <- v.neef
   
       #Log new stand numbers and associated disturbances when they have been added to 
       #s.map.
-      if(sum(neef) == 0)
-      {
-        loopF.NewStand <- loopF.NewStand
-        loopF.Area <- loopF.Area
-        } else
-          {
-            loopF.NewStand <- c(loopF.NewStand,neef)
-            l.neef <- rep(1,length(v.neef))
-            s.neef_a <- summarize(l.neef, v.neef, sum)
-            s.neef <- as.vector(s.neef_a[,2])
-            loopF.Area <- c(loopF.Area, s.neef)
-          }
+      #if(sum(neef) == 0)
+      #{
+      #  loopF.NewStand <- loopF.NewStand
+      #  loopF.Area <- loopF.Area
+      #  } else
+      #    {
+      #      loopF.NewStand <- c(loopF.NewStand,neef)
+      #      l.neef <- rep(1,length(v.neef))
+      #      s.neef_a <- summarize(l.neef, v.neef, sum)
+      #      s.neef <- as.vector(s.neef_a[,2])
+      #      loopF.Area <- c(loopF.Area, s.neef)
+      #    }
       
-      loopF.ReplacedStand <- c(loopF.ReplacedStand, osno)
-      loopF.E_no <- c(loopF.E_no, rep(e, length(osno)))
-      loopF.F_no <- c(loopF.F_no, rep(f, length(osno)))
-      loopF.G_no <- c(loopF.G_no, rep(g, length(osno)))
+      #loopF.ReplacedStand <- c(loopF.ReplacedStand, osno)
+      #loopF.E_no <- c(loopF.E_no, rep(e, length(osno)))
+      #loopF.F_no <- c(loopF.F_no, rep(f, length(osno)))
+      #loopF.G_no <- c(loopF.G_no, rep(g, length(osno)))
       
-      g.g <- sum(g.g, ifelse(g == 0,h,g))#tracks expansions
+      #g.g <- sum(g.g, ifelse(g == 0,h,g))#tracks expansions
   
     ##############################################################################
     ##############################################################################
@@ -2978,23 +3191,23 @@ entireScript <- function() {
     #ONLY TO DIAGNOSE ERRORS FROM MODEL RUN 101                                 #
     #DRAG ON TIME, REMOVE AFTER ERRORS DIAGNOSED                                #
     
-    if(length(unique(loopF.NewStand)) != length(loopF.NewStand) | 
-         length(loopF.ReplacedStand) != length(loopF.NewStand))
-    {  
-      r101 <- 8
-    } else
-    {
-      r101 <- ifelse(any(s.map < 0 & s.map > -9999),88,0) 
-    } 
+    #if(length(unique(loopF.NewStand)) != length(loopF.NewStand) | 
+    #     length(loopF.ReplacedStand) != length(loopF.NewStand))
+    #{  
+    #  r101 <- 8
+    #} else
+    #{
+    #  r101 <- ifelse(any(s.map < 0 & s.map > -9999),88,0) 
+    #} 
     
     #TEMPOARY -- FORCES FDM TO CRASH IF -1 IS ASSSIGNED TO S.MAP
-    if(length(s.map[s.map < 0 & s.map > -9999]) > 0)
-    {
-      aaa <- data.frame(B = loopB.new_stand, F = loopF.NewStand)
-    } else
-    {
-      f <- f
-    }
+    #if(length(s.map[s.map < 0 & s.map > -9999]) > 0)
+    #{
+    #  aaa <- data.frame(B = loopB.new_stand, F = loopF.NewStand)
+    #} else
+    #{
+    #  f <- f
+    #}
     #TEMPOARY -- FORCES FDM TO CRASH IF -1 IS ASSSIGNED TO S.MAP
     
     
@@ -3019,9 +3232,11 @@ entireScript <- function() {
   loopE.E_no <- c(loopE.E_no, loopF.E_no)
   loopE.F_no <- c(loopE.F_no, loopF.F_no)
   loopE.G_no <- c(loopE.G_no, loopF.G_no)
+  loopE.fireType <- c(loopE.fireType, loopF.fireType)
   loopE <- data.frame(NewStand = loopE.NewStand, 
                       ReplacedStand = loopE.ReplacedStand, 
                       Area = loopE.Area, 
+                      Fire = loopE.fireType,
                       E_no = loopE.E_no, 
                       F_no = loopE.F_no,
                       G_no = loopE.G_no)
@@ -3036,9 +3251,11 @@ entireScript <- function() {
     loopE.E_no <- c(loopE.E_no, loopF.E_no)
     loopE.F_no <- c(loopE.F_no, loopF.F_no)
     loopE.G_no <- c(loopE.G_no, loopF.G_no)
+    loopE.fireType <- c(loopE.fireType, loopF.fireType)
     loopE <- data.frame(NewStand = loopE.NewStand, 
                         ReplacedStand = loopE.ReplacedStand, 
                         Area = loopE.Area, 
+                        Fire = loopE.fireType, 
                         E_no = loopE.E_no, 
                         F_no = loopE.F_no,
                         G_no = loopE.G_no)
@@ -3067,10 +3284,8 @@ entireScript <- function() {
     "UnBurned_Area: ", desa-sum(loopE.Area), 
     " Blocks: ", f, 
     " Expansions: ", g.g, 
-    "HiStandNo: ", max(neef))
+    "HiStandNo: ", max(c(neef_surface, neef_crown)))
   
-   # e.summary <- rbind(e.summary, d.summary)
-    
   #Save run data.
   cat(d.summary, file = paste(output_path, "run_", run, "_disturbances.txt", sep = ""), fill = T, append = T)#
   
@@ -3107,63 +3322,102 @@ entireScript <- function() {
   #Update files if there were disturbances in year[a].
   if(length(loopE.NewStand) > 0)
   {
+    
+    #Code below replaces loop, vene though there are more lines it should run way faster.
+    loopE_crownFire <- loopE[loopE$Fire == 2,]
+    
     #Object shows fuelbeds associated with each new stand number created by 
       #disturbances in year[a].
-      #ufxDa <- mapply(function(x) unique(f.map[s.map == x]), loopE.NewStand)
-      ufxDa_1 <- Fuelbed.List[Stand.List %in% loopE$ReplacedStand]
-      usxDa_1 <- Stand.List[Stand.List %in% loopE$ReplacedStand]
-      ufxDa <- ufxDa_1[match(loopE$ReplacedStand, usxDa_1)]
-   
-      #Code below replaces loop, vene though there are more lines it should run way faster.
-      
-      #Add ufxDa to loopE data frame
-      loopE <- data.frame(loopE, ufxDa = ufxDa)
-      
-      #Sort data frame by new stands
-      loopE <- loopE[order(loopE$NewStand),]#probably unecessary
-      
-      #seperate out new stands from s.map, lists occurrences of new stands from min to max coords.
-      vs.map_a15 <- s.map[s.map %in% loopE$NewStand]
-      
-      #List of row numbers in d.post where fuelbeds need to be updated based on treatment
-      LL1_a15 <- which(d.post$fuelbed %in% loopE$ufxDa)
-      
-      #Fuelbeds that may be updated corresponding with row numbers in LL1_a15
-      FL1_a15 <- d.post$fuelbed[d.post$fuelbed %in% ufxDa]
-      
-      #row numbers in d.post corresponding with each existing fuelbed in each new stand 
-      LL2_a15 <- LL1_a15[match(loopE$ufxDa, FL1_a15)]
-  
+    FB_burned.by.crownFire_1 <- Fuelbed.List[Stand.List %in% loopE_crownFire$ReplacedStand]
+    SN_burned.by.crownFire_1 <- Stand.List[Stand.List %in% loopE_crownFire$ReplacedStand]
+    FB_burned.by.crownFire_2 <- FB_burned.by.crownFire_1[match(loopE_crownFire$ReplacedStand, 
+                                                               SN_burned.by.crownFire_1)]
+    
+    #Add SN_burned.by.crownFire_2 to loopE_crownFire data frame
+    loopE_crownFire <- data.frame(loopE_crownFire, AffectedFuelbed = FB_burned.by.crownFire_2)
+    
+    #Sort data frame by new stands
+    loopE_crownFire <- loopE_crownFire[order(loopE_crownFire$NewStand),]#probably unecessary
+    
+    #seperate out new stands from s.map, lists occurrences of new stands from min to max coords.
+    crownFire_standsXpixel <- s.map[s.map %in% loopE_crownFire$NewStand]
+    
+    #List of row numbers in d.post where fuelbeds need to be updated based on treatment
+    burned.fuelbeds.positions <- which(d.post$fuelbed %in% loopE_crownFire$AffectedFuelbed)
+    
+    #Fuelbeds that may be updated corresponding with row numbers in burned.fuelbeds.positions
+    fuelbeds.burned.in.crownFire <- d.post$fuelbed[d.post$fuelbed %in% FB_burned.by.crownFire_2]
+    
+    #row numbers in d.post corresponding with each existing fuelbed in each new stand 
+    burned.fuelbed.positionsXpixel <- burned.fuelbeds.positions[match(loopE_crownFire$AffectedFuelbed, 
+                                                                      fuelbeds.burned.in.crownFire)]
+    
     #Activate when you can differentiate between crown fire and surface fire
-      newFB_a15 <- d.post[LL2_a15,1]
-  
-      #Lists occurrences of new fuelbeds from min to max coords.
-      v.newFB_a15 <- newFB_a15[match(vs.map_a15, loopE$NewStand)]
-      
-      #Replace old fuelbeds with new ones in f.map
-      f.map[s.map %in% loopE$NewStand] <- v.newFB_a15
-      
-      #List ages associated with each stand that has been affected by treatment
-      #These will be used to update Age.List but are unchanged since treatments do not
-      #change overstory age.
-      newAGE_a15_1 <- Age.List[Stand.List %in% loopE$ReplacedStand]
-      newAGE_a15 <- newAGE_a15_1[match(loopE$ReplacedStand, usxDa_1)]
-      
-      #Re-order loopB data frame by old stands because that is the order of ages in newAGE_a7.
-      loopE <- loopE[order(loopE$ReplacedStand),]
-      
-      #Add newAGE_a7 to loopB data.frame
-      loopE <- data.frame(loopE, newAGE_a15 = newAGE_a15)
-      
+    crownFire_regen <- d.post[burned.fuelbed.positionsXpixel,5]
+    
+    #Lists occurrences of new fuelbeds from min to max coords.
+    crownFire_regenXpixel <- crownFire_regen[match(crownFire_standsXpixel, loopE_crownFire$NewStand)]
+    
+    #Replace old fuelbeds with new ones in f.map
+    f.map[s.map %in% loopE_crownFire$NewStand] <- crownFire_regenXpixel
+    
+    #Re-order loopE data frame by old stands because that is the order of ages in crownFire_newAge_1.
+    loopE_crownFire <- loopE_crownFire[order(loopE_crownFire$ReplacedStand),]
+    
+    #List ages associated with each stand that has been affected by crown fire
+    #These will be used to update Age.List
+    crownFire_oldAge_1 <- Age.List[Stand.List %in% loopE_crownFire$ReplacedStand]
+    crownFire_oldAge_2 <- crownFire_oldAge_1[match(loopE_crownFire$ReplacedStand, SN_burned.by.crownFire_1)]
+    
+    #List new age for crown fire stands
+    crownFire_newAge <- rep(0, length(crownFire_oldAge_2))
+    
+    #Add crownFire_newAge_2 to loopE data.frame
+    loopE_crownFire <- data.frame(loopE_crownFire, oldAge = crownFire_oldAge_2)
+    
+    #Add crownFire_regen to loopE data.frame
+    loopE_crownFire <- data.frame(loopE_crownFire, newFuelbed = crownFire_regen)
+    
+    #Add crownFire_newAge_2 to loopE data.frame
+    loopE_crownFire <- data.frame(loopE_crownFire, newAge = crownFire_newAge)
+    
+    #Re-order loopE data frame by new stands.
+    loopE_crownFire <- loopE_crownFire[order(loopE_crownFire$NewStand),]
+   
     #List stands that have been altered by disturbances.
     ss2 <- loopE.ReplacedStand
     standd <- sort(unique(ss2))#there can be duplicates, this will mess up the shortcut in a9
     sb <- summarize(loopE.Area,ss2,sum)#sum areas for duplicates.
     saread <- as.vector(sb[,2])
     smud <- mapply(function(y) MU.List[Stand.List == y], loopE.ReplacedStand)
-  
+    
+    #Isolate stands affected by surface fire
+    loopE_surfaceFire <- loopE[loopE$Fire == 1,]
+    loopE_surfaceFire <- loopE_surfaceFire[order(loopE_surfaceFire$NewStand),]#probably unecessary
+    
+    #Add fuelbed and age info (needed to update .List objects)
+    StandNumber_surfaceFire_1 <- Stand.List[Stand.List %in% loopE_surfaceFire$ReplacedStand]
+    Fuelbed_surfaceFire_1 <- Fuelbed.List[Stand.List %in% loopE_surfaceFire$ReplacedStand]
+    Fuelbed_surfaceFire_2 <- Fuelbed_surfaceFire_1[match(loopE_surfaceFire$ReplacedStand, 
+                                                         StandNumber_surfaceFire_1)]
+    Age_surfaceFire_1 <- Age.List[Stand.List %in% loopE_surfaceFire$ReplacedStand]
+    Age_surfaceFire_2 <- Age_surfaceFire_1[match(loopE_surfaceFire$ReplacedStand, 
+                                                 StandNumber_surfaceFire_1)]
+    
+    #Create new data frame. At this point new fuelbeds and new ages are old, these are 
+    #just placeholders until further down this loop when surface fire impacts are assessed
+    #using mFRI.
+    loopE_surfaceFire <- data.frame(loopE_surfaceFire, 
+                                    AffectedFuelbed = Fuelbed_surfaceFire_2,
+                                    oldAge = Age_surfaceFire_2, newFuelbed = Fuelbed_surfaceFire_2, 
+                                    newAge = Age_surfaceFire_2)
+    
+    #Combine surface fire and crown fire tables
+    loopE_allFire <- rbind(loopE_surfaceFire, loopE_crownFire)
+    loopE_allFire <- loopE_allFire[order(loopE_allFire$NewStand),]
+    
     #Shelve fire history for stands that have been impacted by disturbance
-    new_mfri_vec <- mapply(function(y) mfri.Matrix[Stand.List == y,], loopE.ReplacedStand)
+    new_mfri_vec <- mapply(function(y) mfri.Matrix[Stand.List == y,], loopE_allFire$ReplacedStand)
     nmvd <- t(new_mfri_vec)
     
     #Add a fire for stands that were burned in wildfires
@@ -3187,10 +3441,10 @@ entireScript <- function() {
     Stand.List <- Stand.List[(Area.List == 0) == F]
     Fuelbed.List <- Fuelbed.List[(Area.List == 0) == F]
     Age.List <- Age.List[(Area.List == 0) == F]
-    T1E.List <- T1E.List[(Area.List == 0) == F]
-    T2E.List <- T2E.List[(Area.List == 0) == F]
-    D1E.List <- D1E.List[(Area.List == 0) == F]
-    D2E.List <- D2E.List[(Area.List == 0) == F]
+    #T1E.List <- T1E.List[(Area.List == 0) == F]
+    #T2E.List <- T2E.List[(Area.List == 0) == F]
+    #D1E.List <- D1E.List[(Area.List == 0) == F]
+    #D2E.List <- D2E.List[(Area.List == 0) == F]
     Coord.List <- Coord.List[(Area.List == 0) == F]
     MU.List <- MU.List[(Area.List == 0) == F]
     mfri.Matrix <- mfri.Matrix[(Area.List == 0) == F,]
@@ -3198,50 +3452,49 @@ entireScript <- function() {
     mfri_upper.List <- mfri_upper.List[(Area.List == 0) == F]
     Area.List <- Area.List[(Area.List == 0) == F]
     
-    
     #Update list to add new stands.
-    Stand.List <- c(Stand.List, loopE.NewStand)
-    Fuelbed.List <- c(Fuelbed.List, newFB_a15)
-    Age.List <- c(Age.List, newAGE_a15)
+    Stand.List <- c(Stand.List, loopE_allFire$NewStand)
+    Fuelbed.List <- c(Fuelbed.List, loopE_allFire$newFuelbed)
+    Age.List <- c(Age.List, loopE_allFire$newAge)
   
     #List fuelbeds that need to be updated.
-    pdaFB_a20 <- pda$pre[pda$pre %in% newFB_a15]
+    #pdaFB_a20 <- pda$pre[pda$pre %in% loopE_allFire$newFuelbed]
     
     #List corresponding updated age restrictions
-    pdaTH_a20 <- pda$thin[pda$pre %in% newFB_a15]
+    #pdaTH_a20 <- pda$thin[pda$pre %in% loopE_allFire$newFuelbed]
     
     #List occurences of age restriction for each new stand
-    v.THIN_a20 <- pdaTH_a20[match(newFB_a15,pdaFB_a20)]
+    #v.THIN_a20 <- pdaTH_a20[match(loopE_allFire$newFuelbed,pdaFB_a20)]
     
     #Update
-    T1E.List <- c(T1E.List,v.THIN_a20)
+    #T1E.List <- c(T1E.List,v.THIN_a20)
     
     #List corresponding updated age restrictions
-    pdaHE_a20 <- pda$herb[pda$pre %in% newFB_a15]
+    #pdaHE_a20 <- pda$herb[pda$pre %in% loopE_allFire$newFuelbed]
     
     #List occurences of age restriction for each new stand
-    v.HERB_a20 <- pdaHE_a20[match(newFB_a15,pdaFB_a20)]
+    #v.HERB_a20 <- pdaHE_a20[match(loopE_allFire$newFuelbed,pdaFB_a20)]
     
     #Update
-    T2E.List <- c(T2E.List, v.HERB_a20)
+    #T2E.List <- c(T2E.List, v.HERB_a20)
     
     #List corresponding updated age restrictions
-    pdaSF_a20 <- pda$sfire[pda$pre %in% newFB_a15]
+    #pdaSF_a20 <- pda$sfire[pda$pre %in% loopE_allFire$newFuelbed]
     
     #List occurences of age restriction for each new stand
-    v.SFIRE_a20 <- pdaSF_a20[match(newFB_a15,pdaFB_a20)]
+    #v.SFIRE_a20 <- pdaSF_a20[match(loopE_allFire$newFuelbed,pdaFB_a20)]
     
     #Update
-    D1E.List <- c(D1E.List, v.SFIRE_a20)
+    #D1E.List <- c(D1E.List, v.SFIRE_a20)
     
     #List corresponding updated age restrictions
-    pdaCF_a20 <- pda$cfire[pda$pre %in% newFB_a15]
+    #pdaCF_a20 <- pda$cfire[pda$pre %in% loopE_allFire$newFuelbed]
     
     #List occurences of age restriction for each new stand
-    v.CFIRE_a20 <- pdaCF_a20[match(newFB_a15,pdaFB_a20)]
+    #v.CFIRE_a20 <- pdaCF_a20[match(loopE_allFire$newFuelbed,pdaFB_a20)]
     
     #Update
-    D2E.List <- c(D2E.List, v.CFIRE_a20)
+    #D2E.List <- c(D2E.List, v.CFIRE_a20)
   
     #List new stand occurrences in s.map
     vs.map_a20 <- s.map[s.map %in% loopE.NewStand]
@@ -3264,13 +3517,13 @@ entireScript <- function() {
     mfri.List <- ifelse(mfri.List == Inf, 32, mfri.List)
     
     #Update
-    mfri_lower.List <- c(mfri_lower.List, d.post$more_fire[match(newFB_a15,d.post$fuelbed)])
+    mfri_lower.List <- c(mfri_lower.List, d.post$more_fire[match(loopE_allFire$newFuelbed,d.post$fuelbed)])
     
     #Select option 1 for fuelbed transition when mfri lengthens
-    less1 <- d.post$less_fire1[match(newFB_a15,d.post$fuelbed)]
+    less1 <- d.post$less_fire1[match(loopE_allFire$newFuelbed,d.post$fuelbed)]
     
     #Select option 2 for fuelbed transition when mfri lengthens
-    less2 <- d.post$less_fire1[match(newFB_a15,d.post$fuelbed)]
+    less2 <- d.post$less_fire1[match(loopE_allFire$newFuelbed,d.post$fuelbed)]
     
     #Randomly choose between option 1 and 2 for each fuelebd.
     less <- apply(matrix(data = c(less1,less2),length(less1), 2), 1, sample, size = 1)
@@ -3280,7 +3533,26 @@ entireScript <- function() {
     
     #Update
     Area.List <- c(Area.List,loopE.Area)
-  
+    
+    #Remove stands that have been overwritten
+    tslt.List <- tslt.List[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
+    tslt.Fuelbeds <- tslt.Fuelbeds[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
+    tslt.Stands <- tslt.Stands[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
+    
+    #Update time-since-last-treatment list and associated stand list
+    tslt.List <- c(tslt.List, rep(0, length(
+      loopE_allFire$NewStand[mapply(function(y) 
+      {as.numeric(strsplit(as.character(y), "")[[1]])[4]}
+      , loopE_allFire$AffectedFuelbed) %in% c(2,3,4,6,7,8)])))
+    
+    tslt.Fuelbeds <- c(tslt.Fuelbeds, loopE_allFire$AffectedFuelbed[mapply(function(y) 
+    {as.numeric(strsplit(as.character(y), "")[[1]])[4]}
+    , loopE_allFire$AffectedFuelbed) %in% c(2,3,4,6,7,8)])
+    
+    tslt.Stands <- c(tslt.Stands, loopE_allFire$NewStand[mapply(function(y) 
+    {as.numeric(strsplit(as.character(y), "")[[1]])[4]}
+    , loopE_allFire$AffectedFuelbed) %in% c(2,3,4,6,7,8)])
+    
   ##############################################################################
   ##############################################################################
   ##############################################################################
@@ -3290,10 +3562,10 @@ entireScript <- function() {
            length(Fuelbed.List),
            length(mfri.List),
            length(MU.List),
-           length(T1E.List),
-           length(T2E.List),
-           length(D1E.List),
-           length(D2E.List),
+           #length(T1E.List),
+           #length(T2E.List),
+           #length(D1E.List),
+           #length(D2E.List),
            length(Area.List),
            length(mfri_lower.List),
            length(mfri_upper.List), 
@@ -3309,11 +3581,22 @@ entireScript <- function() {
   ##############################################################################
   ##############################################################################
   
-    #Update fuelbeds
+    #Update fuelbeds based on impacts of changing mean fire return interval.
+    #Make a copy of the Fuelbed.List
     feof <- Fuelbed.List
+    
+    #Create a parelle list that shows lower bound of mFRI for each stand
     start <- d.post$mfri_start[match(feof,d.post$fuelbed)]
+    
+    #Create a parellel list that shows upper bound of mFRI for each stand
     end <- d.post$mfri_end[match(feof,d.post$fuelbed)]
+    
+    #Replace fuelbed with one representing a more frequent fire regime if the mFRI is shorter
+    #than the lower limit for the current fuelbed.
     feof[mfri.List < start] <- mfri_lower.List[mfri.List < start]
+    
+    #Replace fuelbed with one representing a less frequent fire regime if the mFRI is longer
+    #than the lower limit for the current fuelbed.
     feof[mfri.List > end] <- mfri_upper.List[mfri.List > end]
     
     #Update f.map
@@ -3325,13 +3608,79 @@ entireScript <- function() {
     f.map[s.map %in% s.SL] <- v.feof2
     Fuelbed.List <- feof
   
-    #cbind(Stand.List,Fuelbed.List,Area.List)
   } else
   {
   }
   
   #Post-wildfire processing >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  #Update files based on succession
+  
+  #Update files based on time-since-last-treatment>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  
+  #Show max time-since-last-treatment before state transitions for each fuelbed
+  max_tslt <- t.path$max_tslt[t.path$pre %in% tslt.Fuelbeds]
+  
+  #List each of the fuelbeds corresponding with tslt object above
+  max_tslt_fb <- t.path$pre[t.path$pre %in% tslt.Fuelbeds]
+  
+  #Expand to the max tslt object for each row in tslt.List
+  max_tslt_x_stand <- max_tslt[match(tslt.Fuelbeds, max_tslt_fb)]
+  
+  #Crash model is Fuelbed.List turned into a list()
+  if(length(max_tslt_x_stand) != length(tslt.List))
+  {
+    r101 <- "inconcistency in tslt tracking"
+    break
+  } else
+  {
+    r101 <- r101
+  }
+  
+  #List stand numbers for stands that will transition.
+  replace_stands <- tslt.Stands[tslt.List > max_tslt_x_stand]
+  
+  #List fuelbeds of stands that will transition.
+  replace_fbs <- tslt.Fuelbeds[tslt.List > max_tslt_x_stand]
+  
+  #List unique current fuelbeds for stands that will transition.
+  old_fbs <- t.path$pre[t.path$pre %in% replace_fbs]
+  
+  #List unique new fuelbeds for stands that will transition.
+  new_fbs <- t.path$post_1[t.path$pre %in% replace_fbs]
+  
+  #Expand new unique fuelbeds to the number of stands that will transition.
+  new_fbs_x_stand <- new_fbs[match(replace_fbs, old_fbs)]
+  
+  #Replace current fuelbeds with new ones in cases where tslt exceeds limit for 
+  #state.
+  tslt.Fuelbeds[tslt.Stands %in% replace_stands] <- new_fbs_x_stand              
+  
+  #Apply changes to f.map and Fuelbed.List
+  vt.map <- s.map[s.map %in% tslt.Stands]
+  v.tslt <- tslt.Fuelbeds[match(vt.map, tslt.Stands)]
+  f.map[s.map %in% tslt.Stands] <- v.tslt
+  Fuelbed.List[Stand.List %in% tslt.Stands] <- tslt.Fuelbeds
+  
+  #Remove stands that have been overwritten
+  tslt.List <- tslt.List[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
+  tslt.Fuelbeds <- tslt.Fuelbeds[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
+  tslt.Stands <- tslt.Stands[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
+  
+  
+  #Remove rows where fuelbeds no longer represent a silvicultural treatment
+  tslt.List <- tslt.List[which(mapply(function(y) 
+  {as.numeric(strsplit(as.character(y), "")[[1]])[4]}
+  , tslt.Fuelbeds) %in% c(2,3,4,6,7,8) == T)]
+  
+  tslt.Fuelbeds <- tslt.Fuelbeds[which(mapply(function(y) 
+  {as.numeric(strsplit(as.character(y), "")[[1]])[4]}
+  , tslt.Fuelbeds) %in% c(2,3,4,6,7,8) == T)]
+  
+  tslt.Stands <- tslt.Stands[which(mapply(function(y) 
+  {as.numeric(strsplit(as.character(y), "")[[1]])[4]}
+  , tslt.Fuelbeds) %in% c(2,3,4,6,7,8) == T)]
+  
+  #Update files based on succession>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  
   
   #Identify potential changes in fuelbeds based on succession pathways.
   
@@ -3353,48 +3702,32 @@ entireScript <- function() {
   Fuelbed.List[Stand.List %in% s.SL2] <- pmuf2
   
   #Update D.List
-  D.List <- cbind(T1E.List, T2E.List, D1E.List, D2E.List)
+  #D.List <- cbind(T1E.List, T2E.List, D1E.List, D2E.List)
   
   #Create maps for interval years.
   if((a %% Interval) == 0)
-  {
-  
-  #  #Save Fuelbed Map (f.map).
-  dt <- Sys.Date()
-  tm <- format(Sys.time(), format = "%H.%M.%S", 
-               tz = "", usetz = FALSE)
-  
-  write.table(s.map, file = paste(output_path, "sef_smap_run_", run, "_", 
-                                  dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
-              append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
-              dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
-                c("escape", "double"))#
-  
-  write.table(Stand.List, file = paste(output_path, "sef_sList_run_", run, "_", 
-                                  dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
-              append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
-              dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
-                c("escape", "double"))#
-  
-  #write.table(f.map, file = paste(output_path, "fdm_maps/sef_fmap_run_", run, "_",
-  #                                dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
-  #            append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
-  #            dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
-  #              c("escape", "double"))#
-  
-  }
+    {
+    
+    #  #Save Fuelbed Map (f.map).
+    dt <- Sys.Date()
+    tm <- format(Sys.time(), format = "%H.%M.%S", 
+                 tz = "", usetz = FALSE)
+    
+    write.table(s.map, file = paste(output_path, "sef_smap_run_", run, "_", 
+                                    dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
+                append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
+                dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
+                  c("escape", "double"))#
+    
+    write.table(f.map, file = paste(output_path, "fdm_maps/sef_fmap_run_", run, "_",
+                                    dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
+                append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
+                dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
+                  c("escape", "double"))#
+    
+    }
   } #1.0.0 ---------------------------------------------------------------------------
-  #})
-  
-  #Save system time file
-  #Date and time
-  #dt <- Sys.Date()
-  #tm <- format(Sys.time(), format = "%H.%M.%S", 
-  #             tz = "", usetz = FALSE)
-  
-  #Save run data.
-  #cat(systemTime, file = paste(output_path, "fdm_systemTime_status/run_", run, "_systemTime.txt", 
-  #                            sep = ""), fill = T, append = T)
-}
 
-entireScript()
+#}
+
+#entireScript()
