@@ -1,19 +1,17 @@
 
+##########                          START FUELBED DYNAMICS MODEL                        ###########
+
+#Version 2.0 (Derviced from version 17e, the most recent version withmodel 
+#documentation
+
 #entireScript <- function() {
+
+  #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>          HOW WOULD YOU LIKE TO RUN THE FUELBED DYNAMICS MODEL?
   
-  ###START FUELBED DYNAMICS MODEL####
+  #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   
-  #Version 2.0 (Derviced from version 17e, the most recent version withmodel 
-  #documentation
-  
-  
-  
-  #>>>>>>>>>>>>>>>>>>>          HOW WOULD YOU LIKE TO RUN THE FUELBED DYNAMICS MODEL?
-  
-  #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  
-  #>>>>>>>>>>>>>>>>>>>          COMPUTING PARAMETERS...
+  #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>          COMPUTING PARAMETERS...
   
   #Do you want to install required R packages on this machine?
   #Yes --- TRUE
@@ -33,12 +31,12 @@
   
   #Select a run ID, this should be a number, ideally unique that will help track this
   #run. Output files are tagged with this ID number.
-  RUN <- 63
+  RUN <- 67
   
   #Reporting interval, how often (in model years) should output maps be produced?
   #I.e., once every ... years.
   #Must be less than model run time (YEARS object)
-  Interval <- 2
+  Interval <- 10
   
   #What is your working directory. I.e. where are your input files coming from?
   input_path <- "C:/Users/jcronan/Documents/GitHub/EglinAirForceBase"     
@@ -62,100 +60,102 @@
   #Disturbance and time parameters
   if(disturbance_regime == 1)
     {
-    #Number of years the model should run for.
-    YEARS <- 50
-  
-    #Acres thinned annually.
-    THINNING <- 5000
+      #Number of years the model should run for.
+      YEARS <- 50
     
-    #Acres of herbicide application annually
-    HERBICIDE <- 5000
-    
-    #Acres prescribed burned annually
-    #RX_FIRE <- 100000
-    
-    #Natural fire rotation in years for:
-    #Element 1 -- Eglin Air Force Base
-    #Element 2 -- Surrounding 10-km buffer landscape
-    NATURAL_FIRE_ROTATION <- c(54.38,457.39)
-    
-    #Mean fire size in acres for:
-    #Element 1 -- Eglin Air Force Base
-    #Element 2 -- Surrounding 10-km buffer landscape
-    MEAN_FIRE_SIZE <- c(103.65,5.23)        
-    
-    #Standard deviation of mean fire size for:
-    #Element 1 -- Eglin Air Force Base
-    #Element 2 -- Surrounding 10-km buffer landscape
-    STAND_DEV_FIRE_SIZE <- c(361.12,13.98)
-  } else 
-  {if(disturbance_regime == 2)
-    {
-    #Number of years the model should run for.
-    YEARS <- 2
-    
-    #Acres thinned annually.
-    THINNING <- 0
-    
-    #Acres of herbicide application annually
-    HERBICIDE <- 0
-    
-    #Acres prescribed burned annually
-    #RX_FIRE <- 1000
-    
-    #Natural fire rotation in years for:
-    #Element 1 -- Eglin Air Force Base
-    #Element 2 -- Surrounding 10-km buffer landscape
-    NATURAL_FIRE_ROTATION <- c(10554.38, 10457.39)
-    
-    #Mean fire size in acres for:
-    #Element 1 -- Eglin Air Force Base
-    #Element 2 -- Surrounding 10-km buffer landscape
-    MEAN_FIRE_SIZE <- c(103.65, 5.23)        
-    
-    #Standard deviation of mean fire size for:
-    #Element 1 -- Eglin Air Force Base
-    #Element 2 -- Surrounding 10-km buffer landscape
-    STAND_DEV_FIRE_SIZE <- c(361.12, 13.98)
-  } else
-  {
-    #Number of years the model should run for.
-    YEARS <- 2
-    
-    #Acres thinned annually.
-    THINNING <- 1000
-    
-    #Acres of herbicide application annually
-    HERBICIDE <- 1000
-    
-    #Acres prescribed burned annually
-    RX_FIRE <- 2500
-    
-    #Natural fire rotation in years for:
-    #Element 1 -- Eglin Air Force Base
-    #Element 2 -- Surrounding 10-km buffer landscape
-    NATURAL_FIRE_ROTATION <- c(1054.38,10457.39)
-    
-    #Mean fire size in acres for:
-    #Element 1 -- Eglin Air Force Base
-    #Element 2 -- Surrounding 10-km buffer landscape
-    MEAN_FIRE_SIZE <- c(103.65,5.23)    
-    
-    #Standard deviation of mean fire size for:
-    #Element 1 -- Eglin Air Force Base
-    #Element 2 -- Surrounding 10-km buffer landscape
-    STAND_DEV_FIRE_SIZE <- c(361.12, 13.98)
-  }}
+      #Acres thinned annually.
+      THINNING <- 5000
+      
+      #Acres of herbicide application annually
+      HERBICIDE <- 5000
+      
+      #Acres prescribed burned annually
+      #RX_FIRE <- 100000
+      
+      #Natural fire rotation in years for:
+      #Element 1 -- Eglin Air Force Base
+      #Element 2 -- Surrounding 10-km buffer landscape
+      NATURAL_FIRE_ROTATION <- c(54.38,457.39)
+      
+      #Mean fire size in acres for:
+      #Element 1 -- Eglin Air Force Base
+      #Element 2 -- Surrounding 10-km buffer landscape
+      MEAN_FIRE_SIZE <- c(103.65,5.23)        
+      
+      #Standard deviation of mean fire size for:
+      #Element 1 -- Eglin Air Force Base
+      #Element 2 -- Surrounding 10-km buffer landscape
+      STAND_DEV_FIRE_SIZE <- c(361.12,13.98)
+      } else 
+
+        {if(disturbance_regime == 2)
+          {
+            #Number of years the model should run for.
+            YEARS <- 2
+            
+            #Acres thinned annually.
+            THINNING <- 0
+            
+            #Acres of herbicide application annually
+            HERBICIDE <- 0
+            
+            #Acres prescribed burned annually
+            #RX_FIRE <- 1000
+            
+            #Natural fire rotation in years for:
+            #Element 1 -- Eglin Air Force Base
+            #Element 2 -- Surrounding 10-km buffer landscape
+            NATURAL_FIRE_ROTATION <- c(10554.38, 10457.39)
+            
+            #Mean fire size in acres for:
+            #Element 1 -- Eglin Air Force Base
+            #Element 2 -- Surrounding 10-km buffer landscape
+            MEAN_FIRE_SIZE <- c(103.65, 5.23)        
+            
+            #Standard deviation of mean fire size for:
+            #Element 1 -- Eglin Air Force Base
+            #Element 2 -- Surrounding 10-km buffer landscape
+            STAND_DEV_FIRE_SIZE <- c(361.12, 13.98)
+          } else
+            {
+              #Number of years the model should run for.
+              YEARS <- 10
+              
+              #Acres thinned annually.
+              THINNING <- 2000
+              
+              #Acres of herbicide application annually
+              HERBICIDE <- 2000
+              
+              #Acres prescribed burned annually
+              RX_FIRE <- 7000
+              
+              #Natural fire rotation in years for:
+              #Element 1 -- Eglin Air Force Base
+              #Element 2 -- Surrounding 10-km buffer landscape
+              NATURAL_FIRE_ROTATION <- c(1054.38,10457.39)
+              
+              #Mean fire size in acres for:
+              #Element 1 -- Eglin Air Force Base
+              #Element 2 -- Surrounding 10-km buffer landscape
+              MEAN_FIRE_SIZE <- c(103.65,5.23)    
+              
+              #Standard deviation of mean fire size for:
+              #Element 1 -- Eglin Air Force Base
+              #Element 2 -- Surrounding 10-km buffer landscape
+              STAND_DEV_FIRE_SIZE <- c(361.12, 13.98)
+            }
+          }
   
   #>>>>>>>>>>>>>>>>>>>          FINISHED
   
-  #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   
   #>>>>>>>>>>>>>>>>>>>          HARD-CODED PARAMETERS -- THESE SHOULD NOT BE CHANGED
   
-  #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   
   #>>>>>>>>>>>>>>>>>>>          COMPUTING PARAMTERS...
   
@@ -168,14 +168,14 @@
   #Loop 11 (var. = h)   -- expansions (wildfire with block and burn suppression)
   r.max <- 1000#7
   
-  #StarTing stand numbers for...
-  #-----------------------------------------------------------------------------------
+  #Starting stand numbers for...
+  #------------------------------------------------------------------------------------------------
   #Treatments:
   treat.stand <- 4000000
   
   #Fires:
   fire.stand <- 8000000
-  #-----------------------------------------------------------------------------------
+  #------------------------------------------------------------------------------------------------
   
   #>>>>>>>>>>>>>>>>>>>          ASCII MAP FILE METADATA...
   
@@ -239,7 +239,7 @@
   fire.cut <- 10
   
   #Ceilings for forest management and wildfire disturbances
-  #-----------------------------------------------------------------------------
+  #------------------------------------------------------------------------------------------------
   #Maximum annual area burned in wildfires
   #Element 1 -- Eglin Air Force Base
   #Element 2 -- 10-km buffer landscape
@@ -257,7 +257,7 @@
   #Element 4 -- Herbicide Application (Corresponds with HERBICIDE)
   #Element 5 -- Prescribed Fire (Corresponds with RX_FIRE)
   Truncate.Number <- c(400, 800, 50, 50, 500)
-  #-----------------------------------------------------------------------------
+  #-------------------------------------------------------------------------------------------------
   
   #These two parameters will cause flammability of fuels to slowly equilibrate
   #as annual area burned increases. For these values (c.shape = 1.5 and 
@@ -302,12 +302,12 @@
   
   #>>>>>>>>>>>>>>>>>>>          FINISHED
   
-  #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   
   
-  ####################################################################################
-  ####################################################################################
+  #################################################################################################
+  #################################################################################################
   #STEP 01: Administrative Information
   
   # Reads mutable parameters from AWS user data
@@ -410,8 +410,8 @@
     }
   }
   
-  ####################################################################################
-  ####################################################################################
+  #################################################################################################
+  #################################################################################################
   #STEP 02: Operational Parameters
   
   #Stop model run if map production interval is greater than the number of model years.
@@ -435,8 +435,8 @@
   #Convert area in acres to 30 m pixels
   meanTAP <- round(meanTAP/MapRes,0)
   
-  ####################################################################################
-  ####################################################################################
+  #################################################################################################
+  #################################################################################################
   #STEP 03: Import Spatial Database (Raster Subset)
   f.map <- matrix(scan(paste("inputs/sef_fmap_v2_",rows,"x",cols,".txt",
                              sep = ""),skip = fh.adj),ncol=cols,byrow=T)#16
@@ -450,8 +450,8 @@
   l.map <- matrix(scan(paste("inputs/sef_lmap_",rows,"x",cols,".txt",
                              sep = ""),skip = lh.adj),ncol=cols,byrow=T)#20
   
-  ####################################################################################
-  ####################################################################################
+  #################################################################################################
+  #################################################################################################
   #STEP 04: Import Spatial Database (Pseudo-vector Subset)
   Stand.List <- read.table(paste(
     "inputs/sef_StandList_",rows,"x",cols,".txt",
@@ -546,32 +546,22 @@
   tslt.List <- tslt.List[Fuelbed.List == 4016204]
   tslt.Stands <- Stand.List[Fuelbed.List == 4016204]
   tslt.Fuelbeds <- Fuelbed.List[Fuelbed.List == 4016204]
-  #Last line removes the first integer from the .List objects which contain the NoDate
-  #area and will not match up with any date in f.path, resulting in an error.
+  #Last line removes the first integer from the .List objects which contains information for
+  #the NoData stand (i.e. the area around landscape used to create a rectangle).
   
-  ####################################################################################
-  ####################################################################################
+  #################################################################################################
+  #################################################################################################
   #STEP 05: Import Conditional Database
-  f.path <- read.table("inputs/sef_lut_pathways_succession.csv", header=TRUE, 
-                       sep=",", na.strings="NA", dec=".", strip.white=TRUE)
-  
-  t.path <- read.table("inputs/sef_lut_pathways_treatmentsuccession.csv", header=TRUE, 
+  fuelbed_lut <- read.table("inputs/sef_lut_all.csv", header=TRUE, 
                        sep=",", na.strings="NA", dec=".", strip.white=TRUE)
   
   f.treatments <- read.table("inputs/sef_lut_menu_treatment.csv", header=TRUE, 
-                             sep=",", na.strings="NA", dec=".", strip.white=TRUE, stringsAsFactors = F)
+                             sep=",", na.strings="NA", dec=".", strip.white=TRUE, 
+                             stringsAsFactors = F)
   
   f.disturbances <- read.table("inputs/sef_lut_menu_disturbance.csv", header=TRUE, 
-                               sep=",", na.strings="NA", dec=".", strip.white=TRUE, stringsAsFactors = F)
-  
-  t.post <- read.table("inputs/sef_lut_pathways_silviculture.csv", header=TRUE, 
-                       sep=",", na.strings="NA", dec=".", strip.white=TRUE)
-  
-  d.post <- read.table("inputs/sef_lut_pathways_fire.csv", header=TRUE, 
-                       sep=",", na.strings="NA", dec=".", strip.white=TRUE)
-  
-  f.probability <- read.table("inputs/sef_lut_prob_burning.csv", header=TRUE, 
-                              sep=",", na.strings="NA", dec=".", strip.white=TRUE, stringsAsFactors = F)
+                               sep=",", na.strings="NA", dec=".", strip.white=TRUE, 
+                               stringsAsFactors = F)
   
   f.wind <- read.table("inputs/sef_lut_prob_wind.csv", header=TRUE, 
                        sep=",", na.strings="NA", dec=".", strip.white=TRUE)
@@ -580,7 +570,8 @@
                        sep=",", na.strings="NA", dec=".", strip.white=TRUE)
   
   b.unit <- data.frame(unit = b.unit[,2], area_ac = b.unit[,3], thin= b.unit[,4], 
-                       herb = b.unit[,5], fire = b.unit[,6])#remove col 1 and rename cols 2-6.
+                       herb = b.unit[,5], fire = b.unit[,6])#remove col 1 and 
+  #rename cols 2-6.
   
   b.block <- read.table("inputs/sef_lut_pathways_burnBlocks.csv", header=T, 
                         sep=",", na.strings="NA", dec=".", strip.white=TRUE)
@@ -593,8 +584,8 @@
                         sep=",", na.strings="NA", dec=".", strip.white=TRUE)
   f.start <- f.start[-1,]#remove first row -- no data unit.
 
-  ####################################################################################
-  ####################################################################################
+  #################################################################################################
+  #################################################################################################
   #STEP 06: Generate secondary data.
   
   #Temporary stand numbers
@@ -639,11 +630,12 @@
   search.set[,1] <- c(-1,-1,0,1,1,1,0,-1,-2,-2,-2,-1,0,1,2,2,2,2,2,1,0,-1,-2,-2,
                       -3,-3,-3,-3,-2,-1,0,1,2,3,3,3,3,3,3,3,2,1,0,-1,-2,-3,-3,-3)   
   #Pixels to search (x coordinates, difference from flame front)
-  search.set[,2] <- c(0,rows,rows,rows,0,-rows,-rows,-rows,0,rows,(rows*2),(rows*2),(rows*2),(rows*2),(rows*2),rows,0,-rows,(-rows*2),
-                       (-rows*2),(-rows*2),(-rows*2),(-rows*2),-rows, 
-                       0,rows,(rows*2),(rows*3),(rows*3),(rows*3),(rows*3),(rows*3),(rows*3),(rows*3),
-                       (rows*2),rows,0,-rows,(-rows*2),(-rows*3),(-rows*3),(-rows*3),(-rows*3),
-                       (-rows*3), (-rows*3),(-rows*3),(-rows*2), -rows)
+  search.set[,2] <- c(0,rows,rows,rows,0,-rows,-rows,-rows,0,rows,(rows*2),(rows*2),(rows*2),
+                      (rows*2),(rows*2),rows,0,-rows,(-rows*2),(-rows*2),(-rows*2),(-rows*2),
+                      (-rows*2),-rows,0,rows,(rows*2),(rows*3),(rows*3),(rows*3),(rows*3),
+                      (rows*3),(rows*3),(rows*3),(rows*2),rows,0,-rows,(-rows*2),(-rows*3),
+                      (-rows*3),(-rows*3),(-rows*3),(-rows*3), (-rows*3),(-rows*3),(-rows*2), 
+                      -rows)
   distance.coefficient <- c(rep(1,8), rep(0.002,16), rep(0.001,24))
   dcl <- length(distance.coefficient)#for wildfires
   dcl_t <- 8#for treatments
@@ -684,8 +676,8 @@
   #This will be used to log run times for disturbance loops.
   #e.summary <- data.frame()
   
-  ####################################################################################
-  ####################################################################################
+  #################################################################################################
+  #################################################################################################
   #STEP 07: Generate functions.
   #This function (grabbed from the r-help site) is the same as the sample()
   #function except if the length of x is one it will just use that number rather than
@@ -713,9 +705,12 @@
   find_neighbors <- function(x, radius, row_cnt = rows, col_cnt = cols)
   {
     # Unit tests: shift(seq(1,20), 0, 0, row_cnt=5) = seq(1,20) 
-    #             shift(seq(1,20), -1, 0, row_cnt=5) = c(1,2,3,4,5,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15)
-    #             shift(seq(1,20), 0, 1, row_cnt=5) = c(2,3,4,5,5,7,8,9,10,10,12,13,14,15,15,17,18,19,20,20)
-    #             shift(seq(1,20), -3, 2, row_cnt=5) = c(1,2,3,11,12,6,7,8,16,17,11,12,13,14,15,16,17,18,19,20)
+    #             shift(seq(1,20), -1, 0, row_cnt=5) = c(1,2,3,4,5,1,2,3,4,5,6,7,8,9,10,11,12,13,
+    #14,15)
+    #             shift(seq(1,20), 0, 1, row_cnt=5) = c(2,3,4,5,5,7,8,9,10,10,12,13,14,15,15,17,
+    #18,19,20,20)
+    #             shift(seq(1,20), -3, 2, row_cnt=5) = c(1,2,3,11,12,6,7,8,16,17,11,12,13,14,15,
+    #16,17,18,19,20)
     params <- expand.grid(x, seq(-radius,radius,1), seq(-radius,radius,1))
     params <- as.matrix(params[!(params[,2]==0 & params[,3]==0),])
     x_row = ifelse(params[,1] %% row_cnt == 0, row_cnt, params[,1] %% row_cnt)  # row number
@@ -724,12 +719,14 @@
       g_params <- as.gmatrix(params)
       g_x_row <- as.gmatrix(x_row)
       g_x_col <- as.gmatrix(x_col)
-      result <- ifelse(g_x_row + g_params[,2] > 0 & g_x_row + g_params[,2] <= row_cnt & g_x_col + g_params[,3] > 0 & g_x_col + g_params[,3] <= col_cnt,
+      result <- ifelse(g_x_row + g_params[,2] > 0 & g_x_row + g_params[,2] <= row_cnt & g_x_col + 
+                         g_params[,3] > 0 & g_x_col + g_params[,3] <= col_cnt,
                        g_params[,1] + g_params[,3]*row_cnt + g_params[,2], 0)
       result <- h(result)
       result <- as.vector(result)
     } else {
-    result <- ifelse(x_row + params[,2] > 0 & x_row + params[,2] <= row_cnt & x_col + params[,3] > 0 & x_col + params[,3] <= col_cnt,
+    result <- ifelse(x_row + params[,2] > 0 & x_row + params[,2] <= row_cnt & x_col + 
+                       params[,3] > 0 & x_col + params[,3] <= col_cnt,
                               params[,1] + params[,3]*row_cnt + params[,2], 0)
     }
     
@@ -757,8 +754,8 @@
     ifelse(m3a == T, m1a, m2a)
   }
   
-  ####################################################################################
-  ####################################################################################
+  #################################################################################################
+  #################################################################################################
   #STEP 08: Fire Regime Simulation for Eglin (excludes buffer zone).
   
   #Since the buffer zone fire regime is determined by the eglin fire regime just use
@@ -801,22 +798,22 @@
                       seq(length = 1001, from = 0, to = 1))
   assoc.wsp <- (assoc.wsp*5)+1
   
-  ####################################################################################
-  ####################################################################################
+  #################################################################################################
+  #################################################################################################
   #STEP 09: Create vectors that list which fuelbeds are eligible for treatment.
   
   #Determine available fuelbeds:
   #For thinning treatments
-  eligible.for_Thinning <- t.post$fuelbed[t.post[,5] == 2]
+  eligible.for_Thinning <- fuelbed_lut$fuelbed[fuelbed_lut$eligibility_thinning == 2]
   
   #For herbicide treatments
-  eligible.for_Herbicide <- t.post$fuelbed[t.post[,6] == 2]
+  eligible.for_Herbicide <- fuelbed_lut$fuelbed[fuelbed_lut$eligibility_herbicide == 2]
   
   #For prescribed fire treatments
-  eligible.for_RxFire <- t.post$fuelbed[t.post[,7] == 2]
+  eligible.for_RxFire <- fuelbed_lut$fuelbed[fuelbed_lut$eligibility_rxfire == 2]
   
-  ####################################################################################
-  ####################################################################################
+  #################################################################################################
+  #################################################################################################
   #STEP 10: CREATE DETAILED LIST OF ACREAGES FOR EACH MANAGEMENT OPTION
   
   #Fill in percent values so perc_cats adds up to one for each level within each treatment
@@ -843,8 +840,8 @@
   #mfri categories that do not apply
   b.thresh <- b.thresh[b.thresh$perc_cats > 0,]
   
-  ####################################################################################
-  ####################################################################################
+  #################################################################################################
+  #################################################################################################
   #STEP 11: DEFAULT VALUES
   
   #Set loop values to default (i.e. zero).
@@ -856,17 +853,17 @@
   f <- 0
   g <- 0
   
-  ####################################################################################
-  ####################################################################################
+  #################################################################################################
+  #################################################################################################
   #STEP 12: RUN MODEL LOOP
   
-  #LOOP 111111111111111111111111111111111111111111111111111111111111111111111111111111
+  #LOOP 1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111
   #Loop 1 (by year). This loop encases the entire expression that maps regimes.
   for(a in 1:YEARS)#a <- 1
   { #1.0.0 ---------------------------------------------------------------------------
-    #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>TREATMENTS>>>>>>>>
-    #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>TREATMENTS>>>>>>>>
-    #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>TREATMENTS>>>>>>>>
+    #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>TREATMENTS>>>>>>>>
+    #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>TREATMENTS>>>>>>>>
+    #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>TREATMENTS>>>>>>>>
     #The number of treatments per year is drawn from the normal distribution.
   
     #Null value for t.code. It will be re-assigned a value in the treatment loop (loop 2)
@@ -893,18 +890,11 @@
     
     #Determine priority of management units for thinning treatments
     #Lists percentage of unit with eligible fuelbeds
-    #pri.thin <- mapply(function(y)
-    #{
-    #  sum(Area.List[Age.List >= D.List[,1] & 
-    #                  Fuelbed.List %in% eligible.for_Thinning & 
-    #                  MU.List == b.unit[y,1]])/b.unit[y,2]
-    #}, 1:length(b.unit$unit))
-    
     pri.thin <- mapply(function(y)
-    {
-      sum(Area.List[Fuelbed.List %in% eligible.for_Thinning & 
-                      MU.List == b.unit[y,1]])/b.unit[y,2]
-    }, 1:length(b.unit$unit))
+      {
+        sum(Area.List[Fuelbed.List %in% eligible.for_Thinning & 
+                        MU.List == b.unit[y,1]])/b.unit[y,2]
+      }, 1:length(b.unit$unit))
     
     #Incorporate hard rules for eligibility specified in management unit table (access through
     #ArcMap; file buun_map_9.raster).
@@ -912,18 +902,11 @@
     
     #Determine priority of management units for herbicide treatments
     #Lists percentage of unit with eligible fuelbeds
-    #pri.herb <- mapply(function(y)
-    #{
-    #  sum(Area.List[Age.List >= D.List[,2] & 
-    #                  Fuelbed.List %in% eligible.for_Herbicide & 
-    #                  MU.List == b.unit[y,1]])/b.unit[y,2]
-    #}, 1:length(b.unit$unit))
-    
     pri.herb <- mapply(function(y)
-    {
-      sum(Area.List[Fuelbed.List %in% eligible.for_Herbicide & 
-                      MU.List == b.unit[y,1]])/b.unit[y,2]
-    }, 1:length(b.unit$unit))
+      {
+        sum(Area.List[Fuelbed.List %in% eligible.for_Herbicide & 
+                        MU.List == b.unit[y,1]])/b.unit[y,2]
+      }, 1:length(b.unit$unit))
     
     #Incorporate hard rules for eligibility specified in management unit table (access through
     #ArcMap; file buun_map_9.raster).
@@ -931,18 +914,11 @@
     
     #Determine priority of management units for prescribed fire treatments
     #Lists percentage of unit with eligible fuelbeds
-    #pri.fire <- mapply(function(y)
-    #{
-    #  sum(Area.List[Age.List >= D.List[,3] & 
-    #                  Fuelbed.List %in% eligible.for_RxFire & 
-    #                  MU.List == b.unit[y,1]])/b.unit[y,2]
-    #}, 1:length(b.unit$unit))
-    
     pri.fire <- mapply(function(y)
-    {
-      sum(Area.List[Fuelbed.List %in% eligible.for_RxFire & 
-                      MU.List == b.unit[y,1]])/b.unit[y,2]
-    }, 1:length(b.unit$unit))
+      {
+        sum(Area.List[Fuelbed.List %in% eligible.for_RxFire & 
+                        MU.List == b.unit[y,1]])/b.unit[y,2]
+      }, 1:length(b.unit$unit))
     
     #Incorporate hard rules for eligibility specified in management unit table (access through
     #ArcMap; file buun_map_9.raster).
@@ -951,14 +927,14 @@
     
     pri <- data.frame(thin = pri.thin, herb = pri.herb, fire = pri.fire)
     
-    #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>TREATMENTS>>>>>>>>
-    #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>TREATMENTS>>>>>>>>
-    #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>TREATMENTS>>>>>>>>
+    #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>TREATMENTS>>>>>>>>
+    #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>TREATMENTS>>>>>>>>
+    #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>TREATMENTS>>>>>>>>
     
-    #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>FIRES>>>>>>>>>>>>>>>
-    #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>FIRES>>>>>>>>>>>>>>>
-    #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>FIRES>>>>>>>>>>>>>>>
-    #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>FIRES>>>>>>>>>>>>>>>
+    #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>FIRES>>>>>>>>>>>>>>>
+    #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>FIRES>>>>>>>>>>>>>>>
+    #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>FIRES>>>>>>>>>>>>>>>
+    #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>FIRES>>>>>>>>>>>>>>>
    
     #The number of fires per year is drawn from the Poisson Distribution (Wimberly 2002)
     #FF = Annual Fire Frequency. This is calculated in step 7.
@@ -969,86 +945,86 @@
     
     #For area within Eglin
     if(fino.e==0)
-    {
-      fiar.e <- vector(mode = "numeric", length = 0)
-    } else
-    {
-      #Fire area code. Uses the log normal distribution to assign fire areas to each fire.
-      fiar.e <- rlnorm(fino.e,Mu.e,Sigma.e)
-      
-      #This step restricts the maximum fire size to that specified by the user (11,978 
-      #acres as of 11-Aug-2015). This step will on average reduce the fire cycle by ?? years.
-      fiar.e[fiar.e > Truncate.Area[1]] <- Truncate.Area[1]
-      
-      #Just in case the total area to be burned is larger than the burnable landscape, this 
-      #step scales the total burnable to a ceiling that represent the largest area burned
-      #at Eglin by wildfires (Truncate.AAB = 50,000 acres). All fires
-      #are scaled evenly. This step had ?? effect on fire size over a 100,000
-      #year period. No year produced a burned area over ?????? ha for the 1,619,226 ha
-      #map area
-      if(sum(fiar.e) > Truncate.AAB[1])
       {
-        fiar.e <- mapply(function(x) (x/sum(fiar.e)) * min(sum(fiar.e),Truncate.AAB[1]),
-                         fiar.e) 
-        #SIMPLER VERSION
-        #fiar.e <- mapply(function(x) (x/sum(fiar.e)) * Truncate.AAB[1],
-        #                 fiar.e) 
-      } else 
-      {
-        fiar.e <- fiar.e
-      }
-      
-      #All above units are in acres, divide by MapRes to convert units into pixels.
-      fiar.e <- fiar.e/MapRes
-      
-      #Round values.
-      fiar.e <- round(fiar.e,0)
-      
-      fiar.e <- fiar.e[fiar.e > (fire.cut/MapRes)]#removes any fire areas set to zero.
-      fino.e <- length(fiar.e)#adjusts number of fires in case any were removed above.
+        fiar.e <- vector(mode = "numeric", length = 0)
+      } else
+        {
+          #Fire area code. Uses the log normal distribution to assign fire areas to each fire.
+          fiar.e <- rlnorm(fino.e,Mu.e,Sigma.e)
+          
+          #This step restricts the maximum fire size to that specified by the user (11,978 
+          #acres as of 11-Aug-2015). This step will on average reduce the fire cycle by ?? years.
+          fiar.e[fiar.e > Truncate.Area[1]] <- Truncate.Area[1]
+          
+          #Just in case the total area to be burned is larger than the burnable landscape, this 
+          #step scales the total burnable to a ceiling that represent the largest area burned
+          #at Eglin by wildfires (Truncate.AAB = 50,000 acres). All fires
+          #are scaled evenly. This step had ?? effect on fire size over a 100,000
+          #year period. No year produced a burned area over ?????? ha for the 1,619,226 ha
+          #map area
+          if(sum(fiar.e) > Truncate.AAB[1])
+            {
+              fiar.e <- mapply(function(x) (x/sum(fiar.e)) * min(sum(fiar.e),Truncate.AAB[1]),
+                               fiar.e) 
+              #SIMPLER VERSION
+              #fiar.e <- mapply(function(x) (x/sum(fiar.e)) * Truncate.AAB[1],
+              #                 fiar.e) 
+              } else 
+                {
+                  fiar.e <- fiar.e
+                  }
+          
+          #All above units are in acres, divide by MapRes to convert units into pixels.
+          fiar.e <- fiar.e/MapRes
+          
+          #Round values.
+          fiar.e <- round(fiar.e,0)
+          
+          fiar.e <- fiar.e[fiar.e > (fire.cut/MapRes)]#removes any fire areas set to zero.
+          fino.e <- length(fiar.e)#adjusts number of fires in case any were removed above.
     }
   
     #For area within buffer zone.
     if(fino.b==0)
-    {
-      fiar.b <- vector(mode = "numeric", length = 0)
-    } else
-    {
-      #Fire area code. Uses the log normal distribution to assign fire areas to each fire.
-      fiar.b <- rlnorm(fino.b,Mu.b,Sigma.b)
-      
-      #This step restricts the maximum fire size to that specified by the user (11,978 
-      #acres as of 11-Aug-2015). This step will on average reduce the fire cycle by ?? years.
-      fiar.b[fiar.b > Truncate.Area[2]] <- Truncate.Area[2]
-      
-      #Just in case the total area to be burned is larger than the burnable landscape, this 
-      #step scales the total burnable to a ceiling that represent the largest area burned
-      #at Eglin by wildfires (Truncate.AAB = 50,000 acres). All fires
-      #are scaled evenly. This step had ?? effect on fire size over a 100,000
-      #year period. No year produced a burned area over ?????? ha for the 1,619,226 ha
-      #map area
-      if(sum(fiar.b) > Truncate.AAB[2])
       {
-        fiar.b <- mapply(function(x) (x/sum(fiar.b)) * Truncate.AAB[2], fiar.b) 
-      } else 
-      {
-        fiar.b <- fiar.b
-      }
-      
-      #All above units are in acres, multiply by MapRes to convert units into pixels.
-      fiar.b <- fiar.b/MapRes
-      
-      #Round values.
-      fiar.b <- round(fiar.b,0)
-      
-      fiar.b <- fiar.b[fiar.b > (fire.cut/MapRes)]#removes any fire areas set to zero.
-      fino.b <- length(fiar.b)#adjusts number of fires in case any were removed above.
-    }
+        fiar.b <- vector(mode = "numeric", length = 0)
+        } else
+          {
+            #Fire area code. Uses the log normal distribution to assign fire areas to each fire.
+            fiar.b <- rlnorm(fino.b,Mu.b,Sigma.b)
+            
+            #This step restricts the maximum fire size to that specified by the user (11,978 
+            #acres as of 11-Aug-2015). This step will on average reduce the fire cycle by ?? years.
+            fiar.b[fiar.b > Truncate.Area[2]] <- Truncate.Area[2]
+            
+            #Just in case the total area to be burned is larger than the burnable landscape, this 
+            #step scales the total burnable to a ceiling that represent the largest area burned
+            #at Eglin by wildfires (Truncate.AAB = 50,000 acres). All fires
+            #are scaled evenly. This step had ?? effect on fire size over a 100,000
+            #year period. No year produced a burned area over ?????? ha for the 1,619,226 ha
+            #map area
+            if(sum(fiar.b) > Truncate.AAB[2])
+              {
+                fiar.b <- mapply(function(x) (x/sum(fiar.b)) * Truncate.AAB[2], fiar.b) 
+                } else 
+                  {
+                    fiar.b <- fiar.b
+                    }
+            
+            #All above units are in acres, multiply by MapRes to convert units into pixels.
+            fiar.b <- fiar.b/MapRes
+            
+            #Round values.
+            fiar.b <- round(fiar.b,0)
+            
+            fiar.b <- fiar.b[fiar.b > (fire.cut/MapRes)]#removes any fire areas set to zero.
+            fino.b <- length(fiar.b)#adjusts number of fires in case any were removed above.
+            }
   
-    #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>FIRES>>>>>>>>>>>>>>>
-    #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>FIRES>>>>>>>>>>>>>>>
-    #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>FIRES>>>>>>>>>>>>>>>
-    #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>FIRES>>>>>>>>>>>>>>>
+    #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>FIRES>>>>>>>>>>>>>>>
+    #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>FIRES>>>>>>>>>>>>>>>
+    #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>FIRES>>>>>>>>>>>>>>>
+    #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>FIRES>>>>>>>>>>>>>>>
     
     #Update the age list. Age of fuelbed number is kept at zero.
     Age.List[!Fuelbed.List %in% Fixed.Age] <- Age.List[!Fuelbed.List %in% Fixed.Age] + min(a-1,1)
@@ -1189,7 +1165,7 @@
           PrctTrmt.Mapped[cc+1] <- 0
           
           #Determine available fuelbeds.
-          treatable.fuelbeds <- t.post$fuelbed[t.post[,t.code + 4] == 2]
+          treatable.fuelbeds <- fuelbed_lut$fuelbed[fuelbed_lut[,t.code + 4] == 2]
           
     #Find eligible stands with eligible fuelbeds
     elst <- sort(unique(s.map[!b.map %in% c(NoData.Unit, Buffer.Unit, 
@@ -1286,7 +1262,7 @@
         sct <- l.map[b.map == bun & s.map %in% elst]
         f_sct <- f.map[match(sct, l.map)]
         ss.n <- length(f_sct)
-        ss <- rbinom(ss.n, 1, f.probability[,2][match(f_sct, f.probability[,1])])
+        ss <- rbinom(ss.n, 1, fuelbed_lut$probability_of_ignition[match(f_sct, fuelbed_lut$fuelbed)])
         sct <- sct[ss == 1]
         sct <- resample(sct, round(max((tbsa * seed.cells[t.code]), 1),0), replace = T)
         sct <- unique(sct)
@@ -1377,7 +1353,7 @@
                       sct <- l.map[b.map == bun & s.map %in% elst]
                       f_sct <- f.map[match(sct, l.map)]
                       ss.n <- length(f_sct)
-                      ss <- rbinom(ss.n, 1, f.probability[,2][match(f_sct, f.probability[,1])])
+                      ss <- rbinom(ss.n, 1, fuelbed_lut$probability_of_ignition[match(f_sct, fuelbed_lut$fuelbed)])
                       sct <- sct[ss == 1]
                       sct <- resample(sct, round(max((tbsa-tbma * seed.cells[t.code]), 1),0), replace = T)
                       sct <- unique(sct)
@@ -1477,7 +1453,7 @@
                           #which will actually burn.
                           fual <- f.map[match(avlo, l.map)]
                           ss.n <- length(fual)
-                          ss <- rbinom(ss.n, 1,  f.probability[,2][match(fual, f.probability[,1])])
+                          ss <- rbinom(ss.n, 1,  fuelbed_lut$probability_of_ignition[match(fual, fuelbed_lut$fuelbed)])
                           new.cells <- avlo[ss == 1]
                         } else {
                           #SILVICULTURAL TREATMENT
@@ -1734,7 +1710,7 @@
     
     #Move to next row code and t code.
     row.code <- row.code + 1
-    t.code <- b.actual$t_code[row.code]
+    t.code <- b.thresh$t_code[row.code]
   } #2.3.2 --------------------------------------------------------------------------- 
     } else #2.2.1 ----------------------------------------------------------------------
   
@@ -1800,22 +1776,24 @@
   #coords.
   vs.map_a7 <- s.map[s.map %in% loopB$new_stand]
   
-  #List of row numbers in t.post where fuelbeds need to be updated based on treatment
-  FL1 <- which(t.post$fuelbed %in%loopB$ufxTa)
+  #List of row numbers in the fuelbed lookup table where fuelbeds need to be updated 
+  #based on treatment
+  FL1 <- which(fuelbed_lut$fuelbed %in%loopB$ufxTa)
   
   #Fuelbeds that may be updated corresponding with row numbers in FL1
-  LL1 <- t.post$fuelbed[t.post$fuelbed %in% ufxTa]
+  LL1 <- fuelbed_lut$fuelbed[fuelbed_lut$fuelbed %in% ufxTa]
   
-  #row numbers in t.post corresponding with each existing fuelbed in each new stand 
+  #row numbers in the fuelbed lookup table corresponding with each existing fuelbed 
+  #in each new stand 
   LL2 <- FL1[match(loopB$ufxTa, LL1)]
   
   #Use row numbers (LL2) and column numbers (loopB.treat_type) to calculate 
-  #"coordinate" in t.post
-  LL3 <- ((loopB.treat_type - 1) * length(t.post$fuelbed)) + LL2
+  #"coordinate" in the fuelbed lookup table.
+  LL3 <- ((loopB.treat_type - 1) * length(fuelbed_lut$fuelbed)) + LL2
   
-  #Convert t.post (ttxm is t.post) from a data.frame into a matrix so new fuelbeds 
+  #Transfer new fuelbed states from treatment into a matrix so new fuelbeds 
   #can be identified by coordinates that corresond with row and column numbers.
-  am_ttxm <- as.matrix(t.post[,-1])  
+  am_ttxm <- as.matrix(fuelbed_lut[,2:4])  
   
   #Idenintify new fuelbed for each new stand.
   newFB_a7 <- am_ttxm[LL3]
@@ -1956,19 +1934,21 @@
     Area.List <- c(Area.List,loopB.new_area)
     
     #Update
-    mfri_lower.List <- c(mfri_lower.List, d.post$more_fire[match(newFB_a7,d.post$fuelbed)])
+    mfri_lower.List <- c(mfri_lower.List, 
+                         fuelbed_lut$mfri_shortens[match(newFB_a7,fuelbed_lut$fuelbed)])
   
     #Select option 1 for fuelbed transition when mfri lengthens
-    less1 <- d.post$less_fire1[match(newFB_a7,d.post$fuelbed)]
+    longer_mFRI_1 <- fuelbed_lut$mfri_lengthens_1[match(newFB_a7,fuelbed_lut$fuelbed)]
   
     #Select option 2 for fuelbed transition when mfri lengthens
-    less2 <- d.post$less_fire1[match(newFB_a7,d.post$fuelbed)]
+    longer_mFRI_2 <- fuelbed_lut$mfri_lengthens_2[match(newFB_a7,fuelbed_lut$fuelbed)]
     
     #Randomly choose between option 1 and 2 for each fuelebd.
-    less <- apply(matrix(data = c(less1,less2),length(less1), 2), 1, sample, size = 1)
+    longer_mFRI <- apply(matrix(data = c(longer_mFRI_1,longer_mFRI_2),
+                                length(longer_mFRI_1), 2), 1, sample, size = 1)
     
     #Update
-    mfri_upper.List <- c(mfri_upper.List, less)
+    mfri_upper.List <- c(mfri_upper.List, longer_mFRI)
   
     #Re-order loopB by new stand for tslt objects.
     loopB <- loopB[order(loopB$new_stand),]
@@ -2067,7 +2047,7 @@
         desa <- round(tda[e],0)
         
         #Object shows fuelbeds available for establishment by disturbance[e].
-        flammable.fuelbeds <- t.post$fuelbed[!t.post$fuelbed %in% Non.Flammable]
+        flammable.fuelbeds <- fuelbed_lut$fuelbed[!fuelbed_lut$fuelbed %in% Non.Flammable]
         
         #End script for disturbance[e] if there are no available cells to establish.
         #1) must not be a wilderness area (in w.map 2 = wilderness, 1 non-wilderness, 
@@ -2178,7 +2158,7 @@
                                       f.summary)
              
                   #Spread probabilities for each fuelbed.
-                  p.summary <- mapply(function(x) f.probability[,2][f.probability[,1] == x],
+                  p.summary <- mapply(function(x) fuelbed_lut$probability_of_ignition[fuelbed_lut$fuelbed == x],
                                       f.summary)
          
                   #Virtual area of fuelbeds a function of number of cells and spread probability.
@@ -2217,7 +2197,7 @@
                                       f.summary)
                  
                   #Spread probabilities for each fuelbed.
-                  p.summary <- mapply(function(x) f.probability[,2][f.probability[,1] == x],
+                  p.summary <- mapply(function(x) fuelbed_lut$probability_of_ignition[fuelbed_lut$fuelbed == x],
                                       f.summary)
                 
                   #Virtual area of fuelbeds a function of number of cells and spread probability.
@@ -2227,7 +2207,7 @@
                   #the v.summary values will be 1 and 2 respectively. These numbers are used below
                   #to determine the relative weight of each fuelbed in conjunction with its relative
                   #area.
-                  v.summary <- mapply(function(x) (x/min(p.summary)), p.summary)
+                  v.summary <- mapply(function(x) (x/(min(p.summary)+0.001)), p.summary)
                 
                   #Probability of a fire starting at a location occupied by each fuelbed based
                   #on area.
@@ -2247,7 +2227,7 @@
   } #9.2.2---------------------------------------------------------------
               #Ends loop if there are no locations to establish disturbance[e] where fuelbed 
               #requirements, wilderness designations, and stand numbers check out. 
-              if(length(f.map[f.map %in% d.post[,3] & s.map %in% loopA.snO]) > 0)
+              if(length(f.map[f.map %in% fuelbed_lut$mfri_lengthens_1 & s.map %in% loopA.snO]) > 0)
                 #need something that measures previously assigned cells
               { #9.3.1 ---------------------------------------------------------------------------
                 if(length(fire.start) > 0)
@@ -2433,9 +2413,11 @@
       
       sf <- scale.factor[nearest(area.dist,min(tda[e], Truncate.Area[1]/MapRes), outside=T)]
       
-      sp <- rep(dc, length(f.probability$spread_contrast)) + f.probability$spread_contrast * sf
+      sp <- rep(dc, length(fuelbed_lut$probability_of_ignition)) + 
+        fuelbed_lut$probability_of_ignition * sf
       
-      s.profile <- ifelse(f.probability[,2] < 0.1,f.probability[,2],sp)
+      s.profile <- ifelse(fuelbed_lut$probability_of_ignition < 0.1, 
+                          fuelbed_lut$probability_of_ignition,sp)
     } else
       {
         ad <- which(area.dist == resample(area.dist,1))
@@ -2444,9 +2426,11 @@
         
         sf <- dist.curve[ad]
         
-        sp <- rep(dc, length(f.probability$spread_contrast)) + f.probability$spread_contrast * sf
+        sp <- rep(dc, length(fuelbed_lut$probability_of_ignition)) + 
+          fuelbed_lut$probability_of_ignition * sf
         
-        s.profile <- ifelse(f.probability[,2] < 0.1,f.probability[,2],sp)
+        s.profile <- ifelse(fuelbed_lut$probability_of_ignition < 0.1, 
+                            fuelbed_lut$probability_of_ignition,sp)
     }
     
     if((desa-dema) < round((a.bun/3),0))
@@ -2653,10 +2637,10 @@
     #This expression picks out which location values are of the same stand and are 
     #available (i.e. they are not occupied by the another disturbance) and makes sure 
     #that the mapped regime does not exceed its prescribed area.
-    fual <- s.profile[match(f.map[l.map %in% pr.3[,1]], f.probability[,1])]
+    fual <- s.profile[match(f.map[l.map %in% pr.3[,1]], fuelbed_lut$fuelbed)]
   
     #Show unadjusted probability for each cell
-    sProb <- f.probability[,2][match(f.map[l.map %in% pr.3[,1]], f.probability[,1])]
+    sProb <- fuelbed_lut$probability_of_ignition[match(f.map[l.map %in% pr.3[,1]], fuelbed_lut$fuelbed)]
     
     #Multiply wind probability of spread by fuel-based probability of spread
     pr.5 <- pr.4 * fual
@@ -2837,12 +2821,12 @@
                initial.new.cells <- avlo
                fual <- f.map[match(initial.new.cells, l.map)]
                ss.n <- length(fual)
-               ss <- rbinom(ss.n, 1,  f.probability[,2][match(fual, f.probability[,1])])
+               ss <- rbinom(ss.n, 1,  fuelbed_lut$probability_of_ignition[match(fual, fuelbed_lut$fuelbed)])
                new.cells <- initial.new.cells[ss == 1]
                s.map[new.cells] <- s.map[new.cells]*tesn_t
                tesn <- unique(s.map[s.map < 0 & s.map > NoData.Unit])
-               fual10 <- s.profile[match(f.map[l.map %in% new.cells], f.probability[,1])]
-               sProb <- f.probability[,2][match(f.map[l.map %in% new.cells], f.probability[,1])]
+               fual10 <- s.profile[match(f.map[l.map %in% new.cells], fuelbed_lut$fuelbed)]
+               sProb <- fuelbed_lut$probability_of_ignition[match(f.map[l.map %in% new.cells], fuelbed_lut$fuelbed)]
                crownProb <- (fual10 - sProb)
                crownProb[crownProb < 0] <- 0
                initial.cells.with.crown.fire <- rbinom(length(new.cells),1,crownProb)
@@ -2851,12 +2835,12 @@
                    initial.new.cells <- resample(avlo,(desa - (dema + length(ocod))))
                    fual <- f.map[match(initial.new.cells, l.map)]
                    ss.n <- length(fual)
-                   ss <- rbinom(ss.n, 1,  f.probability[,2][match(fual, f.probability[,1])])
+                   ss <- rbinom(ss.n, 1,  fuelbed_lut$probability_of_ignition[match(fual, fuelbed_lut$fuelbed)])
                    new.cells <- initial.new.cells[ss == 1]
                    s.map[new.cells] <- s.map[new.cells]*tesn_t
                    tesn <- unique(s.map[s.map < 0 & s.map > NoData.Unit])
-                   fual10 <- s.profile[match(f.map[l.map %in% new.cells], f.probability[,1])]
-                   sProb <- f.probability[,2][match(f.map[l.map %in% new.cells], f.probability[,1])]
+                   fual10 <- s.profile[match(f.map[l.map %in% new.cells], fuelbed_lut$fuelbed)]
+                   sProb <- fuelbed_lut$probability_of_ignition[match(f.map[l.map %in% new.cells], fuelbed_lut$fuelbed)]
                    crownProb <- (fual10 - sProb)
                    crownProb[crownProb < 0] <- 0
                    initial.cells.with.crown.fire <- rbinom(length(new.cells),1,crownProb)
@@ -2868,12 +2852,12 @@
                    initial.new.cells <- resample(avlo,(a.bun - length(ocod)))
                    fual <- f.map[match(initial.new.cells, l.map)]
                    ss.n <- length(fual)
-                   ss <- rbinom(ss.n, 1,  f.probability[,2][match(fual, f.probability[,1])])
+                   ss <- rbinom(ss.n, 1,  fuelbed_lut$probability_of_ignition[match(fual, fuelbed_lut$fuelbed)])
                    new.cells <- initial.new.cells[ss == 1]
                    s.map[new.cells] <- s.map[new.cells]*tesn_t
                    tesn <- unique(s.map[s.map < 0 & s.map > NoData.Unit])
-                   fual10 <- s.profile[match(f.map[l.map %in% new.cells], f.probability[,1])]
-                   sProb <- f.probability[,2][match(f.map[l.map %in% new.cells], f.probability[,1])]
+                   fual10 <- s.profile[match(f.map[l.map %in% new.cells], fuelbed_lut$fuelbed)]
+                   sProb <- fuelbed_lut$probability_of_ignition[match(f.map[l.map %in% new.cells], fuelbed_lut$fuelbed)]
                    crownProb <- (fual10 - sProb)
                    crownProb[crownProb < 0] <- 0
                    initial.cells.with.crown.fire <- rbinom(length(new.cells),1,crownProb)
@@ -2885,12 +2869,12 @@
                          initial.new.cells <- resample(avlo,(a.bun - length(ocod)))
                          fual <- f.map[match(initial.new.cells, l.map)]
                          ss.n <- length(fual)
-                         ss <- rbinom(ss.n, 1,  f.probability[,2][match(fual, f.probability[,1])])
+                         ss <- rbinom(ss.n, 1,  fuelbed_lut$probability_of_ignition[match(fual, fuelbed_lut$fuelbed)])
                          new.cells <- initial.new.cells[ss == 1]
                          s.map[new.cells] <- s.map[new.cells]*tesn_t
                          tesn <- unique(s.map[s.map < 0 & s.map > NoData.Unit])
-                         fual10 <- s.profile[match(f.map[l.map %in% new.cells], f.probability[,1])]
-                         sProb <- f.probability[,2][match(f.map[l.map %in% new.cells], f.probability[,1])]
+                         fual10 <- s.profile[match(f.map[l.map %in% new.cells], fuelbed_lut$fuelbed)]
+                         sProb <- fuelbed_lut$probability_of_ignition[match(f.map[l.map %in% new.cells], fuelbed_lut$fuelbed)]
                          crownProb <- (fual10 - sProb)
                          crownProb[crownProb < 0] <- 0
                          initial.cells.with.crown.fire <- rbinom(length(new.cells),1,crownProb)
@@ -2900,12 +2884,12 @@
                              initial.new.cells <- resample(avlo,(desa - (dema + length(ocod))))
                              fual <- f.map[match(initial.new.cells, l.map)]
                              ss.n <- length(fual)
-                             ss <- rbinom(ss.n, 1,  f.probability[,2][match(fual, f.probability[,1])])
+                             ss <- rbinom(ss.n, 1,  fuelbed_lut$probability_of_ignition[match(fual, fuelbed_lut$fuelbed)])
                              new.cells <- initial.new.cells[ss == 1]
                              s.map[new.cells] <- s.map[new.cells]*tesn_t
                              tesn <- unique(s.map[s.map < 0 & s.map > NoData.Unit])
-                             fual10 <- s.profile[match(f.map[l.map %in% new.cells], f.probability[,1])]
-                             sProb <- f.probability[,2][match(f.map[l.map %in% new.cells], f.probability[,1])]
+                             fual10 <- s.profile[match(f.map[l.map %in% new.cells], fuelbed_lut$fuelbed)]
+                             sProb <- fuelbed_lut$probability_of_ignition[match(f.map[l.map %in% new.cells], fuelbed_lut$fuelbed)]
                              crownProb <- (fual10 - sProb)
                              crownProb[crownProb < 0] <- 0
                              initial.cells.with.crown.fire <- rbinom(length(new.cells),1,crownProb)
@@ -3342,18 +3326,18 @@
     #seperate out new stands from s.map, lists occurrences of new stands from min to max coords.
     crownFire_standsXpixel <- s.map[s.map %in% loopE_crownFire$NewStand]
     
-    #List of row numbers in d.post where fuelbeds need to be updated based on treatment
-    burned.fuelbeds.positions <- which(d.post$fuelbed %in% loopE_crownFire$AffectedFuelbed)
+    #List of row numbers in fuelbed lookup table where fuelbeds need to be updated based on treatment
+    burned.fuelbeds.positions <- which(fuelbed_lut$fuelbed %in% loopE_crownFire$AffectedFuelbed)
     
     #Fuelbeds that may be updated corresponding with row numbers in burned.fuelbeds.positions
-    fuelbeds.burned.in.crownFire <- d.post$fuelbed[d.post$fuelbed %in% FB_burned.by.crownFire_2]
+    fuelbeds.burned.in.crownFire <- fuelbed_lut$fuelbed[fuelbed_lut$fuelbed %in% FB_burned.by.crownFire_2]
     
-    #row numbers in d.post corresponding with each existing fuelbed in each new stand 
+    #row numbers in fuelbed lookup table corresponding with each existing fuelbed in each new stand 
     burned.fuelbed.positionsXpixel <- burned.fuelbeds.positions[match(loopE_crownFire$AffectedFuelbed, 
                                                                       fuelbeds.burned.in.crownFire)]
     
     #Activate when you can differentiate between crown fire and surface fire
-    crownFire_regen <- d.post[burned.fuelbed.positionsXpixel,5]
+    crownFire_regen <- fuelbed_lut$crown_fire[burned.fuelbed.positionsXpixel]
     
     #Lists occurrences of new fuelbeds from min to max coords.
     crownFire_regenXpixel <- crownFire_regen[match(crownFire_standsXpixel, loopE_crownFire$NewStand)]
@@ -3517,19 +3501,25 @@
     mfri.List <- ifelse(mfri.List == Inf, 32, mfri.List)
     
     #Update
-    mfri_lower.List <- c(mfri_lower.List, d.post$more_fire[match(loopE_allFire$newFuelbed,d.post$fuelbed)])
+    mfri_lower.List <- c(mfri_lower.List, 
+                         fuelbed_lut$mfri_shortens[match(loopE_allFire$newFuelbed,
+                                                         fuelbed_lut$fuelbed)])
     
     #Select option 1 for fuelbed transition when mfri lengthens
-    less1 <- d.post$less_fire1[match(loopE_allFire$newFuelbed,d.post$fuelbed)]
+    mfri_lengthens_1 <- fuelbed_lut$mfri_lengthens_1[match(loopE_allFire$newFuelbed, 
+                                                fuelbed_lut$fuelbed)]
     
     #Select option 2 for fuelbed transition when mfri lengthens
-    less2 <- d.post$less_fire1[match(loopE_allFire$newFuelbed,d.post$fuelbed)]
+    mfri_lengthens_2 <- fuelbed_lut$mfri_lengthens_2[match(loopE_allFire$newFuelbed,
+                                                fuelbed_lut$fuelbed)]
     
     #Randomly choose between option 1 and 2 for each fuelebd.
-    less <- apply(matrix(data = c(less1,less2),length(less1), 2), 1, sample, size = 1)
+    mfri_lengthens <- apply(matrix(data = c(mfri_lengthens_1,
+                                            mfri_lengthens_2),length(mfri_lengthens_1), 2), 
+                            1, sample, size = 1)
     
     #Update
-    mfri_upper.List <- c(mfri_upper.List, less)
+    mfri_upper.List <- c(mfri_upper.List, mfri_lengthens)
     
     #Update
     Area.List <- c(Area.List,loopE.Area)
@@ -3586,18 +3576,18 @@
     feof <- Fuelbed.List
     
     #Create a parelle list that shows lower bound of mFRI for each stand
-    start <- d.post$mfri_start[match(feof,d.post$fuelbed)]
+    mfri_lower <- fuelbed_lut$mfri_lower[match(feof,fuelbed_lut$fuelbed)]
     
     #Create a parellel list that shows upper bound of mFRI for each stand
-    end <- d.post$mfri_end[match(feof,d.post$fuelbed)]
+    mfri_upper <- fuelbed_lut$mfri_upper[match(feof,fuelbed_lut$fuelbed)]
     
     #Replace fuelbed with one representing a more frequent fire regime if the mFRI is shorter
     #than the lower limit for the current fuelbed.
-    feof[mfri.List < start] <- mfri_lower.List[mfri.List < start]
+    feof[mfri.List <  mfri_lower] <- mfri_lower.List[mfri.List < mfri_lower]
     
     #Replace fuelbed with one representing a less frequent fire regime if the mFRI is longer
     #than the lower limit for the current fuelbed.
-    feof[mfri.List > end] <- mfri_upper.List[mfri.List > end]
+    feof[mfri.List > mfri_upper] <- mfri_upper.List[mfri.List > mfri_upper]
     
     #Update f.map
     #Improved function to update f.map based on mFRI. Former code used a for()
@@ -3617,10 +3607,10 @@
   #Update files based on time-since-last-treatment>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   
   #Show max time-since-last-treatment before state transitions for each fuelbed
-  max_tslt <- t.path$max_tslt[t.path$pre %in% tslt.Fuelbeds]
+  max_tslt <- fuelbed_lut$max_tslt[fuelbed_lut$fuelbed %in% tslt.Fuelbeds]
   
   #List each of the fuelbeds corresponding with tslt object above
-  max_tslt_fb <- t.path$pre[t.path$pre %in% tslt.Fuelbeds]
+  max_tslt_fb <- fuelbed_lut$fuelbed[fuelbed_lut$fuelbed %in% tslt.Fuelbeds]
   
   #Expand to the max tslt object for each row in tslt.List
   max_tslt_x_stand <- max_tslt[match(tslt.Fuelbeds, max_tslt_fb)]
@@ -3642,10 +3632,10 @@
   replace_fbs <- tslt.Fuelbeds[tslt.List > max_tslt_x_stand]
   
   #List unique current fuelbeds for stands that will transition.
-  old_fbs <- t.path$pre[t.path$pre %in% replace_fbs]
+  old_fbs <- fuelbed_lut$fuelbed[fuelbed_lut$fuelbed %in% replace_fbs]
   
   #List unique new fuelbeds for stands that will transition.
-  new_fbs <- t.path$post_1[t.path$pre %in% replace_fbs]
+  new_fbs <- fuelbed_lut$post_1[fuelbed_lut$fuelbed %in% replace_fbs]
   
   #Expand new unique fuelbeds to the number of stands that will transition.
   new_fbs_x_stand <- new_fbs[match(replace_fbs, old_fbs)]
@@ -3681,15 +3671,14 @@
   
   #Update files based on succession>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   
-  
   #Identify potential changes in fuelbeds based on succession pathways.
   
   pmuf <- mapply(function(x) ifelse(
-    Age.List[x] > f.path$end[f.path$pre == Fuelbed.List[x]],
-    ifelse(f.path$post_2[f.path$pre == Fuelbed.List[x]] > 0,
-           resample(c(f.path$post_1[f.path$pre == Fuelbed.List[x]],
-                      f.path$post_2[f.path$pre == Fuelbed.List[x]]),1),
-           f.path$post_1[f.path$pre == Fuelbed.List[x]]),
+    Age.List[x] > fuelbed_lut$succession_max[fuelbed_lut$fuelbed == Fuelbed.List[x]],
+    ifelse(fuelbed_lut$succession_post_2[fuelbed_lut$fuelbed == Fuelbed.List[x]] > 0,
+           resample(c(fuelbed_lut$succession_post_1[fuelbed_lut$fuelbed == Fuelbed.List[x]],
+                      fuelbed_lut$succession_post_2[fuelbed_lut$fuelbed == Fuelbed.List[x]]),1),
+           fuelbed_lut$succession_post_1[fuelbed_lut$fuelbed == Fuelbed.List[x]]),
     Fuelbed.List[x]),1:length(Stand.List))
   
   #Update f.map
