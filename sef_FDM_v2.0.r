@@ -31,7 +31,7 @@
   
   #Select a run ID, this should be a number, ideally unique that will help track this
   #run. Output files are tagged with this ID number.
-  RUN <- 67
+  RUN <- 81
   
   #Reporting interval, how often (in model years) should output maps be produced?
   #I.e., once every ... years.
@@ -119,7 +119,7 @@
           } else
             {
               #Number of years the model should run for.
-              YEARS <- 10
+              YEARS <- 20
               
               #Acres thinned annually.
               THINNING <- 2000
@@ -128,12 +128,12 @@
               HERBICIDE <- 2000
               
               #Acres prescribed burned annually
-              RX_FIRE <- 7000
+              RX_FIRE <- 2000
               
               #Natural fire rotation in years for:
               #Element 1 -- Eglin Air Force Base
               #Element 2 -- Surrounding 10-km buffer landscape
-              NATURAL_FIRE_ROTATION <- c(1054.38,10457.39)
+              NATURAL_FIRE_ROTATION <- c(2054.38,10457.39)
               
               #Mean fire size in acres for:
               #Element 1 -- Eglin Air Force Base
@@ -534,18 +534,7 @@
     sep = ""), header=TRUE, 
     sep=",", na.strings="NA", dec=".", strip.white=TRUE)
   mfri_upper.List <- mfri_upper.List[,-1]
-  
-  #nslt.List <- read.table(paste(
-  #  "inputs/sef_NSLTList_",rows,"x",cols,".txt",
-  #  sep = ""), header=TRUE, 
-  #  sep=",", na.strings="NA", dec=".", strip.white=TRUE)
-  #nslt.List <- nslt.List[,-1]
-  tslt.List <- rep(1,length(Stand.List))
-  tslt.Stands <- Stand.List
-  tslt.Fuelbeds <- Fuelbed.List
-  tslt.List <- tslt.List[Fuelbed.List == 4016204]
-  tslt.Stands <- Stand.List[Fuelbed.List == 4016204]
-  tslt.Fuelbeds <- Fuelbed.List[Fuelbed.List == 4016204]
+
   #Last line removes the first integer from the .List objects which contains information for
   #the NoData stand (i.e. the area around landscape used to create a rectangle).
   
@@ -584,6 +573,20 @@
                         sep=",", na.strings="NA", dec=".", strip.white=TRUE)
   f.start <- f.start[-1,]#remove first row -- no data unit.
 
+  
+  #nslt.List <- read.table(paste(
+  #  "inputs/sef_NSLTList_",rows,"x",cols,".txt",
+  #  sep = ""), header=TRUE, 
+  #  sep=",", na.strings="NA", dec=".", strip.white=TRUE)
+  #nslt.List <- nslt.List[,-1]
+  tslt.List <- rep(1,length(Stand.List))
+  tslt.Stands <- Stand.List
+  tslt.Fuelbeds <- Fuelbed.List
+  remove_fuelbeds <- fuelbed_lut$fuelbed[fuelbed_lut$max_tslt == 0]
+  tslt.List <- tslt.List[Fuelbed.List %in% remove_fuelbeds]
+  tslt.Stands <- Stand.List[Fuelbed.List %in% remove_fuelbeds]
+  tslt.Fuelbeds <- Fuelbed.List[Fuelbed.List %in% remove_fuelbeds]
+  
   #################################################################################################
   #################################################################################################
   #STEP 06: Generate secondary data.
@@ -1805,10 +1808,29 @@
   f.map[s.map %in% loopB$new_stand] <- v.newFB_a7
   
   #List ages associated with each stand that has been affected by treatment
-  #These will be used to update Age.List but are unchanged since treatments do not
-  #change overstory age.
+  #These will be used to update Age.List but are unchanged and do not yet
+  #account for treatments that reset stand age.
   newAGE_a7_1 <- Age.List[Stand.List %in% loopB$old_stand]
-  newAGE_a7 <- newAGE_a7_1[match(loopB$old_stand, usxTa_1)]
+  newAGE_a7_2 <- newAGE_a7_1[match(loopB$old_stand, usxTa_1)]
+  
+  #Account for treatments that reset stand age
+  
+  #Show age class for each new fuelbed
+  options("scipen"=100, "digits"=4)
+  new.fuelbed.age.class <- mapply(function(y) {as.numeric(strsplit(as.character(y), "")[[1]])[7]}, 
+                                  newFB_a7)
+  
+  #Show if those with age class 1 are new stands or older young stands (i.e. age is not reset)
+  #Can make this assumption because stands < 20 years old are not eligible for thinning or
+  #herbicide
+  options("scipen"=100, "digits"=4)
+  old.fuelbed.age.class <- mapply(function(y) {as.numeric(strsplit(as.character(y), "")[[1]])[7]}, 
+                                  loopB$ufxTa)
+  
+  change.fuelbed.age.class <- old.fuelbed.age.class - new.fuelbed.age.class
+  
+  #Switch age to zero if two above criteria are met, i.e. the treatment reset stand age
+  newAGE_a7 <- ifelse(new.fuelbed.age.class == 1 & change.fuelbed.age.class > 0, 0, newAGE_a7_2)
   
   #Add newAGE_a7 to loopB data.frame
   loopB <- data.frame(loopB, newAGE_a7 = newAGE_a7)
@@ -2307,7 +2329,7 @@
         #Code runs when a wildfire has burned beyond the original "block and burn" boundary.
   
         #Identify management units fire has spread into.
-        f.bun <- sort(unique(b.map[s.map %in% neef]))
+        f.bun <- sort(unique(b.map[s.map %in% c(neef_surface, neef_crown)]))
         
         #Remove units if they have been completely burned in loop 11.
         f.bun <- f.bun[!f.bun %in% burned.units]
@@ -2390,7 +2412,7 @@
         scd <- unique(scd)
         
         #Establish disturbance[e] in s.map and record old stand number
-        tesn <- c(tesn, neef)
+        tesn <- c(tesn, c(neef_surface, neef_crown))
   
       } #9.6.2 ---------------------------------------------------------------------------
   
@@ -2441,7 +2463,7 @@
       if(spread.type == 11)
       {
         desa <- save.desa
-        tesn_cum <- neef
+        tesn_cum <- c(neef_surface, neef_crown)
         } else
           {
             tesn <- tesn
@@ -3306,6 +3328,69 @@
   #Update files if there were disturbances in year[a].
   if(length(loopE.NewStand) > 0)
   {
+    #Update files based on time-since-last-treatment>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    
+    #Show max time-since-last-treatment before state transitions for each fuelbed
+    max_tslt <- fuelbed_lut$max_tslt[fuelbed_lut$fuelbed %in% tslt.Fuelbeds]
+    
+    #List each of the fuelbeds corresponding with tslt object above
+    max_tslt_fb <- fuelbed_lut$fuelbed[fuelbed_lut$fuelbed %in% tslt.Fuelbeds]
+    
+    #Expand to the max tslt object for each row in tslt.List
+    max_tslt_x_stand <- max_tslt[match(tslt.Fuelbeds, max_tslt_fb)]
+    
+    #Crash model is Fuelbed.List turned into a list()
+    if(length(max_tslt_x_stand) != length(tslt.List))
+    {
+      r101 <- "inconcistency in tslt tracking"
+      break
+    } else
+    {
+      r101 <- r101
+    }
+    
+    #List stand numbers for stands that will transition.
+    replace_stands <- tslt.Stands[tslt.List > max_tslt_x_stand]
+    
+    #List fuelbeds of stands that will transition.
+    replace_fbs <- tslt.Fuelbeds[tslt.List > max_tslt_x_stand]
+    
+    #List unique current fuelbeds for stands that will transition.
+    old_fbs <- fuelbed_lut$fuelbed[fuelbed_lut$fuelbed %in% replace_fbs]
+    
+    #List unique new fuelbeds for stands that will transition.
+    new_fbs <- fuelbed_lut$post_1[fuelbed_lut$fuelbed %in% replace_fbs]
+    
+    #Expand new unique fuelbeds to the number of stands that will transition.
+    new_fbs_x_stand <- new_fbs[match(replace_fbs, old_fbs)]
+    
+    #Replace current fuelbeds with new ones in cases where tslt exceeds limit for 
+    #state.
+    tslt.Fuelbeds[tslt.Stands %in% replace_stands] <- new_fbs_x_stand              
+    
+    #Apply changes to f.map and Fuelbed.List
+    vt.map <- s.map[s.map %in% tslt.Stands]
+    v.tslt <- tslt.Fuelbeds[match(vt.map, tslt.Stands)]
+    f.map[s.map %in% tslt.Stands] <- v.tslt
+    Fuelbed.List[Stand.List %in% tslt.Stands] <- tslt.Fuelbeds
+    
+    #Remove stands that have been overwritten
+    tslt.List <- tslt.List[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
+    tslt.Fuelbeds <- tslt.Fuelbeds[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
+    tslt.Stands <- tslt.Stands[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
+    
+    #Remove rows where fuelbeds no longer represent a silvicultural treatment
+    tslt.List <- tslt.List[which(mapply(function(y) 
+    {as.numeric(strsplit(as.character(y), "")[[1]])[4]}
+    , tslt.Fuelbeds) %in% c(2,3,4,6,7,8) == T)]
+    
+    tslt.Stands <- tslt.Stands[which(mapply(function(y) 
+    {as.numeric(strsplit(as.character(y), "")[[1]])[4]}
+    , tslt.Fuelbeds) %in% c(2,3,4,6,7,8) == T)]
+    
+    tslt.Fuelbeds <- tslt.Fuelbeds[which(mapply(function(y) 
+    {as.numeric(strsplit(as.character(y), "")[[1]])[4]}
+    , tslt.Fuelbeds) %in% c(2,3,4,6,7,8) == T)]
     
     #Code below replaces loop, vene though there are more lines it should run way faster.
     loopE_crownFire <- loopE[loopE$Fire == 2,]
@@ -3535,11 +3620,11 @@
       {as.numeric(strsplit(as.character(y), "")[[1]])[4]}
       , loopE_allFire$AffectedFuelbed) %in% c(2,3,4,6,7,8)])))
     
-    tslt.Fuelbeds <- c(tslt.Fuelbeds, loopE_allFire$AffectedFuelbed[mapply(function(y) 
+    tslt.Stands <- c(tslt.Stands, loopE_allFire$NewStand[mapply(function(y) 
     {as.numeric(strsplit(as.character(y), "")[[1]])[4]}
     , loopE_allFire$AffectedFuelbed) %in% c(2,3,4,6,7,8)])
     
-    tslt.Stands <- c(tslt.Stands, loopE_allFire$NewStand[mapply(function(y) 
+    tslt.Fuelbeds <- c(tslt.Fuelbeds, loopE_allFire$AffectedFuelbed[mapply(function(y) 
     {as.numeric(strsplit(as.character(y), "")[[1]])[4]}
     , loopE_allFire$AffectedFuelbed) %in% c(2,3,4,6,7,8)])
     
@@ -3600,74 +3685,75 @@
   
   } else
   {
-  }
+      #Update files based on time-since-last-treatment>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+      
+      #Show max time-since-last-treatment before state transitions for each fuelbed
+      max_tslt <- fuelbed_lut$max_tslt[fuelbed_lut$fuelbed %in% tslt.Fuelbeds]
+      
+      #List each of the fuelbeds corresponding with tslt object above
+      max_tslt_fb <- fuelbed_lut$fuelbed[fuelbed_lut$fuelbed %in% tslt.Fuelbeds]
+      
+      #Expand to the max tslt object for each row in tslt.List
+      max_tslt_x_stand <- max_tslt[match(tslt.Fuelbeds, max_tslt_fb)]
+      
+      #Crash model is Fuelbed.List turned into a list()
+      if(length(max_tslt_x_stand) != length(tslt.List))
+      {
+        r101 <- "inconcistency in tslt tracking"
+        break
+      } else
+      {
+        r101 <- r101
+      }
+      
+      #List stand numbers for stands that will transition.
+      replace_stands <- tslt.Stands[tslt.List > max_tslt_x_stand]
+      
+      #List fuelbeds of stands that will transition.
+      replace_fbs <- tslt.Fuelbeds[tslt.List > max_tslt_x_stand]
+      
+      #List unique current fuelbeds for stands that will transition.
+      old_fbs <- fuelbed_lut$fuelbed[fuelbed_lut$fuelbed %in% replace_fbs]
+      
+      #List unique new fuelbeds for stands that will transition.
+      new_fbs <- fuelbed_lut$post_1[fuelbed_lut$fuelbed %in% replace_fbs]
+      
+      #Expand new unique fuelbeds to the number of stands that will transition.
+      new_fbs_x_stand <- new_fbs[match(replace_fbs, old_fbs)]
+      
+      #Replace current fuelbeds with new ones in cases where tslt exceeds limit for 
+      #state.
+      tslt.Fuelbeds[tslt.Stands %in% replace_stands] <- new_fbs_x_stand              
+      
+      #Apply changes to f.map and Fuelbed.List
+      vt.map <- s.map[s.map %in% tslt.Stands]
+      v.tslt <- tslt.Fuelbeds[match(vt.map, tslt.Stands)]
+      f.map[s.map %in% tslt.Stands] <- v.tslt
+      Fuelbed.List[Stand.List %in% tslt.Stands] <- tslt.Fuelbeds
+      
+      #Remove stands that have been overwritten
+      tslt.List <- tslt.List[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
+      tslt.Fuelbeds <- tslt.Fuelbeds[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
+      tslt.Stands <- tslt.Stands[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
+      
+      
+      #Remove rows where fuelbeds no longer represent a silvicultural treatment
+      tslt.List <- tslt.List[which(mapply(function(y) 
+      {as.numeric(strsplit(as.character(y), "")[[1]])[4]}
+      , tslt.Fuelbeds) %in% c(2,3,4,6,7,8) == T)]
+      
+      tslt.Stands <- tslt.Stands[which(mapply(function(y) 
+      {as.numeric(strsplit(as.character(y), "")[[1]])[4]}
+      , tslt.Fuelbeds) %in% c(2,3,4,6,7,8) == T)]
+      
+      tslt.Fuelbeds <- tslt.Fuelbeds[which(mapply(function(y) 
+      {as.numeric(strsplit(as.character(y), "")[[1]])[4]}
+      , tslt.Fuelbeds) %in% c(2,3,4,6,7,8) == T)]
+
+    }
   
   #Post-wildfire processing >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   
-  #Update files based on time-since-last-treatment>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  
-  #Show max time-since-last-treatment before state transitions for each fuelbed
-  max_tslt <- fuelbed_lut$max_tslt[fuelbed_lut$fuelbed %in% tslt.Fuelbeds]
-  
-  #List each of the fuelbeds corresponding with tslt object above
-  max_tslt_fb <- fuelbed_lut$fuelbed[fuelbed_lut$fuelbed %in% tslt.Fuelbeds]
-  
-  #Expand to the max tslt object for each row in tslt.List
-  max_tslt_x_stand <- max_tslt[match(tslt.Fuelbeds, max_tslt_fb)]
-  
-  #Crash model is Fuelbed.List turned into a list()
-  if(length(max_tslt_x_stand) != length(tslt.List))
-  {
-    r101 <- "inconcistency in tslt tracking"
-    break
-  } else
-  {
-    r101 <- r101
-  }
-  
-  #List stand numbers for stands that will transition.
-  replace_stands <- tslt.Stands[tslt.List > max_tslt_x_stand]
-  
-  #List fuelbeds of stands that will transition.
-  replace_fbs <- tslt.Fuelbeds[tslt.List > max_tslt_x_stand]
-  
-  #List unique current fuelbeds for stands that will transition.
-  old_fbs <- fuelbed_lut$fuelbed[fuelbed_lut$fuelbed %in% replace_fbs]
-  
-  #List unique new fuelbeds for stands that will transition.
-  new_fbs <- fuelbed_lut$post_1[fuelbed_lut$fuelbed %in% replace_fbs]
-  
-  #Expand new unique fuelbeds to the number of stands that will transition.
-  new_fbs_x_stand <- new_fbs[match(replace_fbs, old_fbs)]
-  
-  #Replace current fuelbeds with new ones in cases where tslt exceeds limit for 
-  #state.
-  tslt.Fuelbeds[tslt.Stands %in% replace_stands] <- new_fbs_x_stand              
-  
-  #Apply changes to f.map and Fuelbed.List
-  vt.map <- s.map[s.map %in% tslt.Stands]
-  v.tslt <- tslt.Fuelbeds[match(vt.map, tslt.Stands)]
-  f.map[s.map %in% tslt.Stands] <- v.tslt
-  Fuelbed.List[Stand.List %in% tslt.Stands] <- tslt.Fuelbeds
-  
-  #Remove stands that have been overwritten
-  tslt.List <- tslt.List[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
-  tslt.Fuelbeds <- tslt.Fuelbeds[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
-  tslt.Stands <- tslt.Stands[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
-  
-  
-  #Remove rows where fuelbeds no longer represent a silvicultural treatment
-  tslt.List <- tslt.List[which(mapply(function(y) 
-  {as.numeric(strsplit(as.character(y), "")[[1]])[4]}
-  , tslt.Fuelbeds) %in% c(2,3,4,6,7,8) == T)]
-  
-  tslt.Fuelbeds <- tslt.Fuelbeds[which(mapply(function(y) 
-  {as.numeric(strsplit(as.character(y), "")[[1]])[4]}
-  , tslt.Fuelbeds) %in% c(2,3,4,6,7,8) == T)]
-  
-  tslt.Stands <- tslt.Stands[which(mapply(function(y) 
-  {as.numeric(strsplit(as.character(y), "")[[1]])[4]}
-  , tslt.Fuelbeds) %in% c(2,3,4,6,7,8) == T)]
   
   #Update files based on succession>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   
@@ -3689,6 +3775,20 @@
   v.pmuf2 <- pmuf2[match(vs.map2, s.SL2)]
   f.map[s.map %in% s.SL2] <- v.pmuf2
   Fuelbed.List[Stand.List %in% s.SL2] <- pmuf2
+  
+  #Kill model if any fuelbed numbers are < 0. This means there is an error in the lookup
+  #table.
+  if(any(Fuelbed.List < 0) == T)
+  {
+    broken.stands <- Stand.List[Fuelbed.List < 0]
+    f.orig <- matrix(scan(paste("inputs/sef_fmap_v2_",rows,"x",cols,".txt",
+                               sep = ""),skip = fh.adj),ncol=cols,byrow=T)#16
+    break
+  } else
+  {
+    #don't break
+  }
+  
   
   #Update D.List
   #D.List <- cbind(T1E.List, T2E.List, D1E.List, D2E.List)
@@ -3714,7 +3814,7 @@
                 dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
                   c("escape", "double"))#
     
-    }
+  }
   } #1.0.0 ---------------------------------------------------------------------------
 
 #}
