@@ -31,12 +31,13 @@
   
   #Select a run ID, this should be a number, ideally unique that will help track this
   #run. Output files are tagged with this ID number.
+
   RUN <- 90
   
   #Reporting interval, how often (in model years) should output maps be produced?
   #I.e., once every ... years.
   #Must be less than model run time (YEARS object)
-  Interval <- 10
+  Interval <- 3
   
   #What is your working directory. I.e. where are your input files coming from?
   input_path <- "C:/Users/jcronan/Documents/GitHub/EglinAirForceBase"     
@@ -119,7 +120,7 @@
           } else
             {
               #Number of years the model should run for.
-              YEARS <- 2
+              YEARS <- 3
               
               #Acres thinned annually.
               THINNING <- 100000
@@ -133,7 +134,7 @@
               #Natural fire rotation in years for:
               #Element 1 -- Eglin Air Force Base
               #Element 2 -- Surrounding 10-km buffer landscape
-              NATURAL_FIRE_ROTATION <- c(2054.38,10457.39)
+              NATURAL_FIRE_ROTATION <- c(1054.38,10457.39)
               
               #Mean fire size in acres for:
               #Element 1 -- Eglin Air Force Base
@@ -1175,11 +1176,11 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
         } else #2.1.1------------------------------------------------------------------------
   { #2.1.2-----------------------------------------------------------------------------
         
-          #Determine available fuelbeds.
-          treatable.fuelbeds <- fuelbed_lut$fuelbed[fuelbed_lut[,t.code + 4] == 2]
+      #Determine available fuelbeds.
+      treatable.fuelbeds <- fuelbed_lut$fuelbed[fuelbed_lut[,t.code + 4] == 2]
           
-    #Find eligible stands with eligible fuelbeds
-    elst <- sort(unique(s.map[!b.map %in% c(NoData.Unit, Buffer.Unit, 
+      #Find eligible stands with eligible fuelbeds
+      elst <- sort(unique(s.map[!b.map %in% c(NoData.Unit, Buffer.Unit, 
                                             Unmanaged.Unit) & 
                                       f.map %in% treatable.fuelbeds & s.map %in% loopA.snO]))
           
@@ -1507,7 +1508,7 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
                           {
                           #Determine if the rate of prescribed fire growth has dropped below 1% per
                           #iteration. When this happens the loop ends.
-                          treatment.growth <- (length(new.cells)/tbma)*100
+                          treatment.growth <- (length(new.cells)/tbsa)*100
                           
                           if(treatment.growth > cutoff.growth.rate)
                         {#4.3.1----------------------------------------------------------------------
@@ -1518,7 +1519,7 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
                         #                                                                          tesn)])
                         #  PrctTrmt.Mapped[(length(PrctTrmt.Mapped)+1)] <- round(((Treatment.Area[
                         #    length(Treatment.Area)]/tbsa)*100),1)
-                          
+
                           breaks <- 432  
                           break
                         }#4.3.2----------------------------------------------------------------------
