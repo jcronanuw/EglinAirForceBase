@@ -31,7 +31,7 @@
   
   #Select a run ID, this should be a number, ideally unique that will help track this
   #run. Output files are tagged with this ID number.
-  RUN <- 81
+  RUN <- 102
   
   #Reporting interval, how often (in model years) should output maps be produced?
   #I.e., once every ... years.
@@ -119,7 +119,7 @@
           } else
             {
               #Number of years the model should run for.
-              YEARS <- 20
+              YEARS <- 2
               
               #Acres thinned annually.
               THINNING <- 2000
@@ -171,10 +171,10 @@
   #Starting stand numbers for...
   #------------------------------------------------------------------------------------------------
   #Treatments:
-  treat.stand <- 4000000
+  treat.stand <- 400000000
   
   #Fires:
-  fire.stand <- 8000000
+  fire.stand <- 800000000
   #------------------------------------------------------------------------------------------------
   
   #>>>>>>>>>>>>>>>>>>>          ASCII MAP FILE METADATA...
@@ -441,7 +441,7 @@
   f.map <- matrix(scan(paste("inputs/sef_fmap_v2_",rows,"x",cols,".txt",
                              sep = ""),skip = fh.adj),ncol=cols,byrow=T)#16
   
-  s.map <- matrix(scan(paste("inputs/sef_smap_092715_",rows,"x",cols,".txt",
+  s.map <- matrix(scan(paste("inputs/sef_smap_060216_",rows,"x",cols,".txt",
                              sep = ""),skip = sh.adj),ncol=cols,byrow=T)#17
   
   b.map <- matrix(scan(paste("inputs/sef_bmap_",rows,"x",cols,".txt",
@@ -454,49 +454,49 @@
   #################################################################################################
   #STEP 04: Import Spatial Database (Pseudo-vector Subset)
   Stand.List <- read.table(paste(
-    "inputs/sef_StandList_",rows,"x",cols,".txt",
+    "inputs/sef_StandList2016_",rows,"x",cols,".txt",
     sep = ""), header=TRUE, 
     sep=",", na.strings="NA", dec=".", strip.white=TRUE)
   Stand.List <- as.vector(Stand.List[,2], mode = "numeric")#20
   Stand.List <- Stand.List[-1]
   
   Fuelbed.List <- read.table(paste(
-    "inputs/sef_FuelbedList_",rows,"x",cols,".txt",
+    "inputs/sef_FuelbedList2016_",rows,"x",cols,".txt",
     sep = ""), header=TRUE, 
     sep=",", na.strings="NA", dec=".", strip.white=TRUE)
   Fuelbed.List <- as.vector(Fuelbed.List[,2], mode = "numeric")#21
   Fuelbed.List <- Fuelbed.List[-1]
   
   Coord.List <- read.table(paste(
-    "inputs/sef_CoordList_",rows,"x",cols,".txt",
+    "inputs/sef_CoordList2016_",rows,"x",cols,".txt",
     sep = ""), header=TRUE, 
     sep=",", na.strings="NA", dec=".", strip.white=TRUE)
   Coord.List <- as.vector(Coord.List[,2], mode = "numeric")#21
   Coord.List <- Coord.List[-1]
   
   Age.List <- read.table(paste(
-    "inputs/sef_AgeList_",rows,"x",cols,".txt",
+    "inputs/sef_AgeList2016_",rows,"x",cols,".txt",
     sep = ""), header=TRUE, 
     sep=",", na.strings="NA", dec=".", strip.white=TRUE)
   Age.List <- as.vector(Age.List[,2], mode = "numeric")#22
   Age.List <- Age.List[-1]
   
   Area.List <- read.table(paste(
-    "inputs/sef_AreaList_",rows,"x",cols,".txt",
+    "inputs/sef_AreaList2016_",rows,"x",cols,".txt",
     sep = ""), header=TRUE, 
     sep=",", na.strings="NA", dec=".", strip.white=TRUE)
   Area.List <- as.vector(Area.List[,2], mode = "numeric")#23
   Area.List <- Area.List[-1]
   
   mfri.List <- read.table(paste(
-    "inputs/sef_mfriList_v2_",rows,"x",cols,".txt",
+    "inputs/sef_mfriList_v2016_",rows,"x",cols,".txt",
     sep = ""), header=TRUE, 
     sep=",", na.strings="NA", dec=".", strip.white=TRUE)
   mfri.List <- as.vector(mfri.List[,2], mode = "numeric")#23
   mfri.List <- mfri.List[-1]
   
   mfri.Matrix <- read.table(paste(
-    "inputs/sef_mfriMatrix_v2_",rows,"x",cols,".txt",
+    "inputs/sef_mfriMatrix_v2016_",rows,"x",cols,".txt",
     sep = ""), header=T, 
     sep=",", na.strings="NA", dec=".", strip.white=TRUE)
   #Remove no Data Unit
@@ -511,26 +511,26 @@
   mfri.Matrix <- mm4
 
   MU.List <- read.table(paste(
-    "inputs/sef_MUList_",rows,"x",cols,".txt",
+    "inputs/sef_MU2List2016_",rows,"x",cols,".txt",
     sep = ""), header=TRUE, 
     sep=",", na.strings="NA", dec=".", strip.white=TRUE)
   MU.List <- as.vector(MU.List[,2], mode = "numeric")#25
   MU.List <- MU.List[-1]
   
   TSLFxUnits <- read.table(paste(
-    "inputs/sef_TSLF.List_",rows,"x",cols,".txt",
+    "inputs/sef_TSLF.List_v2016_",rows,"x",cols,".txt",
     sep = ""), header=TRUE, 
     sep=",", na.strings="NA", dec=".", strip.white=TRUE)
   TSLFxUnits <- TSLFxUnits[,-1]
   
   mfri_lower.List <- read.table(paste(
-    "inputs/sef_less_fire_",rows,"x",cols,".txt",
+    "inputs/sef_shorter_mfri_",rows,"x",cols,".txt",
     sep = ""), header=TRUE, 
     sep=",", na.strings="NA", dec=".", strip.white=TRUE)
   mfri_lower.List <- mfri_lower.List[,-1]
   
   mfri_upper.List <- read.table(paste(
-    "inputs/sef_more_fire_",rows,"x",cols,".txt",
+    "inputs/sef_longer_mfri_",rows,"x",cols,".txt",
     sep = ""), header=TRUE, 
     sep=",", na.strings="NA", dec=".", strip.white=TRUE)
   mfri_upper.List <- mfri_upper.List[,-1]
@@ -574,19 +574,24 @@
   f.start <- f.start[-1,]#remove first row -- no data unit.
 
   
-  #nslt.List <- read.table(paste(
-  #  "inputs/sef_NSLTList_",rows,"x",cols,".txt",
-  #  sep = ""), header=TRUE, 
-  #  sep=",", na.strings="NA", dec=".", strip.white=TRUE)
-  #nslt.List <- nslt.List[,-1]
-  tslt.List <- rep(1,length(Stand.List))
-  tslt.Stands <- Stand.List
-  tslt.Fuelbeds <- Fuelbed.List
-  remove_fuelbeds <- fuelbed_lut$fuelbed[fuelbed_lut$max_tslt == 0]
-  tslt.List <- tslt.List[Fuelbed.List %in% remove_fuelbeds]
-  tslt.Stands <- Stand.List[Fuelbed.List %in% remove_fuelbeds]
-  tslt.Fuelbeds <- Fuelbed.List[Fuelbed.List %in% remove_fuelbeds]
-  
+  tslt.List <- read.table(paste(
+    "inputs/sef_tsltYears_",rows,"x",cols,".txt",
+    sep = ""), header=TRUE, 
+    sep=",", na.strings="NA", dec=".", strip.white=TRUE)
+tslt.List <- tslt.List[,-1]
+
+  tslt.Stands <- read.table(paste(
+    "inputs/sef_tsltStand_",rows,"x",cols,".txt",
+    sep = ""), header=TRUE, 
+    sep=",", na.strings="NA", dec=".", strip.white=TRUE)
+tslt.Stands <- tslt.Stands[,-1]
+
+  tslt.Fuelbeds <- read.table(paste(
+    "inputs/sef_tsltFuelbed_",rows,"x",cols,".txt",
+    sep = ""), header=TRUE, 
+    sep=",", na.strings="NA", dec=".", strip.white=TRUE)
+tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
+
   #################################################################################################
   #################################################################################################
   #STEP 06: Generate secondary data.
