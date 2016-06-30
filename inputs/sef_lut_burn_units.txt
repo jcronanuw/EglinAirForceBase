@@ -1,4 +1,4 @@
-"Rowid_","VALUE_","COUNT_","THIN","HERB","FIRE"
+"Rowid_","unit_","area_pixels_","thinning","herbicide","rxfire"
 ,101,709,0,0,0
 ,103,2559,0,0,0
 ,112,833,0,0,0
