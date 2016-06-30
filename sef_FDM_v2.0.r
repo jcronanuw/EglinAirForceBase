@@ -31,12 +31,12 @@
   
   #Select a run ID, this should be a number, ideally unique that will help track this
   #run. Output files are tagged with this ID number.
-  RUN <- 102
+  RUN <- 103
   
   #Reporting interval, how often (in model years) should output maps be produced?
   #I.e., once every ... years.
   #Must be less than model run time (YEARS object)
-  Interval <- 10
+  Interval <- 3
   
   #What is your working directory. I.e. where are your input files coming from?
   input_path <- "C:/Users/jcronan/Documents/GitHub/EglinAirForceBase"     
@@ -119,7 +119,7 @@
           } else
             {
               #Number of years the model should run for.
-              YEARS <- 2
+              YEARS <- 3
               
               #Acres thinned annually.
               THINNING <- 2000
@@ -128,12 +128,12 @@
               HERBICIDE <- 2000
               
               #Acres prescribed burned annually
-              RX_FIRE <- 2000
+              RX_FIRE <- 8000
               
               #Natural fire rotation in years for:
               #Element 1 -- Eglin Air Force Base
               #Element 2 -- Surrounding 10-km buffer landscape
-              NATURAL_FIRE_ROTATION <- c(2054.38,10457.39)
+              NATURAL_FIRE_ROTATION <- c(1054.38,10457.39)
               
               #Mean fire size in acres for:
               #Element 1 -- Eglin Air Force Base
@@ -1113,8 +1113,8 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
   if(sum(meanTAP) <= 0)
     {#1.1.1-----------------------------------------------------------------------------
     tbsa <- 0
-    Treatment.Area <- 0
-    PrctTrmt.Mapped <- 0
+    #Treatment.Area <- 0
+    #PrctTrmt.Mapped <- 0
     } else #1.1.1------------------------------------------------------------------------ 
     { #1.1.2-----------------------------------------------------------------------------
       #LOOP 222222222222222222222222222222222222222222222222222222222222222222222222222222
@@ -1165,12 +1165,12 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
           cc <- 0
           
           #These objects record data for each mapping iteration.
-          Treatment.Area <- vector(mode = "numeric", length = 1)
-          PrctTrmt.Mapped <- vector(mode = "numeric", length = 1)
+          #Treatment.Area <- vector(mode = "numeric", length = 1)
+          #PrctTrmt.Mapped <- vector(mode = "numeric", length = 1)
           
           #Record pre-run data (cc iteration = zero).
-          Treatment.Area[cc+1] <- 0
-          PrctTrmt.Mapped[cc+1] <- 0
+          #Treatment.Area[cc+1] <- 0
+          #PrctTrmt.Mapped[cc+1] <- 0
           
           #Determine available fuelbeds.
           treatable.fuelbeds <- fuelbed_lut$fuelbed[fuelbed_lut[,t.code + 4] == 2]
@@ -1343,10 +1343,10 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
                   #the treatment.
                   if(length(l.map[b.map == bun & s.map %in% elst]) < (tbsa-tbma))
                   {
-                    Treatment.Area[(length(Treatment.Area)+1)] <- length(s.map[s.map %in% c(loopC.new_stand,
-                                                                                            tesn)])
-                    PrctTrmt.Mapped[(length(PrctTrmt.Mapped)+1)] <- round(((Treatment.Area[
-                      length(Treatment.Area)]/tbsa)*100),1)
+                   # Treatment.Area[(length(Treatment.Area)+1)] <- length(s.map[s.map %in% c(loopC.new_stand,
+                   #                                                                         tesn)])
+                   # PrctTrmt.Mapped[(length(PrctTrmt.Mapped)+1)] <- round(((Treatment.Area[
+                    #  length(Treatment.Area)]/tbsa)*100),1)
                     
                     breaks <- 311
                     break
@@ -1487,10 +1487,10 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
                         }
              
                         #Register mapping data after Loop 4 has finished running for iteration[d].
-                        Treatment.Area[(length(Treatment.Area)+1)] <- length(s.map[s.map %in% c(loopC.new_stand,
-                                                                                                tesn)])
-                        PrctTrmt.Mapped[(length(PrctTrmt.Mapped)+1)] <- round(((Treatment.Area[
-                          length(Treatment.Area)]/tbsa)*100),1)
+                        #Treatment.Area[(length(Treatment.Area)+1)] <- length(s.map[s.map %in% c(loopC.new_stand,
+                        #                                                                        tesn)])
+                        #PrctTrmt.Mapped[(length(PrctTrmt.Mapped)+1)] <- round(((Treatment.Area[
+                         # length(Treatment.Area)]/tbsa)*100),1)
                         
                         #Evaluate growth rate of prescribed fire and end loop 4 if growth
                         #rate has dropped below the predetermined cutoff
@@ -1499,18 +1499,17 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
                           {
                           #Determine if the rate of prescribed fire growth has dropped below 1% per
                           #iteration. When this happens the loop ends.
-                          treatment.growth <- PrctTrmt.Mapped[length(PrctTrmt.Mapped)]-
-                            PrctTrmt.Mapped[length(PrctTrmt.Mapped)-1]
+                          treatment.growth <- (length(new.cells)/tbsa)*100
                           
                           if(treatment.growth > cutoff.growth.rate)
                         {#4.3.1----------------------------------------------------------------------
                           d <- d#placeholder
                         } else#4.3.1-----------------------------------------------------------------
                         {#4.3.2----------------------------------------------------------------------
-                        Treatment.Area[(length(Treatment.Area)+1)] <- length(s.map[s.map %in% c(loopC.new_stand,
-                                                                                                  tesn)])
-                          PrctTrmt.Mapped[(length(PrctTrmt.Mapped)+1)] <- round(((Treatment.Area[
-                            length(Treatment.Area)]/tbsa)*100),1)
+                        #Treatment.Area[(length(Treatment.Area)+1)] <- length(s.map[s.map %in% c(loopC.new_stand,
+                         #                                                                         tesn)])
+                         # PrctTrmt.Mapped[(length(PrctTrmt.Mapped)+1)] <- round(((Treatment.Area[
+                         #   length(Treatment.Area)]/tbsa)*100),1)
                           
                           breaks <- 432  
                           break
@@ -1523,10 +1522,10 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
                       } else #4.2.1 ----------------------------------------------------------------------
                       
   {#4.2.2
-    Treatment.Area[(length(Treatment.Area)+1)] <- length(s.map[s.map %in% c(loopC.new_stand,
-                                                                            tesn)])
-    PrctTrmt.Mapped[(length(PrctTrmt.Mapped)+1)] <- round(((Treatment.Area[
-      length(Treatment.Area)]/tbsa)*100),1)
+    #Treatment.Area[(length(Treatment.Area)+1)] <- length(s.map[s.map %in% c(loopC.new_stand,
+    #                                                                        tesn)])
+    #PrctTrmt.Mapped[(length(PrctTrmt.Mapped)+1)] <- round(((Treatment.Area[
+    #  length(Treatment.Area)]/tbsa)*100),1)
   
   breaks <- 422  
   break
@@ -1535,10 +1534,10 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
                     } else #4.1.1 ----------------------------------------------------------------------
   
   { #4.1.2 ---------------------------------------------------------------------------
-    Treatment.Area[(length(Treatment.Area)+1)] <- length(s.map[s.map %in% c(loopC.new_stand,
-                                                                            tesn)])
-    PrctTrmt.Mapped[(length(PrctTrmt.Mapped)+1)] <- round(((Treatment.Area[
-      length(Treatment.Area)]/tbsa)*100),1)
+    #Treatment.Area[(length(Treatment.Area)+1)] <- length(s.map[s.map %in% c(loopC.new_stand,
+    #                                                                        tesn)])
+    #PrctTrmt.Mapped[(length(PrctTrmt.Mapped)+1)] <- round(((Treatment.Area[
+    #  length(Treatment.Area)]/tbsa)*100),1)
   
   breaks <- 412    
   break
@@ -1576,10 +1575,10 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
                 } else #3.2.1 ----------------------------------------------------------------------
   
   { #3.2.2 ---------------------------------------------------------------------------
-    Treatment.Area[(length(Treatment.Area)+1)] <- length(s.map[s.map %in% c(loopC.new_stand,
-                                                                            tesn)])
-    PrctTrmt.Mapped[(length(PrctTrmt.Mapped)+1)] <- round(((Treatment.Area[
-      length(Treatment.Area)]/tbsa)*100),1)
+    #Treatment.Area[(length(Treatment.Area)+1)] <- length(s.map[s.map %in% c(loopC.new_stand,
+    #                                                                        tesn)])
+    #PrctTrmt.Mapped[(length(PrctTrmt.Mapped)+1)] <- round(((Treatment.Area[
+    #  length(Treatment.Area)]/tbsa)*100),1)
     breaks <- 322  
     break
   } #3.2.2 ---------------------------------------------------------------------------
@@ -1587,10 +1586,10 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
               } else #3.1.1 ----------------------------------------------------------------------
   
   { #3.1.2 ---------------------------------------------------------------------------
-    Treatment.Area[(length(Treatment.Area)+1)] <- length(s.map[s.map %in% c(loopC.new_stand,
-                                                                            tesn)])
-    PrctTrmt.Mapped[(length(PrctTrmt.Mapped)+1)] <- round(((Treatment.Area[
-      length(Treatment.Area)]/tbsa)*100),1)
+    #Treatment.Area[(length(Treatment.Area)+1)] <- length(s.map[s.map %in% c(loopC.new_stand,
+    #                                                                        tesn)])
+    #PrctTrmt.Mapped[(length(PrctTrmt.Mapped)+1)] <- round(((Treatment.Area[
+    #  length(Treatment.Area)]/tbsa)*100),1)
     breaks <- 312
     break
   } #3.1.2 ---------------------------------------------------------------------------
@@ -1624,10 +1623,10 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
     " Disturbance_No ", b,
     " Name: ", f.treatments$TreatmentTitle[t.code], 
     "MgmtOp: ", b.thresh$management_type[row.code], 
-    "BurnBlock: ", bun, 
-    "PercentBlack: ", round(sum(loopB.new_area)/sum(Area.List[MU.List == bun]), 1), 
+    "BurnBlock: ", unique(loopC.new_mgmtUnit), 
+    "PercentBlack: ", round(sum(loopC.new_area)/sum(Area.List[MU.List %in% loopC.new_mgmtUnit]),1)*100, 
     " TreatedArea_Expected: ", tbsa, 
-    " TreatedArea_Actual: ", sum(loopB.new_area),
+    " TreatedArea_Actual: ", tbma,
     "Untreated_Area: ", b.untreated[row.code], 
     " Blocks: ", cc, 
     " Expansions: ", d.d, 
@@ -1672,8 +1671,8 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
       " Disturbance_No ", b,
       " Name: ", f.treatments$TreatmentTitle[t.code], 
       "MgmtOp: ", b.thresh$management_type[row.code], 
-      "BurnBlock: ", bun, 
-      "PercentBlack: ", round(tbsa/sum(Area.List[MU.List == bun]), 1), 
+      "BurnBlock: ", unique(loopC.new_mgmtUnit), 
+      "PercentBlack: ", round(sum(loopC.new_area)/sum(Area.List[MU.List %in% loopC.new_mgmtUnit]),1)*100, 
       " TreatedArea_Expected: ", tbsa, 
       " TreatedArea_Actual: ", tbma,
       "Untreated_Area: ", b.untreated[row.code], 
@@ -1703,8 +1702,8 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
       " Disturbance_No ", b,
       " Name: ", f.treatments$TreatmentTitle[t.code], 
       "MgmtOp: ", b.thresh$management_type[row.code], 
-      "BurnBlock: ", bun, 
-      "PercentBlack: ", round(tbsa/sum(Area.List[MU.List == bun]), 1), 
+      "BurnBlock: ", unique(loopC.new_mgmtUnit), 
+      "PercentBlack: ", round(sum(loopC.new_area)/sum(Area.List[MU.List %in% loopC.new_mgmtUnit]),1)*100, 
       " TreatedArea_Expected: ", tbsa, 
       " TreatedArea_Actual: ", tbma,
       "Untreated_Area: ", b.untreated[row.code], 
@@ -1734,17 +1733,17 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
       " Time: ", tm, 
       " Year: ", a, 
       " PercentComplete_ForYear: ", round((((sum(meanTAA)-sum(meanUAA))/sum(meanTAP))*100),2), 
-      " Disturbance_No ", b, 
+      " Disturbance_No ", b,
       " Name: ", f.treatments$TreatmentTitle[t.code], 
       "MgmtOp: ", b.thresh$management_type[row.code], 
-      "BurnBlock: ", bun, 
-      "PercentBlack: ", round(tbsa/sum(Area.List[MU.List == bun]), 1), 
+      "BurnBlock: ", unique(loopC.new_mgmtUnit), 
+      "PercentBlack: ", round(sum(loopC.new_area)/sum(Area.List[MU.List %in% loopC.new_mgmtUnit]),1)*100, 
       " TreatedArea_Expected: ", tbsa, 
       " TreatedArea_Actual: ", tbma,
       "Untreated_Area: ", b.untreated[row.code], 
       " Blocks: ", cc, 
       " Expansions: ", d.d, 
-      "HiStandNo: ", max(nebc))  
+      "HiStandNo: ", max(nebc)) 
   
     #Save run data.
     cat(t.summary, file = paste(output_path, "run_", run, "_disturbances.txt", 
