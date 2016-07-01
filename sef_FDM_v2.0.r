@@ -32,12 +32,12 @@
   #Select a run ID, this should be a number, ideally unique that will help track this
   #run. Output files are tagged with this ID number.
 
-  RUN <- 90
+  RUN <- 107
   
   #Reporting interval, how often (in model years) should output maps be produced?
   #I.e., once every ... years.
   #Must be less than model run time (YEARS object)
-  Interval <- 3
+  Interval <- 1
   
   #What is your working directory. I.e. where are your input files coming from?
   input_path <- "C:/Users/jcronan/Documents/GitHub/EglinAirForceBase"     
@@ -118,34 +118,34 @@
             #Element 2 -- Surrounding 10-km buffer landscape
             STAND_DEV_FIRE_SIZE <- c(361.12, 13.98)
           } else
-            {
-              #Number of years the model should run for.
-              YEARS <- 3
-              
-              #Acres thinned annually.
-              THINNING <- 100000
-              
-              #Acres of herbicide application annually
-              HERBICIDE <- 10000
-              
-              #Acres prescribed burned annually
-              RX_FIRE <- 10000
-              
-              #Natural fire rotation in years for:
-              #Element 1 -- Eglin Air Force Base
-              #Element 2 -- Surrounding 10-km buffer landscape
-              NATURAL_FIRE_ROTATION <- c(1054.38,10457.39)
-              
-              #Mean fire size in acres for:
-              #Element 1 -- Eglin Air Force Base
-              #Element 2 -- Surrounding 10-km buffer landscape
-              MEAN_FIRE_SIZE <- c(103.65,5.23)    
-              
-              #Standard deviation of mean fire size for:
-              #Element 1 -- Eglin Air Force Base
-              #Element 2 -- Surrounding 10-km buffer landscape
-              STAND_DEV_FIRE_SIZE <- c(361.12, 13.98)
-            }
+          {
+            #Number of years the model should run for.
+            YEARS <- 3
+            
+            #Acres thinned annually.
+            THINNING <- 3000
+            
+            #Acres of herbicide application annually
+            HERBICIDE <- 3000
+            
+            #Acres prescribed burned annually
+            RX_FIRE <- 100000
+            
+            #Natural fire rotation in years for:
+            #Element 1 -- Eglin Air Force Base
+            #Element 2 -- Surrounding 10-km buffer landscape
+            NATURAL_FIRE_ROTATION <- c(54.38,457.39)
+            
+            #Mean fire size in acres for:
+            #Element 1 -- Eglin Air Force Base
+            #Element 2 -- Surrounding 10-km buffer landscape
+            MEAN_FIRE_SIZE <- c(103.65,5.23)    
+            
+            #Standard deviation of mean fire size for:
+            #Element 1 -- Eglin Air Force Base
+            #Element 2 -- Surrounding 10-km buffer landscape
+            STAND_DEV_FIRE_SIZE <- c(361.12, 13.98)
+          }
           }
   
   #>>>>>>>>>>>>>>>>>>>          FINISHED
@@ -3815,21 +3815,27 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
     tm <- format(Sys.time(), format = "%H.%M.%S", 
                  tz = "", usetz = FALSE)
     
-    write.table(s.map, file = paste(output_path, "sef_smap_run_", run, "_", 
+    write.table(s.map, file = paste(output_path, "run_106_results/sef_smap_run_", run, "_", 
                                     dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
                 append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
                 dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
                   c("escape", "double"))#
     
-    write.table(f.map, file = paste(output_path, "fdm_maps/sef_fmap_run_", run, "_",
+    write.table(f.map, file = paste(output_path, "run_106_results/sef_fmap_run_", run, "_",
                                     dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
                 append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
                 dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
-                  c("escape", "double"))#
-    
+                  c("escape", "double"))#    
   }
   } #1.0.0 ---------------------------------------------------------------------------
 
 #}
 
 #entireScript()
+
+
+
+
+
+
+
