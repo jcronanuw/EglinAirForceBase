@@ -32,7 +32,7 @@
   #Select a run ID, this should be a number, ideally unique that will help track this
   #run. Output files are tagged with this ID number.
 
-  RUN <- 107
+  RUN <- 110
   
   #Reporting interval, how often (in model years) should output maps be produced?
   #I.e., once every ... years.
@@ -120,21 +120,21 @@
           } else
           {
             #Number of years the model should run for.
-            YEARS <- 3
+            YEARS <- 50
             
             #Acres thinned annually.
-            THINNING <- 3000
+            THINNING <- 1000
             
             #Acres of herbicide application annually
-            HERBICIDE <- 3000
+            HERBICIDE <- 1000
             
             #Acres prescribed burned annually
-            RX_FIRE <- 100000
+            RX_FIRE <- 5000
             
             #Natural fire rotation in years for:
             #Element 1 -- Eglin Air Force Base
             #Element 2 -- Surrounding 10-km buffer landscape
-            NATURAL_FIRE_ROTATION <- c(54.38,457.39)
+            NATURAL_FIRE_ROTATION <- c(1054.38,10457.39)
             
             #Mean fire size in acres for:
             #Element 1 -- Eglin Air Force Base
@@ -1043,11 +1043,6 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
     #Update the time-since-last-treatment list
     tslt.List <- tslt.List + min(a-1,1)
     
-    #Order tslt objects by stand number
-    tslt.List <- tslt.List[order(tslt.Stands)]
-    tslt.Fuelbeds <- tslt.Fuelbeds[order(tslt.Stands)]
-    tslt.Stands <- sort(tslt.Stands)
-    
     #Common disturbance file lists areas of disturbances
     diar <- c(fiar.e, fiar.b)
     tda <- c(tda,diar)
@@ -1873,16 +1868,18 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
   #Change stand properties as needed for treatments.
   #Create a data.frame so you can switch order from stand number to
   #order in which stand was added.
-  ID1.List <- 1:length(Stand.List)
-  TL1 <- data.frame(ID = ID1.List, Stand = Stand.List, Area = Area.List)
+  #ID1.List <- 1:length(Stand.List)
+  #TL1 <- data.frame(ID = ID1.List, Stand = Stand.List, Area = Area.List)
   #Order by stand number
-  TL1 <- TL1[order(TL1$Stand),]
+  #TL1 <- TL1[order(TL1$Stand),]
   #Subtract area of new stands from corresponding old stands
-  TL1$Area[TL1$Stand %in% stands] <- TL1$Area[TL1$Stand %in% stands] - sareas
+  #TL1$Area[TL1$Stand %in% stands] <- TL1$Area[TL1$Stand %in% stands] - sareas
+  Area.List[Stand.List %in% stands] <- Area.List[Stand.List %in% stands] - sareas
+  
   #Reorder by order stands were added
-  TL1 <- TL1[order(TL1$ID),]
+  #TL1 <- TL1[order(TL1$ID),]
   #Replace Area.List with updated object
-  Area.List <- TL1$Area
+  #Area.List <- TL1$Area
   
   #Update list to remove any stands that have been overwritten.
     Stand.List <- Stand.List[(Area.List == 0) == F]
@@ -1985,6 +1982,16 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
     #Update
     mfri_upper.List <- c(mfri_upper.List, longer_mFRI)
   
+    #order .List objects by stand number
+    Fuelbed.List <- Fuelbed.List[order(Stand.List)]
+    MU.List <- MU.List[order(Stand.List)]  
+    Area.List <- Area.List[order(Stand.List)]
+    mfri.Matrix <- mfri.Matrix[order(Stand.List),]
+    Age.List <- Age.List[order(Stand.List)]  
+    mfri_lower.List <- mfri_lower.List[order(Stand.List)]
+    mfri_upper.List <- mfri_upper.List[order(Stand.List)]
+    Stand.List <- sort(Stand.List)
+  
     #Re-order loopB by new stand for tslt objects.
     loopB <- loopB[order(loopB$new_stand),]
     
@@ -1993,11 +2000,10 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
     tslt.Fuelbeds <- tslt.Fuelbeds[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
     tslt.Stands <- tslt.Stands[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
     
-    
     #Update time-since-last-treatment list and associated stand list
-    tslt.List <- c(tslt.List, rep(0, length(loopB$new_stand[loopB$treat_type %in% c(2,3)])))
-    tslt.Fuelbeds <- c(tslt.Fuelbeds, loopB$newFB_a7[loopB$treat_type %in% c(2,3)])
-    tslt.Stands <- c(tslt.Stands, loopB$new_stand[loopB$treat_type %in% c(2,3)])
+    tslt.List <- c(tslt.List, rep(0, length(loopB$new_stand[loopB$treat_type %in% c(1,2)])))
+    tslt.Fuelbeds <- c(tslt.Fuelbeds, loopB$newFB_a7[loopB$treat_type %in% c(1,2)])
+    tslt.Stands <- c(tslt.Stands, loopB$new_stand[loopB$treat_type %in% c(1,2)])
     
   if(any(c(length(Stand.List),
            length(Fuelbed.List),
@@ -3381,6 +3387,11 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
     #state.
     tslt.Fuelbeds[tslt.Stands %in% replace_stands] <- new_fbs_x_stand              
     
+    #Order tslt objects by stand number before you apply it to .List objects
+    tslt.List <- tslt.List[order(tslt.Stands)]
+    tslt.Fuelbeds <- tslt.Fuelbeds[order(tslt.Stands)]
+    tslt.Stands <- sort(tslt.Stands)
+    
     #Apply changes to f.map and Fuelbed.List
     vt.map <- s.map[s.map %in% tslt.Stands]
     v.tslt <- tslt.Fuelbeds[match(vt.map, tslt.Stands)]
@@ -3508,16 +3519,18 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
   #Change stand properties as needed for treatments.
   #Create a data.frame so you can switch order from stand number to
   #order in which stand was added.
-  ID2.List <- 1:length(Stand.List)
-  TL2 <- data.frame(ID = ID2.List, Stand = Stand.List, Area = Area.List)
+  #ID2.List <- 1:length(Stand.List)
+  #TL2 <- data.frame(ID = ID2.List, Stand = Stand.List, Area = Area.List)
   #Order by stand number
-  TL2 <- TL2[order(TL2$Stand),]
+  #TL2 <- TL2[order(TL2$Stand),]
   #Subtract area of new stands from corresponding old stands
-  TL2$Area[TL2$Stand %in% standd] <- TL2$Area[TL2$Stand %in% standd] - saread
+  #TL2$Area[TL2$Stand %in% standd] <- TL2$Area[TL2$Stand %in% standd] - saread
+  Area.List[Stand.List %in% standd] <- Area.List[Stand.List %in% standd] - saread
+  
   #Reorder by order stands were added
-  TL2 <- TL2[order(TL2$ID),]
+  #TL2 <- TL2[order(TL2$ID),]
   #Replace Area.List with updated object
-  Area.List <- TL2$Area
+  #Area.List <- TL2$Area
   
     #Update list to remove any stands that have been overwritten.
     Stand.List <- Stand.List[(Area.List == 0) == F]
@@ -3622,6 +3635,16 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
     #Update
     Area.List <- c(Area.List,loopE.Area)
     
+    #order .List objects by stand number
+    Fuelbed.List <- Fuelbed.List[order(Stand.List)]
+    MU.List <- MU.List[order(Stand.List)]  
+    Area.List <- Area.List[order(Stand.List)]
+    mfri.Matrix <- mfri.Matrix[order(Stand.List),]
+    Age.List <- Age.List[order(Stand.List)]  
+    mfri_lower.List <- mfri_lower.List[order(Stand.List)]
+    mfri_upper.List <- mfri_upper.List[order(Stand.List)]
+    Stand.List <- sort(Stand.List)
+  
     #Remove stands that have been overwritten
     tslt.List <- tslt.List[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
     tslt.Fuelbeds <- tslt.Fuelbeds[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
@@ -3738,6 +3761,11 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
       #state.
       tslt.Fuelbeds[tslt.Stands %in% replace_stands] <- new_fbs_x_stand              
       
+      #Order tslt objects by stand number before you apply it to .List objects
+      tslt.List <- tslt.List[order(tslt.Stands)]
+      tslt.Fuelbeds <- tslt.Fuelbeds[order(tslt.Stands)]
+      tslt.Stands <- sort(tslt.Stands)
+      
       #Apply changes to f.map and Fuelbed.List
       vt.map <- s.map[s.map %in% tslt.Stands]
       v.tslt <- tslt.Fuelbeds[match(vt.map, tslt.Stands)]
@@ -3748,7 +3776,6 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
       tslt.List <- tslt.List[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
       tslt.Fuelbeds <- tslt.Fuelbeds[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
       tslt.Stands <- tslt.Stands[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
-      
       
       #Remove rows where fuelbeds no longer represent a silvicultural treatment
       tslt.List <- tslt.List[which(mapply(function(y) 
@@ -3832,10 +3859,3 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
 #}
 
 #entireScript()
-
-
-
-
-
-
-
