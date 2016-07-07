@@ -31,7 +31,7 @@
   
   #Select a run ID, this should be a number, ideally unique that will help track this
   #run. Output files are tagged with this ID number.
-  RUN <- 107
+  RUN <- 110
   
   #Reporting interval, how often (in model years) should output maps be produced?
   #I.e., once every ... years.
@@ -119,21 +119,21 @@
           } else
             {
               #Number of years the model should run for.
-              YEARS <- 2
+              YEARS <- 3
               
               #Acres thinned annually.
-              THINNING <- 1000
+              THINNING <- 10000
               
               #Acres of herbicide application annually
-              HERBICIDE <- 1000
+              HERBICIDE <- 10000
               
               #Acres prescribed burned annually
-              RX_FIRE <- 1000
+              RX_FIRE <- 10000
               
               #Natural fire rotation in years for:
               #Element 1 -- Eglin Air Force Base
               #Element 2 -- Surrounding 10-km buffer landscape
-              NATURAL_FIRE_ROTATION <- c(1054.38,10457.39)
+              NATURAL_FIRE_ROTATION <- c(254.38,3457.39)
               
               #Mean fire size in acres for:
               #Element 1 -- Eglin Air Force Base
@@ -853,13 +853,16 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
   #################################################################################################
   #################################################################################################
   #STEP 11: FUNCTION TO REPORT STATUS OF RUN
-  run_status <- function(x, y, ja, jb, jcc, je, jf)
+  run_status <- function(x, y, ja, jb, jcc, je, jf, j_tdn, j_tdy, j_tdc)
   {
-    if(length(error.message) == 0)
+    header.interval <- 30
+    wildfire.count <- ifelse(length(j_tdn[j_tdy == ja]) > 0, which(j_tdn[j_tdy == ja] == je), 0)
+    
+    if(length(break.message) == 0)
     {
     if(je == 0)
     {
-  if(jb == 1 | jb/10 == round(jb/10, 0))
+  if(jb == 1 | jb/header.interval == round(jb/header.interval, 0))
   {
     t.summary <- paste(
       "  < Date > ", 
@@ -869,8 +872,8 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
       "< Treatment Number >",
       "< Disturbance Type >",
       "< Management Section >",
-      "< Burn Block >",
-      " < Expected Acres >",
+      "< Burn Block   >",
+      "< Expected Acres >",
       "< Actual Acres >",
       "< UnTreated Acres >", 
       "< % Unit Treated >",
@@ -883,6 +886,7 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
   {
     jb <- jb
   }
+  
   treatment.name_pre <- f.treatments[y,1]
   if(treatment.name == treatment.name_pre)
   {
@@ -902,21 +906,27 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
     paste("", dt, ""), #" Date:" 
     paste("", tm, " "), #"  Time: " 
     ifelse(jb == 1, paste("  ", str_pad(ja, 3, pad = " "), "  "), "         "), 
-    paste("     ", str_pad(round(((sum(meanTAA)/sum(meanTAP))*100),0), 3, pad = " "), "    "), #Percent Complete For Year 
+    paste("     ", str_pad(round(((meanTAA[y]/meanTAP[y])*100),0), 3, pad = " "), 
+          "    "), #Percent Complete For Year 
     paste("        ", str_pad(b, 3, pad = " "), "   "), #Disturbance Number
     paste("       ",f.treatments$TreatmentTitle[y], " "), #Treatment Name
     paste("  ", b.thresh$management_type[x], "  "), #Management Option
     paste("   ", str_pad(bun, 4, pad = " "), "   "), #Burn Block 
-    paste("       ", str_pad(round((tbsa * MapRes),0), 5, pad = "0"), "     "), #Expected Area to be Treated (Acres)
-    paste("    ", ifelse((tbsa-sum(loopC.new_area)) == 0, "       ", 
-                          str_pad(round((sum(loopC.new_area) * MapRes), 0), 5, pad = "0")), "    "), #Actual Area Treated (Acres)
-    paste("    ", ifelse((tbsa-sum(loopC.new_area)) == 0, "       ", 
-                          str_pad(round(((tbsa-sum(loopC.new_area)) * MapRes),0), 5, pad = "0")), "      "), #Untreated Area (Acres) 
-    paste("        ", str_pad((round((sum(loopC.new_area)/sum(Area.List[MU.List == bun]))*100, 0)), 
-                            3, pad = "0"), " "), #Percent of Management Unit Treated
-    paste("       ", str_pad(jcc, 4, pad = "0"), "  "), #Blocks 
-    paste("   ", str_pad(d.d, 5, pad = "0"), "   "), #Expansions 
-    paste("   ", max(nebc), "  "))
+    paste("         ", str_pad(round((tbsa * MapRes),0), 5, pad = " "), 
+          "     "), #Expected Area to be Treated (Acres)
+    paste("   ", ifelse((round(tbsa * MapRes, 0) - round(sum(loopC.new_area) * MapRes, 0)) == 0, "       ", 
+                          paste("", str_pad(round((sum(loopC.new_area) * MapRes), 0), 5, pad = " "), "")), 
+          "   "), #Actual Area Treated (Acres)
+    paste("     ", ifelse((round(tbsa * MapRes, 0) - round(sum(loopC.new_area) * MapRes, 0)) == 0, "       ", 
+                          paste("", 
+                                str_pad(round(((tbsa-sum(loopC.new_area)) * MapRes),0), 5, pad = " "), "")), 
+          "      "), #Untreated Area (Acres) 
+    paste("       ", str_pad((sprintf("%5.1f", 
+                                      round((sum(loopC.new_area)/sum(Area.List[MU.List == bun]))*100, 1))), 
+                            3, pad = " "), ""), #Percent of Management Unit Treated
+    paste("        ", str_pad(jcc, 4, pad = " "), "  "), #Blocks 
+    paste("   ", str_pad(d.d, 5, pad = " "), "   "), #Expansions 
+    paste("   ", max(nebc), "  ")) #Max Stand Number
   
   #Save run data.
   cat(t.summary, file = paste(output_path, "run_", run, "_disturbances.txt", 
@@ -926,7 +936,7 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
       
       
       #Tracking device
-      if(min(which(tdy == ja)) == je | which(tdn[tdy == ja] == je)/10 == round(which(tdn[tdy == ja] == je)/10, 0))
+      if(wildfire.count == 1| wildfire.count/header.interval == round(wildfire.count/header.interval, 0))
       {
         d.summary <- paste(
           "  < Date > ", 
@@ -938,12 +948,12 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
           "< Landscape Section >",
           " < Burn Pattern >",
           "< Expected Acres >",
-          "<A ctual Acres >",
-          "< UnBurned Acres >", 
-          " < % Crown Fire > ",
-          "< Blocks >", 
+          "< Actual Acres >",
+          "< UnBurned Acres  >", 
+          "< % Crown Fire  >",
+          " < Blocks >", 
           "< Expansions >", 
-          "< Hi Stand No >")
+          "< Max Stand No >")
         
         #Save run data.
         cat(d.summary, file = paste(output_path, "run_", run, "_disturbances.txt", sep = ""), fill = T, append = T)#
@@ -963,7 +973,7 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
       
       if(length(unique(expansions_loop8)) > 1)
       {
-        burn.type <- "Combo"
+        burn.type <- "Combo  "
       } else
       {
         if(length(expansions_loop8) == 0)
@@ -971,12 +981,12 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
           expansions_loop8 <- expansions_loop8
         } else
         {
-        if(unique(expansions_loop8) == "g")
+        if(unique(expansions_loop8) == 1)
         {
-          burn.type <- "Wild "
+          burn.type <- "Natural"
         } else
         {
-          burn.type <- "Block"
+          burn.type <- "Block  "
         }
         }
       }
@@ -988,29 +998,37 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
       
       d.summary <- paste(
         paste("", dt, ""), #"Date: " 
-        paste("", tm, " "), #" Time: "  
-        ifelse(je == 1, paste("  ", str_pad(ja, 3, pad = " "), "  "), "       "), #Simulation Year
-        paste("     ", str_pad(round(((which(tdn[tdy == ja] == e)/length(tdn[tdy == ja]))*100),0), 3, pad = " "), "    "), #Percent Complete For Year 
-        paste("       ", str_pad(e, 3, pad = " "),  "    "), #Disturbance Number
-        paste("        ", wildfire.name, "     "), #Disturbance Name
-        ifelse(tdc[e] == 1, "     Eglin Air F. Base ", "     10 km Buffer Zone "),  #Management Option -- Not Applicable
-        paste("    ", burn.type, "   "), #Burn Block -- Not Applicable
-        paste("      ", str_pad(round((desa * MapRes),0), 5, pad = "0"), "     "), #Expected Area to be Burned (Acres)
-        paste("      ", ifelse((desa-sum(loopE.Area)) == 0, "         ", str_pad(round((sum(loopE.Area) * MapRes),0), 5, pad = "0")), "   "), #Actual Area Burned (Acres)
-        paste("     ", ifelse((tbsa-sum(loopE.Area)) == 0, "         ", 
-                              str_pad(round(((tbsa-sum(loopE.Area)) * MapRes),0), 5, pad = "0")), "     "), #UnBurned Area (Acres) 
-        paste("      ", str_pad(round(sum(loopE$Area[loopE$Fire == 2])/sum(loopE$Area)), 3, pad = "0"),  "   "), #Percent Crown Fire
-        paste("   " , str_pad(jf, 4, pad = "0"), "  "), #Blocks 
-        paste("    ", str_pad(length(expansions_loop8), 5, pad = "0"), "   "), #Expansions 
+        paste("", tm, " "), #" Time: "   
+        ifelse(wildfire.count == 1, paste("  ", str_pad(ja, 3, pad = " "), "  "), "         "), #Simulation Year
+        paste("     ", str_pad(round(((which(j_tdn[j_tdy == ja] == e)/length(j_tdn[j_tdy == ja]))*100),0), 
+                               3, pad = " "), "    "), #Percent Complete For Year 
+        paste("       ", str_pad(e, 3, pad = " "),  "    "), #Wildfire Number
+        paste("       ", wildfire.name, "     "), #Wildfire Type
+        ifelse(j_tdc[je] == 1, "      Eglin Air F. Base ", "      10 km Buffer Zone "),  #Landscape Section
+        paste("     ", burn.type, " "), #Burn Pattern
+        paste("        ", str_pad(round((desa * MapRes),0), 5, pad = " "), 
+              "     "), #Expected Area to be Burned (Acres)
+        paste("   ", ifelse((round(desa * MapRes, 0) - round(sum(loopF.Area) * MapRes, 0)) == 0, "      ", 
+                                paste("", str_pad(round((sum(loopF.Area) * MapRes),0), 5, pad = " "))), 
+              " "), #Actual Area Burned (Acres)
+        paste("       ", ifelse((round(desa * MapRes, 0) - round(sum(loopF.Area) * MapRes, 0)) == 0, "        ", 
+                              paste(" ", str_pad(round(((desa-sum(loopF.Area)) * MapRes),0), 5, 
+                                      pad = " "), "")), "   "), #UnBurned Area (Acres) 
+        paste("          ", str_pad(sprintf("%5.1f", round(sum(loopF.Area[loopF.fireType == 2])/sum(loopF.Area),1)), 3, 
+                                  pad = " "),  "  "), #Percent Crown Fire
+        paste("      " , str_pad(jf, 4, pad = " "), "  "), #Blocks 
+        paste("   ", str_pad(length(expansions_loop8), 5, pad = " "), "   "), #Expansions 
         paste("   ", max(c(neef_surface, neef_crown)), "  "))
       
       #Save run data.
-      cat(d.summary, file = paste(output_path, "run_", run, "_disturbances.txt", sep = ""), fill = T, append = T)#
+      cat(d.summary, file = paste(output_path, "run_", run, "_disturbances.txt", sep = ""), 
+          fill = T, append = T)#
       
     }
       } else
     {
-      
+      if(je == 0)
+      {
       dt <- Sys.Date()
       tm <- format(Sys.time(), format = "%H.%M.%S", 
                    tz = "", usetz = FALSE)
@@ -1019,15 +1037,51 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
         paste("", dt, ""), #"Date: " 
         paste("", tm, " "), #" Time: " 
         ifelse(jb == 1, paste(" ", str_pad(ja, 3, pad = " "), " "), "       "), 
-        paste("       ", str_pad(round(((sum(meanTAA)/sum(meanTAP))*100),0), 3, pad = " "), "   "), #Percent Complete For Year 
+        paste("       ", "---", "   "), #Percent Complete For Year 
         paste("         ", str_pad(b, 3, pad = " "), "   "), #Disturbance Number
         paste("       ",f.treatments$TreatmentTitle[y]), #Treatment Name
-        paste("      ----------------- "), #Management Option
-        paste("     >>>>>>>>>>>>>>> ", error.message, "")) #Error message
+        paste("    ", break.message, "  "), #Message
+        paste("   ", "----", "  "), #Col 8
+        paste("          ", "-----", "     "), #Col 9
+        paste("    ", "-----", " "), #Col 10
+        paste("         ", "-----", "      "), #Col 11
+        paste("         ", "----",  "  "), #Col 12
+        paste("      " , "----", "  "), #Col 13 
+        paste("   ", "-----", "    "), #Col 14 
+        paste("  ", "---------", "  "))#Col 15
+        
+        
       
       #Save run data.
       cat(e.summary, file = paste(output_path, "run_", run, "_disturbances.txt", 
                                   sep = ""), fill = T, append = T)#
+      } else
+      {
+        dt <- Sys.Date()
+        tm <- format(Sys.time(), format = "%H.%M.%S", 
+                     tz = "", usetz = FALSE)
+        #Tracking device
+        e.summary <- paste(
+          paste("", dt, ""), #"Date: " 
+          paste("", tm, " "), #" Time: "   
+          ifelse(wildfire.count == 1, paste("  ", str_pad(ja, 3, pad = " "), "  "), "         "), #Simulation Year
+          paste("       ", "---", "   "), #Percent Complete For Year , #Percent Complete For Year 
+          paste("       ", str_pad(je, 3, pad = " "),  "    "), #Disturbance Number
+          paste("       ", wildfire.name, "     "), #Disturbance Name
+          paste("      ", break.message, " "), #Message
+          paste("   ", "-------", " "), #Col 8
+          paste("          ", "-----", "     "), #Col 9
+          paste("    ", "-----", " "), #Col 10
+          paste("         ", "-----", "      "), #Col 11
+          paste("         ", "----",  "  "), #Col 12
+          paste("      " , "----", "  "), #Col 13 
+          paste("   ", "-----", "    "), #Col 14 
+          paste("  ", "---------", "  "))#Col 15
+        
+        #Save run data.
+        cat(e.summary, file = paste(output_path, "run_", run, "_disturbances.txt", 
+                                    sep = ""), fill = T, append = T)#
+      }
       
     }
   }
@@ -1210,7 +1264,7 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
                     fiar.b <- fiar.b
                     }
             
-            #All above units are in acres, multiply by MapRes to convert units into pixels.
+            #All above units are in acres, divide by MapRes to convert units into pixels.
             fiar.b <- fiar.b/MapRes
             
             #Round values.
@@ -1310,7 +1364,7 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
         #Set tracking objects for treatment area
         tbma <- 0
         tbsa <- 0
-        error.message <- vector()
+        break.message <- vector()
         
         #Set breaks to a default value
         #The breaks is used to terminate a disturbance when certain conditions are not being met
@@ -1350,8 +1404,8 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
         
         if(t.code == 4)
         { #2.1.1-----------------------------------------------------------------------------
-          error.message <- paste("Met treatment targets, move to wildfire loop", sep = "")
-          run_status(row.code, t.code, a, b, cc, e, f)
+          break.message <- paste("Trtmnts Completed", sep = "")
+          run_status(row.code, t.code, a, b, cc, e, f, tdn, tdy, tdc)
           break
         } else #2.1.1------------------------------------------------------------------------
   { #2.1.2-----------------------------------------------------------------------------
@@ -1765,7 +1819,7 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
   loopB <- loopB[order(loopB$old_stand),]
   
   #Print out run status
-  run_status(row.code, t.code, a, b, cc, e, f)
+  run_status(row.code, t.code, a, b, cc, e, f, tdn, tdy, tdc)
   
           } else #2.4.1 ----------------------------------------------------------------------
   
@@ -1789,8 +1843,8 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
     loopB <- loopB[order(loopB$old_stand),]
     
     #Print out run status
-    error.message <- paste("Treatment Area is ", tbsa, "acres. Skip loops 3 and 4.", sep = "")
-    run_status(row.code, t.code, a, b, cc, e, f)
+    break.message <- paste("Trtment Area Zero", sep = "")
+    run_status(row.code, t.code, a, b, cc, e, f, tdn, tdy, tdc)
     
   } #2.4.2 ---------------------------------------------------------------------------
      } else #2.3.1 ----------------------------------------------------------------------
@@ -1798,8 +1852,8 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
   { #2.3.2 ---------------------------------------------------------------------------
    
     #Print out run status
-    error.message <- paste("No burn blocks meet eligibility, skip to next treatment type", sep = "")
-    run_status(row.code, t.code, a, b, cc, e, f)
+    break.message <- paste("No Eligible Units", sep = "")
+    run_status(row.code, t.code, a, b, cc, e, f, tdn, tdy, tdc)
     
     #Move to next row code and t code.
     row.code <- row.code + 1
@@ -1810,8 +1864,8 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
   { #2.2.2 ---------------------------------------------------------------------------
     
     #Print out run status
-    error.message <- paste("No burn blocks meet eligibility, last treatment, skip to wildfires", sep = "")
-    run_status(row.code, t.code, a, b, cc, e, f)
+    break.message <- paste("No Eligible Units", sep = "")
+    run_status(row.code, t.code, a, b, cc, e, f, tdn, tdy, tdc)
     
     breaks <- 222
     break
@@ -1821,7 +1875,7 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
     } #1.1.2--------------------------------------------------------------------------
   
   #Reset error message
-    error.message <- vector()
+    break.message <- vector()
     
   #Update time-since-last-fire to include latest treatments and add one year
   #treatments include herbicide and thinning
@@ -2110,7 +2164,7 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
     #LOOP 888888888888888888888888888888888888888888888888888888888888888888888888888888
     #Loop 8 (by disturbances within year[a]). This loop runs all disturbances for 
     #year[a].
-    for (e in tdn[tdy == a])#e <- 2
+      for (e in tdn[tdy == a])#e <- 2
     { #8.0.0 ---------------------------------------------------------------------------
     
       ### 
@@ -2201,6 +2255,8 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
               
     #Record area occupied by disturbance[e].
             dema <- length(s.map[s.map %in% loopF.NewStand])
+            #>>>>>CHANGE (will speed up model)
+            #dema <- sum(loopF.Area)
   
             #Ends loop when disturbance[e] has been completely mapped.
             if(dema < desa)
@@ -2827,7 +2883,7 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
                 }#10.5.2
               } #10.0.0 --------------------------------------------------------------------------
                 
-                expansions_loop8 <- c(expansions_loop8, rep(2,g))#tracks expansions
+                expansions_loop8 <- c(expansions_loop8, rep(1,g))#tracks expansions
                 
                 } else #9.7.1 (WILDFIRE LOOP)--------------------------------------------------------------
 {#9.7.2 (RX FIRE LOOP)--------------------------------------------------------------
@@ -3051,7 +3107,7 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
   }#11.3.2
    } #11.0.0 ---------------------------------------------------------------------------
   
-  expansions_loop8 <- c(expansions_loop8, rep(2,g))#tracks expansions
+  expansions_loop8 <- c(expansions_loop8, rep(2,h))#tracks expansions
   
   }#9.7.2 (RX FIRE LOOP)--------------------------------------------------------------
 
@@ -3354,12 +3410,12 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
                         G_H_no = loopE.G_H_no)
     loopE <- loopE[order(loopE$ReplacedStand),]
     
-    error.message <- "No flammable fuelbeds, skip this wildfire"
+    break.message <- "No Flammable Fuel"
   
   } #8.1.2 ---------------------------------------------------------------------------
   
         #Print out run status
-        run_status(row.code, t.code, a, b, cc, e, f)
+        run_status(row.code, t.code, a, b, cc, e, f, tdn, tdy, tdc)
           
   ##############################################################################
   ##############################################################################
@@ -3889,13 +3945,13 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
     tm <- format(Sys.time(), format = "%H.%M.%S", 
                  tz = "", usetz = FALSE)
     
-    write.table(s.map, file = paste(output_path, "run_106_results/sef_smap_run_", run, "_", 
+    write.table(s.map, file = paste(output_path, "sef_smap_run_", run, "_", 
                                     dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
                 append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
                 dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
                   c("escape", "double"))#
     
-    write.table(f.map, file = paste(output_path, "run_106_results/sef_fmap_run_", run, "_",
+    write.table(f.map, file = paste(output_path, "sef_fmap_run_", run, "_",
                                     dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
                 append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
                 dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
