@@ -34,7 +34,9 @@ BEGIN { instance_count = 0 }
 
    #   Result folder pushed to S3 (if success)
    print "  cd /home/ubuntu/" sim_id "/$RUN_ID" > file;
-   print "  for file in *; do aws s3 cp $file s3://bernease/wildfire-simulation/" sim_id "/$RUN_ID/$file" > file;
+   print "  for file in *; do " > file;
+   print "    aws s3 cp $file s3://bernease/wildfire-simulation/" sim_id "/$RUN_ID/$file" > file;
+   print "  done" > file;
 
    #   Terminate this instance (if success)
    print "  aws ec2 terminate-instances instance-ids $(curl -s http://169.254.169.254/latest/meta-data/instance-id)" > file;
