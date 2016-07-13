@@ -33,8 +33,12 @@ if [ $2 ]
   then
     SUBNET_ID="--subnet-id $2"
 fi
+if [ $3 ]
+  then
+    AWS_PROFILE="--profile $3"
+fi
 line=2
 tail -n +2 $1 | while IFS=',' read count params; do
-  aws ec2 run-instances --image-id ami-88ac6ee8 --key-name wildfire-simulation --user-data file://$SIM_ID/user_data_$line.ud --instance-type t2.large --iam-instance-profile Name=wildfire-simulation --count $count $SUBNET_ID
+  aws ec2 run-instances --image-id ami-88ac6ee8 --key-name wildfire-simulation --user-data file://$SIM_ID/user_data_$line.ud --instance-type t2.large --iam-instance-profile Name=wildfire-simulation --count $count $SUBNET_ID $AWS_PROFILE
   ((line++))
 done
