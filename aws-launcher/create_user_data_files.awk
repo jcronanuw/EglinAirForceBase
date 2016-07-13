@@ -8,6 +8,11 @@ BEGIN { instance_count = 0 }
 
    print "#!/bin/bash" > file;
 
+   # Export environmental variables
+   print "export LC_ALL=en_US.UTF-8" > file;  # https://bugs.python.org/issue18378
+   print "export LANG=en_US.UTF-8" > file;    # see above
+   print "export AWS_DEFAULT_REGION=us-west-2" > file;
+
    # Pulls repo from Github
    print "cd /home/ubuntu" > file;
    print "curl -L https://www.github.com/jcronanuw/EglinAirForceBase/archive/master.zip > /home/ubuntu/eafb.zip" > file;
@@ -35,19 +40,20 @@ BEGIN { instance_count = 0 }
    #   Result folder pushed to S3 (if success)
    print "  cd /home/ubuntu/" sim_id "/$RUN_ID" > file;
    print "  for file in *; do " > file;
-   print "    aws s3 cp $file s3://bernease/wildfire-simulation/" sim_id "/$RUN_ID/$file" > file;
+   print "    aws s3 cp $file s3://bernease/wildfire-simulation/" sim_id "/$file" > file;
    print "  done" > file;
 
    #   Terminate this instance (if success)
-   print "  aws ec2 terminate-instances instance-ids $(curl -s http://169.254.169.254/latest/meta-data/instance-id)" > file;
+   # print "  aws ec2 terminate-instances instance-ids $(curl -s http://169.254.169.254/latest/meta-data/instance-id)" > file;
 
    print "else" > file;
 
    #   Send email with instance id, output files (and error message?) (if fail)
-   print "  aws ses send-email --subject \"R Failure for Simulation " sim_id "\" --text \"This is a test message for $RUN_ID on host $(hostname). A link to the s3 bucket with the failing run will soon be included.\" --to jcronan@uw.edu --from jcronan@uw.edu" > file;
+   print "  aws ses send-email --subject \"R Failure for Simulation " sim_id "\" --text \"This is a test message for $RUN_ID on host $(hostname). A link to the s3 bucket with the failing run will soon be included.\" --to bernease@uw.edu --from bernease@uw.edu" > file;
+   # TODO: curl -s http://169.254.169.254/latest/meta-data/public-hostname
 
    #   Stop instance (if fail)
-   print "  aws ec2 stop-instances --instance-ids $(curl -s http://169.254.169.254/latest/meta-data/instance-id)" > file;
+   # print "  aws ec2 stop-instances --instance-ids $(curl -s http://169.254.169.254/latest/meta-data/instance-id)" > file;
    print "fi" > file;
   }
 }
