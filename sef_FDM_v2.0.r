@@ -304,7 +304,7 @@
   
   if (exists("host_sim_params") && "disturbance_regime" %in% colnames(host_sim_params)) {
     # from AWS user data
-    output_path <- as.character(host_sim_params$disturbance_regime)
+    disturbance_regime <- as.character(host_sim_params$disturbance_regime)
   }
   
   
