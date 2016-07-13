@@ -35,6 +35,6 @@ if [ $2 ]
 fi
 line=2
 tail -n +2 $1 | while IFS=',' read count params; do
-  aws ec2 run-instances --image-id ami-86c600e6 --key-name wildfire-simulation --user-data file://$SIM_ID/user_data_$line.ud --instance-type t2.large --count $count $SUBNET_ID
+  aws ec2 run-instances --image-id ami-88ac6ee8 --key-name wildfire-simulation --user-data file://$SIM_ID/user_data_$line.ud --instance-type t2.large --iam-instance-profile Name=wildfire-simulation --count $count $SUBNET_ID
   ((line++))
 done
