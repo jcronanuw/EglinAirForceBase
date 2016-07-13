@@ -351,7 +351,10 @@
     USE_GPU <- FALSE
   }
   
-  # TODO bernease: Pull INSTALL_PACKAGES variable from host_sim_params, similar to use_gpu
+  if (exists("host_sim_params") && "install_packages" %in% colnames(host_sim_params)) {
+    # from AWS user data
+    INSTALL_PACKAGES <- as.character(host_sim_params$install_packages)
+  }
   
   if (exists("host_sim_params") && "input_path" %in% colnames(host_sim_params)) {
     # from AWS user data
