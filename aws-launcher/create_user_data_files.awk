@@ -44,7 +44,7 @@ BEGIN { instance_count = 0 }
    print "else" > file;
 
    #   Send email with instance id, output files (and error message?) (if fail)
-   print "  aws ses send-email --subject \"R Failure for Simulation " sim_id "\" --text \"This is a test message for $RUN_ID on host $(hostname). A link to the s3 bucket with the failing run will soon be included.\" --to jcronan@uw.edu --from jcronan@uw.edu" > file;
+   print "  aws ses send-email --subject \"R Failure for Simulation " sim_id "\" --text \"There was an error for $RUN_ID and the R script stopped. To access this simulation use: ssh -i "wildfire-simulation.pem" ubuntu@ec2-$(hostname).us-west-2.compute.amazonaws.com. A link to the s3 bucket with the failing run will soon be included. Print and stop("messages"), Disturbance loop variables are: years: a; treatment number: b; treatment block: cc; treatment expansion: d; wildfire number: e; wildfire block: f; unsuppressed wildfire expansion: g; block and burn expansion number: h.  \" --to jcronan@uw.edu --from jcronan@uw.edu" > file;
 
    #   Stop instance (if fail)
    print "  aws ec2 stop-instances --instance-ids $(curl -s http://169.254.169.254/latest/meta-data/instance-id)" > file;
