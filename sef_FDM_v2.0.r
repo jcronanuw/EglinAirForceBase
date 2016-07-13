@@ -45,109 +45,44 @@
   #go?
   output_path <- "C:/usfs_sef_outputs_FDM/"
   
-  #>>>>>>>>>>>>>>>>>>>          DISTURBANCE AND MODEL RUN TIME PARAMETERS...
-  
   #Select pre-packaged or manually entered forest management and wildfire regime 
   #parameters + model run time (in years)
-  #1 ---  Actual paramater values derived from forest operations and wildfire data 
+  # FULL:   Actual paramater values derived from forest operations and wildfire data 
   #       for the period 2000-2015 and 50 year run
-  #2 ---  Testing generates small areas of presribed fire and wildfire annually 
-  #       and 2 yearr un.
-  #3 ---  Manually enter disturbance parameters. Enter parameters below on 
-  #       lines 99-123.
-  disturbance_regime <- 3
+  # QUICK:  Testing generates small areas of presribed fire and wildfire annually 
+  #       and 2 year run.
+  # MANUAL: Manually enter disturbance parameters. Enter parameters below.
+  disturbance_regime <- "MANUAL"
   
-  #Disturbance and time parameters
-  if(disturbance_regime == 1)
-    {
-      #Number of years the model should run for.
-      YEARS <- 50
+  if (disturbance_regime == "MANUAL")
+  {
+    #Number of years the model should run for.
+    YEARS <- 3
     
-      #Acres thinned annually.
-      THINNING <- 5000
-      
-      #Acres of herbicide application annually
-      HERBICIDE <- 5000
-      
-      #Acres prescribed burned annually
-      #RX_FIRE <- 100000
-      
-      #Natural fire rotation in years for:
-      #Element 1 -- Eglin Air Force Base
-      #Element 2 -- Surrounding 10-km buffer landscape
-      NATURAL_FIRE_ROTATION <- c(54.38,457.39)
-      
-      #Mean fire size in acres for:
-      #Element 1 -- Eglin Air Force Base
-      #Element 2 -- Surrounding 10-km buffer landscape
-      MEAN_FIRE_SIZE <- c(103.65,5.23)        
-      
-      #Standard deviation of mean fire size for:
-      #Element 1 -- Eglin Air Force Base
-      #Element 2 -- Surrounding 10-km buffer landscape
-      STAND_DEV_FIRE_SIZE <- c(361.12,13.98)
-      } else 
-
-        {if(disturbance_regime == 2)
-          {
-            #Number of years the model should run for.
-            YEARS <- 2
-            
-            #Acres thinned annually.
-            THINNING <- 0
-            
-            #Acres of herbicide application annually
-            HERBICIDE <- 0
-            
-            #Acres prescribed burned annually
-            #RX_FIRE <- 1000
-            
-            #Natural fire rotation in years for:
-            #Element 1 -- Eglin Air Force Base
-            #Element 2 -- Surrounding 10-km buffer landscape
-            NATURAL_FIRE_ROTATION <- c(10554.38, 10457.39)
-            
-            #Mean fire size in acres for:
-            #Element 1 -- Eglin Air Force Base
-            #Element 2 -- Surrounding 10-km buffer landscape
-            MEAN_FIRE_SIZE <- c(103.65, 5.23)        
-            
-            #Standard deviation of mean fire size for:
-            #Element 1 -- Eglin Air Force Base
-            #Element 2 -- Surrounding 10-km buffer landscape
-            STAND_DEV_FIRE_SIZE <- c(361.12, 13.98)
-          } else
-            {
-              #Number of years the model should run for.
-              YEARS <- 3
-              
-              #Acres thinned annually.
-              THINNING <- 10000
-              
-              #Acres of herbicide application annually
-              HERBICIDE <- 10000
-              
-              #Acres prescribed burned annually
-              RX_FIRE <- 10000
-              
-              #Natural fire rotation in years for:
-              #Element 1 -- Eglin Air Force Base
-              #Element 2 -- Surrounding 10-km buffer landscape
-              NATURAL_FIRE_ROTATION <- c(254.38,3457.39)
-              
-              #Mean fire size in acres for:
-              #Element 1 -- Eglin Air Force Base
-              #Element 2 -- Surrounding 10-km buffer landscape
-              MEAN_FIRE_SIZE <- c(103.65,5.23)    
-              
-              #Standard deviation of mean fire size for:
-              #Element 1 -- Eglin Air Force Base
-              #Element 2 -- Surrounding 10-km buffer landscape
-              STAND_DEV_FIRE_SIZE <- c(361.12, 13.98)
-            }
-          }
-  
-  #>>>>>>>>>>>>>>>>>>>          FINISHED
+    #Acres thinned annually.
+    THINNING <- 10000
+    
+    #Acres of herbicide application annually
+    HERBICIDE <- 10000
+    
+    #Acres prescribed burned annually
+    RX_FIRE <- 10000
+    
+    #Natural fire rotation in years for:
+    #Element 1 -- Eglin Air Force Base
+    #Element 2 -- Surrounding 10-km buffer landscape
+    NATURAL_FIRE_ROTATION <- c(254.38,3457.39)
+    
+    #Mean fire size in acres for:
+    #Element 1 -- Eglin Air Force Base
+    #Element 2 -- Surrounding 10-km buffer landscape
+    MEAN_FIRE_SIZE <- c(103.65,5.23)    
+    
+    #Standard deviation of mean fire size for:
+    #Element 1 -- Eglin Air Force Base
+    #Element 2 -- Surrounding 10-km buffer landscape
+    STAND_DEV_FIRE_SIZE <- c(361.12, 13.98)
+  }
   
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -353,21 +288,26 @@
   
   if (exists("host_sim_params") && "install_packages" %in% colnames(host_sim_params)) {
     # from AWS user data
-    INSTALL_PACKAGES <- as.character(host_sim_params$install_packages)
+    INSTALL_PACKAGES <- host_sim_params$install_packages
   }
   
   if (exists("host_sim_params") && "input_path" %in% colnames(host_sim_params)) {
     # from AWS user data
     input_path <- as.character(host_sim_params$input_path)
   }
+  setwd(input_path)  # set working directory
   
   if (exists("host_sim_params") && "output_path" %in% colnames(host_sim_params)) {
     # from AWS user data
     output_path <- as.character(host_sim_params$output_path)
   }
   
-  #Set working directory
-  setwd(input_path)
+  if (exists("host_sim_params") && "disturbance_regime" %in% colnames(host_sim_params)) {
+    # from AWS user data
+    output_path <- as.character(host_sim_params$disturbance_regime)
+  }
+  
+  
   
   #>>>>>>>>>>>>>>>>>>>          R PACKAGES...
   
@@ -410,11 +350,71 @@
     {
       #Open GPU library
       library(gmatrix)#GPU package, will only work on a Linux machine
-    } else
-    {
-      #nothing
     }
   }
+  
+  
+  #>>>>>>>>>>>>>>>>>>>          DISTURBANCE AND MODEL RUN TIME PARAMETERS...
+  
+  #Disturbance and time parameters
+  if(disturbance_regime == "FULL")
+  {
+    #Number of years the model should run for.
+    YEARS <- 50
+    
+    #Acres thinned annually.
+    THINNING <- 5000
+    
+    #Acres of herbicide application annually
+    HERBICIDE <- 5000
+    
+    #Acres prescribed burned annually
+    #RX_FIRE <- 100000
+    
+    #Natural fire rotation in years for:
+    #Element 1 -- Eglin Air Force Base
+    #Element 2 -- Surrounding 10-km buffer landscape
+    NATURAL_FIRE_ROTATION <- c(54.38,457.39)
+    
+    #Mean fire size in acres for:
+    #Element 1 -- Eglin Air Force Base
+    #Element 2 -- Surrounding 10-km buffer landscape
+    MEAN_FIRE_SIZE <- c(103.65,5.23)        
+    
+    #Standard deviation of mean fire size for:
+    #Element 1 -- Eglin Air Force Base
+    #Element 2 -- Surrounding 10-km buffer landscape
+    STAND_DEV_FIRE_SIZE <- c(361.12,13.98)
+  } else if(disturbance_regime == "QUICK")
+  {
+    #Number of years the model should run for.
+    YEARS <- 2
+    
+    #Acres thinned annually.
+    THINNING <- 0
+    
+    #Acres of herbicide application annually
+    HERBICIDE <- 0
+    
+    #Acres prescribed burned annually
+    #RX_FIRE <- 1000
+    
+    #Natural fire rotation in years for:
+    #Element 1 -- Eglin Air Force Base
+    #Element 2 -- Surrounding 10-km buffer landscape
+    NATURAL_FIRE_ROTATION <- c(10554.38, 10457.39)
+    
+    #Mean fire size in acres for:
+    #Element 1 -- Eglin Air Force Base
+    #Element 2 -- Surrounding 10-km buffer landscape
+    MEAN_FIRE_SIZE <- c(103.65, 5.23)        
+    
+    #Standard deviation of mean fire size for:
+    #Element 1 -- Eglin Air Force Base
+    #Element 2 -- Surrounding 10-km buffer landscape
+    STAND_DEV_FIRE_SIZE <- c(361.12, 13.98)
+  }
+  
   
   #################################################################################################
   #################################################################################################
