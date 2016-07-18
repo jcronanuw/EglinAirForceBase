@@ -1109,6 +1109,8 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
   for(a in 1:YEARS)#a <- 1
   { #1.0.0 ---------------------------------------------------------------------------
     
+    r101 <- 0
+    
     #Controls status file formatting
     treatment.name_pre <- "default"; treatment.name <- "default"#for treatment loop
     wildfire.name_pre <- "default"; wildfire.name <- "default"#for wildfire loop
@@ -2115,15 +2117,31 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
     #Re-order loopB by new stand for tslt objects.
     loopB <- loopB[order(loopB$new_stand),]
     
-    #Remove stands that have been overwritten
-    tslt.List <- tslt.List[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
-    tslt.Fuelbeds <- tslt.Fuelbeds[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
-    tslt.Stands <- tslt.Stands[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
-    
     #Update time-since-last-treatment list and associated stand list
     tslt.List <- c(tslt.List, rep(0, length(loopB$new_stand[loopB$treat_type %in% c(1,2)])))
     tslt.Fuelbeds <- c(tslt.Fuelbeds, loopB$newFB_a7[loopB$treat_type %in% c(1,2)])
     tslt.Stands <- c(tslt.Stands, loopB$new_stand[loopB$treat_type %in% c(1,2)])
+    
+    #Add new stands created by prescribed fire, carry over tslt from old stand
+    loopB_rxFire <- loopB[loopB$treat_type == 3,]
+    replaced.stands.in.tslt_rxFire <- loopB_rxFire$old_stand[mapply(function(y) 
+    {as.numeric(strsplit(as.character(y), "")[[1]])[4]}, 
+    loopB_rxFire$newFB_a7) %in% c(2,3,4,6,7,8)]
+    
+    tslt.List <- c(tslt.List, tslt.List[match(replaced.stands.in.tslt_rxFire, tslt.Stands)])
+    
+    tslt.Stands <- c(tslt.Stands, loopB_rxFire$new_stand[mapply(function(y) 
+    {as.numeric(strsplit(as.character(y), "")[[1]])[4]}
+    , loopB_rxFire$newFB_a7) %in% c(2,3,4,6,7,8)])
+    
+    tslt.Fuelbeds <- c(tslt.Fuelbeds, loopB_rxFire$newFB_a7[mapply(function(y) 
+    {as.numeric(strsplit(as.character(y), "")[[1]])[4]}
+    , loopB_rxFire$newFB_a7) %in% c(2,3,4,6,7,8)])
+    
+    #Remove stands that have been overwritten
+    tslt.List <- tslt.List[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
+    tslt.Fuelbeds <- tslt.Fuelbeds[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
+    tslt.Stands <- tslt.Stands[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
     
   if(any(c(length(Stand.List),
            length(Fuelbed.List),
@@ -3453,75 +3471,7 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
   #Update files if there were disturbances in year[a].
   if(length(loopE.NewStand) > 0)
   {
-    #Update files based on time-since-last-treatment>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    
-    #Show max time-since-last-treatment before state transitions for each fuelbed
-    max_tslt <- fuelbed_lut$max_tslt[fuelbed_lut$fuelbed %in% tslt.Fuelbeds]
-    
-    #List each of the fuelbeds corresponding with tslt object above
-    max_tslt_fb <- fuelbed_lut$fuelbed[fuelbed_lut$fuelbed %in% tslt.Fuelbeds]
-    
-    #Expand to the max tslt object for each row in tslt.List
-    max_tslt_x_stand <- max_tslt[match(tslt.Fuelbeds, max_tslt_fb)]
-    
-    #Crash model is Fuelbed.List turned into a list()
-    if(length(max_tslt_x_stand) != length(tslt.List))
-    {
-      r101 <- "inconcistency in tslt tracking"
-      break
-    } else
-    {
-      r101 <- r101
-    }
-    
-    #List stand numbers for stands that will transition.
-    replace_stands <- tslt.Stands[tslt.List > max_tslt_x_stand]
-    
-    #List fuelbeds of stands that will transition.
-    replace_fbs <- tslt.Fuelbeds[tslt.List > max_tslt_x_stand]
-    
-    #List unique current fuelbeds for stands that will transition.
-    old_fbs <- fuelbed_lut$fuelbed[fuelbed_lut$fuelbed %in% replace_fbs]
-    
-    #List unique new fuelbeds for stands that will transition.
-    new_fbs <- fuelbed_lut$post_1[fuelbed_lut$fuelbed %in% replace_fbs]
-    
-    #Expand new unique fuelbeds to the number of stands that will transition.
-    new_fbs_x_stand <- new_fbs[match(replace_fbs, old_fbs)]
-    
-    #Replace current fuelbeds with new ones in cases where tslt exceeds limit for 
-    #state.
-    tslt.Fuelbeds[tslt.Stands %in% replace_stands] <- new_fbs_x_stand              
-    
-    #Order tslt objects by stand number before you apply it to .List objects
-    tslt.List <- tslt.List[order(tslt.Stands)]
-    tslt.Fuelbeds <- tslt.Fuelbeds[order(tslt.Stands)]
-    tslt.Stands <- sort(tslt.Stands)
-    
-    #Apply changes to f.map and Fuelbed.List
-    vt.map <- s.map[s.map %in% tslt.Stands]
-    v.tslt <- tslt.Fuelbeds[match(vt.map, tslt.Stands)]
-    f.map[s.map %in% tslt.Stands] <- v.tslt
-    Fuelbed.List[Stand.List %in% tslt.Stands] <- tslt.Fuelbeds
-    
-    #Remove stands that have been overwritten
-    tslt.List <- tslt.List[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
-    tslt.Fuelbeds <- tslt.Fuelbeds[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
-    tslt.Stands <- tslt.Stands[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
-    
-    #Remove rows where fuelbeds no longer represent a silvicultural treatment
-    tslt.List <- tslt.List[which(mapply(function(y) 
-    {as.numeric(strsplit(as.character(y), "")[[1]])[4]}
-    , tslt.Fuelbeds) %in% c(2,3,4,6,7,8) == T)]
-    
-    tslt.Stands <- tslt.Stands[which(mapply(function(y) 
-    {as.numeric(strsplit(as.character(y), "")[[1]])[4]}
-    , tslt.Fuelbeds) %in% c(2,3,4,6,7,8) == T)]
-    
-    tslt.Fuelbeds <- tslt.Fuelbeds[which(mapply(function(y) 
-    {as.numeric(strsplit(as.character(y), "")[[1]])[4]}
-    , tslt.Fuelbeds) %in% c(2,3,4,6,7,8) == T)]
-    
+   
     #Code below replaces loop, vene though there are more lines it should run way faster.
     loopE_crownFire <- loopE[loopE$Fire == 2,]
     
@@ -3751,24 +3701,116 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
     mfri_upper.List <- mfri_upper.List[order(Stand.List)]
     Stand.List <- sort(Stand.List)
   
-    #Remove stands that have been overwritten
-    tslt.List <- tslt.List[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
-    tslt.Fuelbeds <- tslt.Fuelbeds[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
-    tslt.Stands <- tslt.Stands[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
-    
     #Update time-since-last-treatment list and associated stand list
-    tslt.List <- c(tslt.List, rep(0, length(
-      loopE_allFire$NewStand[mapply(function(y) 
-      {as.numeric(strsplit(as.character(y), "")[[1]])[4]}
-      , loopE_allFire$AffectedFuelbed) %in% c(2,3,4,6,7,8)])))
+    replaced.stands.in.tslt <- loopE_allFire$ReplacedStand[mapply(function(y) 
+    {as.numeric(strsplit(as.character(y), "")[[1]])[4]}, 
+    loopE_allFire$newFuelbed) %in% c(2,3,4,6,7,8)]
     
-    tslt.Stands <- c(tslt.Stands, loopE_allFire$NewStand[mapply(function(y) 
-    {as.numeric(strsplit(as.character(y), "")[[1]])[4]}
-    , loopE_allFire$AffectedFuelbed) %in% c(2,3,4,6,7,8)])
+    tslt.List <- c(tslt.List, tslt.List[match(replaced.stands.in.tslt, tslt.Stands)])
     
-    tslt.Fuelbeds <- c(tslt.Fuelbeds, loopE_allFire$AffectedFuelbed[mapply(function(y) 
+    tslt.Stands <- c(tslt.Stands, loopE_allFire$newFuelbed[mapply(function(y) 
     {as.numeric(strsplit(as.character(y), "")[[1]])[4]}
-    , loopE_allFire$AffectedFuelbed) %in% c(2,3,4,6,7,8)])
+    , loopE_allFire$newFuelbed) %in% c(2,3,4,6,7,8)])
+    
+    tslt.Fuelbeds <- c(tslt.Fuelbeds, loopE_allFire$newFuelbed[mapply(function(y) 
+    {as.numeric(strsplit(as.character(y), "")[[1]])[4]}
+    , loopE_allFire$newFuelbed) %in% c(2,3,4,6,7,8)])
+    
+    #Remove stands from .tslt objects that have been overwritten
+      tslt.List <- tslt.List[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
+      tslt.Fuelbeds <- tslt.Fuelbeds[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
+      tslt.Stands <- tslt.Stands[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
+      
+    #Update files based on time-since-last-treatment>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    
+    #Show max time-since-last-treatment before state transitions for each fuelbed
+    max_tslt <- fuelbed_lut$max_tslt[fuelbed_lut$fuelbed %in% tslt.Fuelbeds]
+    
+    #List each of the fuelbeds corresponding with tslt object above
+    max_tslt_fb <- fuelbed_lut$fuelbed[fuelbed_lut$fuelbed %in% tslt.Fuelbeds]
+    
+    #Expand to the max tslt object for each row in tslt.List
+    max_tslt_x_stand <- max_tslt[match(tslt.Fuelbeds, max_tslt_fb)]
+    
+    #Crash model is Fuelbed.List turned into a list()
+    if(length(max_tslt_x_stand) != length(tslt.List))
+    {
+      r101 <- "inconcistency in tslt tracking"
+      break
+    } else
+    {
+      r101 <- r101
+    }
+    
+    #List stand numbers for stands that will transition.
+    replace_stands <- tslt.Stands[tslt.List > max_tslt_x_stand]
+    
+    #List fuelbeds of stands that will transition.
+    replace_fbs <- tslt.Fuelbeds[tslt.List > max_tslt_x_stand]
+    
+    #List unique current fuelbeds for stands that will transition.
+    old_fbs <- fuelbed_lut$fuelbed[fuelbed_lut$fuelbed %in% replace_fbs]
+    
+    #List unique new fuelbeds for stands that will transition.
+    new_fbs <- fuelbed_lut$post_1[fuelbed_lut$fuelbed %in% replace_fbs]
+    
+    #List unique new lower mFRI limit fuelbeds for stands that will transition.
+    new_lower <- mapply(function(y) 
+    {
+      fuelbed_lut$mfri_shortens[fuelbed_lut$fuelbed == y]
+    },
+    new_fbs)
+    
+    #List unique new upper mFRI limit fuelbeds for stands that will transition.
+    new_upper_1 <- mapply(function(y) 
+    {
+      fuelbed_lut$mfri_lengthens_1[fuelbed_lut$fuelbed == y]
+    },
+    new_fbs)
+    new_upper_2 <- mapply(function(y) 
+    {
+      fuelbed_lut$mfri_lengthens_2[fuelbed_lut$fuelbed == y]
+    },
+    new_fbs)
+    
+    #Expand new unique fuelbeds to the number of stands that will transition.
+    new_fbs_x_stand <- new_fbs[match(replace_fbs, old_fbs)]
+    new_lower_x_stand <- new_lower[match(replace_fbs, old_fbs)]
+    new_upper_1_x_stand <- new_upper_1[match(replace_fbs, old_fbs)]
+    new_upper_2_x_stand <- new_upper_2[match(replace_fbs, old_fbs)]
+    new_upper_x_stand <- apply(matrix(data = c(new_upper_1_x_stand, new_upper_2_x_stand),
+                                      length(new_upper_1_x_stand), 2), 1, sample, 
+                               size = 1)
+    
+    #Replace current fuelbeds with new ones in cases where tslt exceeds limit for 
+    #state.
+    tslt.Fuelbeds[tslt.Stands %in% replace_stands] <- new_fbs_x_stand              
+    
+    #Order tslt objects by stand number before you apply it to .List objects
+    tslt.List <- tslt.List[order(tslt.Stands)]
+    tslt.Fuelbeds <- tslt.Fuelbeds[order(tslt.Stands)]
+    tslt.Stands <- sort(tslt.Stands)
+    
+    #Apply changes to f.map and Fuelbed.List
+    vt.map <- s.map[s.map %in% tslt.Stands]
+    v.tslt <- tslt.Fuelbeds[match(vt.map, tslt.Stands)]
+    f.map[s.map %in% tslt.Stands] <- v.tslt
+    Fuelbed.List[Stand.List %in% replace_stands] <- new_fbs_x_stand
+    mfri_lower.List[Stand.List %in% replace_stands] <- new_lower_x_stand
+    mfri_upper.List[Stand.List %in% replace_stands] <- new_upper_x_stand 
+    
+    #Remove rows where fuelbeds no longer represent a silvicultural treatment
+    tslt.List <- tslt.List[which(mapply(function(y) 
+    {as.numeric(strsplit(as.character(y), "")[[1]])[4]}
+    , tslt.Fuelbeds) %in% c(2,3,4,6,7,8) == T)]
+    
+    tslt.Stands <- tslt.Stands[which(mapply(function(y) 
+    {as.numeric(strsplit(as.character(y), "")[[1]])[4]}
+    , tslt.Fuelbeds) %in% c(2,3,4,6,7,8) == T)]
+    
+    tslt.Fuelbeds <- tslt.Fuelbeds[which(mapply(function(y) 
+    {as.numeric(strsplit(as.character(y), "")[[1]])[4]}
+    , tslt.Fuelbeds) %in% c(2,3,4,6,7,8) == T)]
     
   ##############################################################################
   ##############################################################################
@@ -3823,11 +3865,19 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
     vs.map <- s.map[s.map %in% s.SL]
     v.feof2 <- feof2[match(vs.map, s.SL)]
     f.map[s.map %in% s.SL] <- v.feof2
+    stands.affected.by.fire.succession <- Stand.List[Fuelbed.List != feof]
     Fuelbed.List <- feof
   
   } else
   {
-      #Update files based on time-since-last-treatment>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    
+      #Update mfri List (not done after loop 2, so even if there are no wildfires
+      #we still need to account for new treatments)
+      mfri.List <- apply(mfri.Matrix,1,sum)
+      mfri.List <- round(30/mfri.List,0)
+      mfri.List <- ifelse(mfri.List == Inf, 32, mfri.List)
+      
+    #Update files based on time-since-last-treatment>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
       
       #Show max time-since-last-treatment before state transitions for each fuelbed
       max_tslt <- fuelbed_lut$max_tslt[fuelbed_lut$fuelbed %in% tslt.Fuelbeds]
@@ -3859,9 +3909,34 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
       
       #List unique new fuelbeds for stands that will transition.
       new_fbs <- fuelbed_lut$post_1[fuelbed_lut$fuelbed %in% replace_fbs]
+    
+      #List unique new lower mFRI limit fuelbeds for stands that will transition.
+      new_lower <- mapply(function(y) 
+      {
+        fuelbed_lut$mfri_shortens[fuelbed_lut$fuelbed == y]
+      },
+      new_fbs)
       
+      #List unique new upper mFRI limit fuelbeds for stands that will transition.
+      new_upper_1 <- mapply(function(y) 
+      {
+        fuelbed_lut$mfri_lengthens_1[fuelbed_lut$fuelbed == y]
+      },
+      new_fbs)
+      new_upper_2 <- mapply(function(y) 
+      {
+        fuelbed_lut$mfri_lengthens_2[fuelbed_lut$fuelbed == y]
+      },
+      new_fbs)
+        
       #Expand new unique fuelbeds to the number of stands that will transition.
       new_fbs_x_stand <- new_fbs[match(replace_fbs, old_fbs)]
+      new_lower_x_stand <- new_lower[match(replace_fbs, old_fbs)]
+      new_upper_1_x_stand <- new_upper_1[match(replace_fbs, old_fbs)]
+      new_upper_2_x_stand <- new_upper_2[match(replace_fbs, old_fbs)]
+      new_upper_x_stand <- apply(matrix(data = c(new_upper_1_x_stand, new_upper_2_x_stand),
+                                        length(new_upper_1_x_stand), 2), 1, sample, 
+                                 size = 1)
       
       #Replace current fuelbeds with new ones in cases where tslt exceeds limit for 
       #state.
@@ -3877,6 +3952,8 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
       v.tslt <- tslt.Fuelbeds[match(vt.map, tslt.Stands)]
       f.map[s.map %in% tslt.Stands] <- v.tslt
       Fuelbed.List[Stand.List %in% tslt.Stands] <- tslt.Fuelbeds
+      mfri_lower.List[Stand.List %in% replace_stands] <- new_lower_x_stand
+      mfri_upper.List[Stand.List %in% replace_stands] <- new_upper_x_stand 
       
       #Remove stands that have been overwritten
       tslt.List <- tslt.List[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
@@ -3895,11 +3972,76 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
       tslt.Fuelbeds <- tslt.Fuelbeds[which(mapply(function(y) 
       {as.numeric(strsplit(as.character(y), "")[[1]])[4]}
       , tslt.Fuelbeds) %in% c(2,3,4,6,7,8) == T)]
+    
+      ##############################################################################
+      ##############################################################################
+      ##############################################################################
+      #ONLY TO DIAGNOSE ERRORS FROM MODEL RUN 101                                 #
+      #DRAG ON TIME, REMOVE AFTER ERRORS DIAGNOSED                                #
+      if(any(c(length(Stand.List),
+               length(Fuelbed.List),
+               length(mfri.List),
+               length(MU.List),
+               #length(T1E.List),
+               #length(T2E.List),
+               #length(D1E.List),
+               #length(D2E.List),
+               length(Area.List),
+               length(mfri_lower.List),
+               length(mfri_upper.List), 
+               length(Age.List)) != (length(unique(as.vector(s.map)))-1)) == T)
+      {
+        r101 <- 3
+        break
+      } else
+      {
+        r101 <- ifelse(any(s.map < 0 & s.map > -9999),33,0) 
+      } 
+  ##############################################################################
+  ##############################################################################
+  ##############################################################################
+  
+  #Update fuelbeds based on impacts of changing mean fire return interval.
+  #Make a copy of the Fuelbed.List
+  feof <- Fuelbed.List
+  
+  #Create a parellel list that shows lower bound of mFRI for each stand
+  mfri_lower <- fuelbed_lut$mfri_lower[match(feof,fuelbed_lut$fuelbed)]
+  
+  #Create a parellel list that shows upper bound of mFRI for each stand
+  mfri_upper <- fuelbed_lut$mfri_upper[match(feof,fuelbed_lut$fuelbed)]
+  
+  #Replace fuelbed with one representing a more frequent fire regime if the mFRI is shorter
+  #than the lower limit for the current fuelbed.
+  feof[mfri.List <  mfri_lower] <- mfri_lower.List[mfri.List < mfri_lower]
+  
+  #Replace fuelbed with one representing a less frequent fire regime if the mFRI is longer
+  #than the lower limit for the current fuelbed.
+  feof[mfri.List > mfri_upper] <- mfri_upper.List[mfri.List > mfri_upper]
+  
+  #Update f.map
+  #Improved function to update f.map based on mFRI. Former code used a for()
+  s.SL <- Stand.List[Fuelbed.List != feof]
+  feof2 <- feof[Fuelbed.List != feof]
+  vs.map <- s.map[s.map %in% s.SL]
+  v.feof2 <- feof2[match(vs.map, s.SL)]
+  f.map[s.map %in% s.SL] <- v.feof2
+  stands.affected.by.fire.succession <- Stand.List[Fuelbed.List != feof]
+  Fuelbed.List <- feof
 
     }
+
+  #Pass on error messages and break if necessary
+  if(r101 == 0)
+  {
+    r101 <- r101
+  } else
+  {
+    r101 <- r101
+    break
+  }
   
   #Post-wildfire processing >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  
   
   #Update files based on succession>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   
@@ -3920,8 +4062,43 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
   vs.map2 <- s.map[s.map %in% s.SL2]
   v.pmuf2 <- pmuf2[match(vs.map2, s.SL2)]
   f.map[s.map %in% s.SL2] <- v.pmuf2
+  stands.affected.by.age.succession <- Stand.List[Fuelbed.List != pmuf]
   Fuelbed.List[Stand.List %in% s.SL2] <- pmuf2
   
+  #update mfri_lower.List and mfri_upper.List based on changes in Fuelbed map from feof and pmuf
+  #Stand affected by change in mean fire return interval or age.
+  stands.that.shifted <- sort(unique(c(stands.affected.by.age.succession, 
+                                       stands.affected.by.fire.succession)))
+  
+  #Corresponding fuels
+  fuels.that.shifted_Xstand <- Fuelbed.List[Stand.List %in% stands.that.shifted]
+  
+  #List of unique fuelbeds
+  fuels.that.shifted <- sort(unique(fuels.that.shifted_Xstand))
+  
+  #List unique new lower mFRI limit fuelbeds for stands that will transition.
+  shift_lower <- fuelbed_lut$mfri_shortens[fuelbed_lut$fuelbed %in% fuels.that.shifted]
+  
+  #List unique new upper mFRI limit fuelbeds for stands that will transition.
+  shift_upper_1 <- fuelbed_lut$mfri_lengthens_1[fuelbed_lut$fuelbed %in% fuels.that.shifted]
+  shift_upper_2 <- fuelbed_lut$mfri_lengthens_2[fuelbed_lut$fuelbed %in% fuels.that.shifted]
+  
+  shift_lower_x_stand <- shift_lower[match(fuels.that.shifted_Xstand, fuels.that.shifted)]
+  shift_upper_1_x_stand <- shift_upper_1[match(fuels.that.shifted_Xstand, fuels.that.shifted)]
+  shift_upper_2_x_stand <- shift_upper_2[match(fuels.that.shifted_Xstand, fuels.that.shifted)]
+  shift_upper_x_stand <- apply(matrix(data = c(shift_upper_1_x_stand, shift_upper_2_x_stand),
+                                      length(shift_upper_1_x_stand), 2), 1, sample, 
+                               size = 1)
+  
+  mfri_lower.List[Stand.List %in% stands.that.shifted] <- shift_lower_x_stand
+  mfri_upper.List[Stand.List %in% stands.that.shifted] <- shift_upper_x_stand
+  
+  #Update the .tslt objects for any stands affected by changes in age or mFRI
+  shift.in.tslt_stands <- tslt.Stands[match(stands.that.shifted, tslt.Stands)]
+  shift.in.tslt_stands <- shift.in.tslt_stands[!is.na(shift.in.tslt_stands) == T]
+  shift.in.tslt_fuels <- fuels.that.shifted_Xstand[match(shift.in.tslt_stands, stands.that.shifted)]
+  tslt.Fuelbeds[tslt.Stands %in% shift.in.tslt_stands] <- shift.in.tslt_fuels
+
   #Kill model if any fuelbed numbers are < 0. This means there is an error in the lookup
   #table.
   if(any(Fuelbed.List < 0) == T)
