@@ -31,7 +31,7 @@
   
   #Select a run ID, this should be a number, ideally unique that will help track this
   #run. Output files are tagged with this ID number.
-  RUN <- 110
+  RUN <- 160
   
   #Reporting interval, how often (in model years) should output maps be produced?
   #I.e., once every ... years.
@@ -57,13 +57,13 @@
   if (disturbance_regime == "MANUAL")
   {
     #Number of years the model should run for.
-    YEARS <- 3
+    YEARS <- 50
     
     #Acres thinned annually.
-    THINNING <- 10000
+    THINNING <- 1000
     
     #Acres of herbicide application annually
-    HERBICIDE <- 10000
+    HERBICIDE <- 1000
     
     #Acres prescribed burned annually
     RX_FIRE <- 10000
@@ -71,7 +71,7 @@
     #Natural fire rotation in years for:
     #Element 1 -- Eglin Air Force Base
     #Element 2 -- Surrounding 10-km buffer landscape
-    NATURAL_FIRE_ROTATION <- c(254.38,3457.39)
+    NATURAL_FIRE_ROTATION <- c(154.38,457.39)
     
     #Mean fire size in acres for:
     #Element 1 -- Eglin Air Force Base
@@ -168,6 +168,10 @@
   #6000000  Open water
   
   #>>>>>>>>>>>>>>>>>>>          FIRE BEHAVIOR PARAMTERS...
+
+  #Increasing this value will increase the probability cells will burn in a crown fire.
+  #Default should be 1.
+  crown.fire.multiplier <- 2
   
   #Do not map wildfires below this value (in acres). Purpose is to reduce model run 
   #time by excluding small fires that do not impact vegetation at the landscape scale.
@@ -2835,7 +2839,7 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
     #probability of ignition, the lower the chance of crown fire (i.e. fires on the
     #flank and back will have lower probability of crown fire than the same fuels at
     #the head of the fire)
-    crownProb <- (fual - sProb) - (fual - pr.5)
+    crownProb <- (fual - (sProb/crown.fire.multiplier)) - (fual - pr.5)
     
     #If prob is less than zero, change to zero
     crownProb[crownProb < 0] <- 0
@@ -3708,7 +3712,7 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
     
     tslt.List <- c(tslt.List, tslt.List[match(replaced.stands.in.tslt, tslt.Stands)])
     
-    tslt.Stands <- c(tslt.Stands, loopE_allFire$newFuelbed[mapply(function(y) 
+    tslt.Stands <- c(tslt.Stands, loopE_allFire$NewStand[mapply(function(y) 
     {as.numeric(strsplit(as.character(y), "")[[1]])[4]}
     , loopE_allFire$newFuelbed) %in% c(2,3,4,6,7,8)])
     
