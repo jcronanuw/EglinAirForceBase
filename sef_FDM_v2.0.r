@@ -27,7 +27,7 @@ entireScript <- function() {
   #Would you like to replicate this run?
   #If so use the same seed number for subsequent runs
   #SEED is the starting point for psuedo random number generator
-  SEED <- 999
+  SEED <- sample(1:1000000,1)
   
   #Select a run ID, this should be a number, ideally unique that will help track this
   #run. Output files are tagged with this ID number.
