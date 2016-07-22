@@ -27,7 +27,7 @@ entireScript <- function() {
   #Would you like to replicate this run?
   #If so use the same seed number for subsequent runs
   #SEED is the starting point for psuedo random number generator
-  SEED <- sample(1:1000000,1)
+  SEED <- 99#sample(1:1000000,1)
   
   #Select a run ID, this should be a number, ideally unique that will help track this
   #run. Output files are tagged with this ID number.
@@ -57,7 +57,7 @@ entireScript <- function() {
   if (disturbance_regime == "MANUAL")
   {
     #Number of years the model should run for.
-    YEARS <- 1
+    YEARS <- 2
     
     #Acres thinned annually.
     THINNING <- 5000
