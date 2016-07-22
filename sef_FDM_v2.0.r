@@ -4145,7 +4145,7 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
   } #1.0.0 ---------------------------------------------------------------------------
 })#end system.time
 
-  cat(c(run_time, YEARS, THINNING, HERBICIDE, RX_FIRE, NATURAL_FIRE_ROTATION), 
+  cat(c(run_time, SEED, YEARS, THINNING, HERBICIDE, RX_FIRE, NATURAL_FIRE_ROTATION), 
       file = paste(output_path, "run_", run, "_disturbances.txt", sep = ""), 
       fill = T, append = T)#
     
