@@ -31,7 +31,7 @@ entireScript <- function() {
   
   #Select a run ID, this should be a number, ideally unique that will help track this
   #run. Output files are tagged with this ID number.
-  RUN <- 165
+  RUN <- 167
   
   #Reporting interval, how often (in model years) should output maps be produced?
   #I.e., once every ... years.
@@ -57,7 +57,7 @@ entireScript <- function() {
   if (disturbance_regime == "MANUAL")
   {
     #Number of years the model should run for.
-    YEARS <- 5
+    YEARS <- 2
     
     #Acres thinned annually.
     THINNING <- 1000
@@ -66,12 +66,12 @@ entireScript <- function() {
     HERBICIDE <- 1000
     
     #Acres prescribed burned annually
-    RX_FIRE <- 10000
+    RX_FIRE <- 1000
     
     #Natural fire rotation in years for:
     #Element 1 -- Eglin Air Force Base
     #Element 2 -- Surrounding 10-km buffer landscape
-    NATURAL_FIRE_ROTATION <- c(54.38,457.39)
+    NATURAL_FIRE_ROTATION <- c(10054.38,10457.39)
     
     #Mean fire size in acres for:
     #Element 1 -- Eglin Air Force Base
@@ -4145,9 +4145,10 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
   } #1.0.0 ---------------------------------------------------------------------------
 })#end system.time
 
-  cat(c(run_time, YEARS, THINNING, HERBICIDE, RX_FIRE, NATURAL_FIRE_ROTATION), file = paste(output_path, "run_", run, "_disturbances.txt", sep = ""), 
+  cat(c(run_time, YEARS, THINNING, HERBICIDE, RX_FIRE, NATURAL_FIRE_ROTATION), 
+      file = paste(output_path, "run_", run, "_disturbances.txt", sep = ""), 
       fill = T, append = T)#
     
-}
+  }
 
 entireScript()
