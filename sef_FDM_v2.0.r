@@ -57,21 +57,21 @@ entireScript <- function() {
   if (disturbance_regime == "MANUAL")
   {
     #Number of years the model should run for.
-    YEARS <- 1
+    YEARS <- 3
     
     #Acres thinned annually.
-    THINNING <- 1000
+    THINNING <- 5000
     
     #Acres of herbicide application annually
-    HERBICIDE <- 1000
+    HERBICIDE <- 5000
     
     #Acres prescribed burned annually
-    RX_FIRE <- 1000
+    RX_FIRE <- 100000
     
     #Natural fire rotation in years for:
     #Element 1 -- Eglin Air Force Base
     #Element 2 -- Surrounding 10-km buffer landscape
-    NATURAL_FIRE_ROTATION <- c(10054.38,10457.39)
+    NATURAL_FIRE_ROTATION <- c(54.38,457.39)
     
     #Mean fire size in acres for:
     #Element 1 -- Eglin Air Force Base
