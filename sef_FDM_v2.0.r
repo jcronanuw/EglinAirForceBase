@@ -27,7 +27,7 @@ entireScript <- function() {
   #Would you like to replicate this run?
   #If so use the same seed number for subsequent runs
   #SEED is the starting point for psuedo random number generator
-  SEED <- 99#sample(1:1000000,1)
+  SEED <- 7654#sample(1:1000000,1)
   
   #Select a run ID, this should be a number, ideally unique that will help track this
   #run. Output files are tagged with this ID number.
@@ -57,7 +57,7 @@ entireScript <- function() {
   if (disturbance_regime == "MANUAL")
   {
     #Number of years the model should run for.
-    YEARS <- 2
+    YEARS <- 5
     
     #Acres thinned annually.
     THINNING <- 5000
@@ -136,7 +136,9 @@ entireScript <- function() {
   #perimeter.
   Buffer.Unit <- 8888
   #Vector of burn unit numbers (corresponds with b.map) that are outside of the 
-  #Eglin perimeter.
+  #Eglin perimeter. >> -9999
+  
+  #For stand map, replace -9999 for No data cells with longer string.
   NoData.Unit <- -9999999
   
   #Number of start/ignition points. Select the proportion of available cells within a 
@@ -1424,7 +1426,7 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
       treatable.fuelbeds <- fuelbed_lut$fuelbed[fuelbed_lut[,t.code + 4] == 2]
           
       #Find eligible stands with eligible fuelbeds
-      elst <- sort(unique(s.map[!b.map %in% c(NoData.Unit, Buffer.Unit, 
+      elst <- sort(unique(s.map[!b.map %in% c(-9999, Buffer.Unit, 
                                             Unmanaged.Unit) & 
                                       f.map %in% treatable.fuelbeds & s.map %in% loopA.snO]))
           
@@ -1584,7 +1586,7 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
                   #isolated and could not be treated from previous rounds of seed cells.
                   
                   #List eligible stands in burn block
-                  elst <- sort(unique(s.map[!b.map %in% c(NoData.Unit, Buffer.Unit, Unmanaged.Unit) & 
+                  elst <- sort(unique(s.map[!b.map %in% c(-9999, Buffer.Unit, Unmanaged.Unit) & 
                                               f.map %in% treatable.fuelbeds & s.map %in% loopA.snO]))
                   
                   #Reset seed cells
