@@ -1099,7 +1099,7 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
   f <- 0
   g <- 0
   
-  cat(c(run_time, SEED, YEARS, THINNING, HERBICIDE, RX_FIRE, NATURAL_FIRE_ROTATION), 
+  cat(c(SEED, YEARS, THINNING, HERBICIDE, RX_FIRE, NATURAL_FIRE_ROTATION), 
       file = paste(output_path, "run_", run, "_disturbances.txt", sep = ""), 
       fill = T, append = T)#
   #################################################################################################
