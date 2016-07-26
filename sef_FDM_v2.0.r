@@ -1419,7 +1419,7 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
   { #2.1.2-----------------------------------------------------------------------------
         
       #Determine available fuelbeds.
-      treatable.fuelbeds <- fuelbed_lut$fuelbed[fuelbed_lut[,t.code + 4] == 2]
+      treatable.fuelbeds <- fuelbed_lut$fuelbed[fuelbed_lut[,t.code + 7] == 2]
           
       #Find eligible stands with eligible fuelbeds
       elst <- sort(unique(s.map[!b.map %in% c(-9999, Buffer.Unit, 
@@ -1507,14 +1507,21 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
       
       #Determine the treatment area. This is governed by the available fuelbeds, minimum stand
       #area, and fraction of available area treated (beta distribution).
-      tbsa <- round(((length(b.map[b.map == bun & s.map %in% elst])) * 
-                       rbeta(1,shape1[t.code],shape2[t.code])),0)
+      #tbsa <- round(((length(b.map[b.map == bun & s.map %in% elst])) * 
+      #                 rbeta(1,shape1[t.code],shape2[t.code])),0)
       
       #Cell selection method is different for silvicultural treatments and prescribed fire because
       #there is a continuous set of values determining probability of spread for prescribed fires
       #while probability of spread for silvicultural treatments is bindary.
       if(t.code == 3)
       {
+        #Determine the treatment area for prescribed fire. 
+        #This is governed by the sum of the prob. of ignitions for all the fuelbeds in the 
+        #burn block with beta distribution applied for stochasticity.
+        tbsa <- round(((sum(fuelbed_lut$probability_of_ignition[match(f.map[b.map == bun],
+                                                                      fuelbed_lut$fuelbed)])) * 
+                         rbeta(1,shape1[t.code],shape2[t.code])),0)
+        
         #Prescribed fire: Initiate treatment in the proportion of available pixels specified 
         #at the beginning of the script.
         sct <- vector(mode = "numeric", length = 0)
@@ -1527,6 +1534,12 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
         sct <- unique(sct)
       } else
       {
+        #Determine the treatment area for silvicultural treatments. 
+        #This is governed by eligible fuelbeds with beta distribution applied
+        #for stochaticity.
+        tbsa <- round(((length(b.map[b.map == bun & s.map %in% elst])) * 
+                         rbeta(1,shape1[t.code],shape2[t.code])),0)
+        
         #Silvicultural treatments: Initiate treatment in the proportion of available pixels specified 
         #at the beginning of the script.
         sct <- vector(mode = "numeric", length = 0)
