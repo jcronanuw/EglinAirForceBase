@@ -31,7 +31,7 @@ entireScript <- function() {
   
   #Select a run ID, this should be a number, ideally unique that will help track this
   #run. Output files are tagged with this ID number.
-  RUN <- 168
+  RUN <- 182
   
   #Reporting interval, how often (in model years) should output maps be produced?
   #I.e., once every ... years.
@@ -3393,15 +3393,15 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
     #Add crownFire_newAge_2 to loopE data.frame
     loopE_crownFire <- data.frame(loopE_crownFire, oldAge = crownFire_oldAge_2)
     
+    #Re-order loopE data frame by new stands.
+    loopE_crownFire <- loopE_crownFire[order(loopE_crownFire$NewStand),]
+    
     #Add crownFire_regen to loopE data.frame
     loopE_crownFire <- data.frame(loopE_crownFire, newFuelbed = crownFire_regen)
     
     #Add crownFire_newAge_2 to loopE data.frame
     loopE_crownFire <- data.frame(loopE_crownFire, newAge = crownFire_newAge)
     
-    #Re-order loopE data frame by new stands.
-    loopE_crownFire <- loopE_crownFire[order(loopE_crownFire$NewStand),]
-   
     #List stands that have been altered by disturbances.
     ss2 <- loopE.ReplacedStand
     standd <- sort(unique(ss2))#there can be duplicates, this will mess up the shortcut in a9
@@ -3568,51 +3568,66 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
     #List unique new fuelbeds for stands that will transition.
     new_fbs <- fuelbed_lut$post_1[fuelbed_lut$fuelbed %in% replace_fbs]
     
-    #List unique new lower mFRI limit fuelbeds for stands that will transition.
-    new_lower <- mapply(function(y) 
-    {
-      fuelbed_lut$mfri_shortens[fuelbed_lut$fuelbed == y]
-    },
-    new_fbs)
-    
-    #List unique new upper mFRI limit fuelbeds for stands that will transition.
-    new_upper_1 <- mapply(function(y) 
-    {
-      fuelbed_lut$mfri_lengthens_1[fuelbed_lut$fuelbed == y]
-    },
-    new_fbs)
-    new_upper_2 <- mapply(function(y) 
-    {
-      fuelbed_lut$mfri_lengthens_2[fuelbed_lut$fuelbed == y]
-    },
-    new_fbs)
-    
-    #Expand new unique fuelbeds to the number of stands that will transition.
-    new_fbs_x_stand <- new_fbs[match(replace_fbs, old_fbs)]
-    new_lower_x_stand <- new_lower[match(replace_fbs, old_fbs)]
-    new_upper_1_x_stand <- new_upper_1[match(replace_fbs, old_fbs)]
-    new_upper_2_x_stand <- new_upper_2[match(replace_fbs, old_fbs)]
-    new_upper_x_stand <- apply(matrix(data = c(new_upper_1_x_stand, new_upper_2_x_stand),
-                                      length(new_upper_1_x_stand), 2), 1, sample, 
-                               size = 1)
-    
-    #Replace current fuelbeds with new ones in cases where tslt exceeds limit for 
-    #state.
-    tslt.Fuelbeds[tslt.Stands %in% replace_stands] <- new_fbs_x_stand              
-    
-    #Order tslt objects by stand number before you apply it to .List objects
-    tslt.List <- tslt.List[order(tslt.Stands)]
-    tslt.Fuelbeds <- tslt.Fuelbeds[order(tslt.Stands)]
-    tslt.Stands <- sort(tslt.Stands)
-    
-    #Apply changes to f.map and Fuelbed.List
-    vt.map <- s.map[s.map %in% tslt.Stands]
-    v.tslt <- tslt.Fuelbeds[match(vt.map, tslt.Stands)]
-    f.map[s.map %in% tslt.Stands] <- v.tslt
-    Fuelbed.List[Stand.List %in% replace_stands] <- new_fbs_x_stand
-    mfri_lower.List[Stand.List %in% replace_stands] <- new_lower_x_stand
-    mfri_upper.List[Stand.List %in% replace_stands] <- new_upper_x_stand 
-    
+    #Skip update if there are no fuelbeds that will transition
+    if(length(new_fbs) == 0)
+      {#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>FALSE
+      #Order tslt objects by stand number before you apply it to .List objects
+      tslt.List <- tslt.List[order(tslt.Stands)]
+      tslt.Fuelbeds <- tslt.Fuelbeds[order(tslt.Stands)]
+      tslt.Stands <- sort(tslt.Stands)
+      } else#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>FALSE
+        {#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>TRUE
+        #List unique new lower mFRI limit fuelbeds for stands that will transition.
+        #If not specified as a vector this object will become a list when there are
+        #no new fuelbeds to update and FDM will crash.
+        new_lower <- vector()
+        new_lower <- mapply(function(y) 
+        {
+          fuelbed_lut$mfri_shortens[fuelbed_lut$fuelbed == y]
+        },
+        new_fbs)
+        
+        #List unique new upper mFRI limit fuelbeds for stands that will transition.
+        new_upper_1 <- vector()
+        new_upper_1 <- mapply(function(y) 
+        {
+          fuelbed_lut$mfri_lengthens_1[fuelbed_lut$fuelbed == y]
+        },
+        new_fbs)
+        new_upper_2 <- vector()
+        new_upper_2 <- mapply(function(y) 
+        {
+          fuelbed_lut$mfri_lengthens_2[fuelbed_lut$fuelbed == y]
+        },
+        new_fbs)
+        
+        #Expand new unique fuelbeds to the number of stands that will transition.
+        new_fbs_x_stand <- new_fbs[match(replace_fbs, old_fbs)]
+        new_lower_x_stand <- new_lower[match(replace_fbs, old_fbs)]
+        new_upper_1_x_stand <- new_upper_1[match(replace_fbs, old_fbs)]
+        new_upper_2_x_stand <- new_upper_2[match(replace_fbs, old_fbs)]
+        new_upper_x_stand <- apply(matrix(data = c(new_upper_1_x_stand, new_upper_2_x_stand),
+                                          length(new_upper_1_x_stand), 2), 1, sample, 
+                                   size = 1)
+        
+        #Replace current fuelbeds with new ones in cases where tslt exceeds limit for 
+        #state.
+        tslt.Fuelbeds[tslt.Stands %in% replace_stands] <- new_fbs_x_stand              
+      
+        #Order tslt objects by stand number before you apply it to .List objects
+        tslt.List <- tslt.List[order(tslt.Stands)]
+        tslt.Fuelbeds <- tslt.Fuelbeds[order(tslt.Stands)]
+        tslt.Stands <- sort(tslt.Stands)
+        
+        #Apply changes to f.map and Fuelbed.List
+        vt.map <- s.map[s.map %in% tslt.Stands]
+        v.tslt <- tslt.Fuelbeds[match(vt.map, tslt.Stands)]
+        f.map[s.map %in% tslt.Stands] <- v.tslt
+        Fuelbed.List[Stand.List %in% replace_stands] <- new_fbs_x_stand
+        mfri_lower.List[Stand.List %in% replace_stands] <- new_lower_x_stand
+        mfri_upper.List[Stand.List %in% replace_stands] <- new_upper_x_stand 
+        }#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>TRUE
+  
     #Remove rows where fuelbeds no longer represent a silvicultural treatment
     tslt.List <- tslt.List[which(mapply(function(y) 
     {as.numeric(strsplit(as.character(y), "")[[1]])[4]}
@@ -3724,50 +3739,64 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
       #List unique new fuelbeds for stands that will transition.
       new_fbs <- fuelbed_lut$post_1[fuelbed_lut$fuelbed %in% replace_fbs]
     
-      #List unique new lower mFRI limit fuelbeds for stands that will transition.
-      new_lower <- mapply(function(y) 
-      {
-        fuelbed_lut$mfri_shortens[fuelbed_lut$fuelbed == y]
-      },
-      new_fbs)
-      
-      #List unique new upper mFRI limit fuelbeds for stands that will transition.
-      new_upper_1 <- mapply(function(y) 
-      {
-        fuelbed_lut$mfri_lengthens_1[fuelbed_lut$fuelbed == y]
-      },
-      new_fbs)
-      new_upper_2 <- mapply(function(y) 
-      {
-        fuelbed_lut$mfri_lengthens_2[fuelbed_lut$fuelbed == y]
-      },
-      new_fbs)
-        
-      #Expand new unique fuelbeds to the number of stands that will transition.
-      new_fbs_x_stand <- new_fbs[match(replace_fbs, old_fbs)]
-      new_lower_x_stand <- new_lower[match(replace_fbs, old_fbs)]
-      new_upper_1_x_stand <- new_upper_1[match(replace_fbs, old_fbs)]
-      new_upper_2_x_stand <- new_upper_2[match(replace_fbs, old_fbs)]
-      new_upper_x_stand <- apply(matrix(data = c(new_upper_1_x_stand, new_upper_2_x_stand),
-                                        length(new_upper_1_x_stand), 2), 1, sample, 
-                                 size = 1)
-      
-      #Replace current fuelbeds with new ones in cases where tslt exceeds limit for 
-      #state.
-      tslt.Fuelbeds[tslt.Stands %in% replace_stands] <- new_fbs_x_stand              
-      
-      #Order tslt objects by stand number before you apply it to .List objects
-      tslt.List <- tslt.List[order(tslt.Stands)]
-      tslt.Fuelbeds <- tslt.Fuelbeds[order(tslt.Stands)]
-      tslt.Stands <- sort(tslt.Stands)
-      
-      #Apply changes to f.map and Fuelbed.List
-      vt.map <- s.map[s.map %in% tslt.Stands]
-      v.tslt <- tslt.Fuelbeds[match(vt.map, tslt.Stands)]
-      f.map[s.map %in% tslt.Stands] <- v.tslt
-      Fuelbed.List[Stand.List %in% tslt.Stands] <- tslt.Fuelbeds
-      mfri_lower.List[Stand.List %in% replace_stands] <- new_lower_x_stand
-      mfri_upper.List[Stand.List %in% replace_stands] <- new_upper_x_stand 
+      if(length(new_fbs) == 0)
+        {#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>FALSE
+        #Order tslt objects by stand number before you apply it to .List objects
+        tslt.List <- tslt.List[order(tslt.Stands)]
+        tslt.Fuelbeds <- tslt.Fuelbeds[order(tslt.Stands)]
+        tslt.Stands <- sort(tslt.Stands)
+        } else#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>FALSE
+          {#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>TRUE
+          #List unique new lower mFRI limit fuelbeds for stands that will transition.
+          #If not specified as a vector this object will become a list when there are
+          #no new fuelbeds to update and FDM will crash.
+          new_lower <- vector()
+          new_lower <- mapply(function(y) 
+          {
+            fuelbed_lut$mfri_shortens[fuelbed_lut$fuelbed == y]
+          },
+          new_fbs)
+          
+          #List unique new upper mFRI limit fuelbeds for stands that will transition.
+          new_upper_1 <- vector()
+          new_upper_1 <- mapply(function(y) 
+          {
+            fuelbed_lut$mfri_lengthens_1[fuelbed_lut$fuelbed == y]
+          },
+          new_fbs)
+          new_upper_2 <- vector()
+          new_upper_2 <- mapply(function(y) 
+          {
+            fuelbed_lut$mfri_lengthens_2[fuelbed_lut$fuelbed == y]
+          },
+          new_fbs)
+            
+          #Expand new unique fuelbeds to the number of stands that will transition.
+          new_fbs_x_stand <- new_fbs[match(replace_fbs, old_fbs)]
+          new_lower_x_stand <- new_lower[match(replace_fbs, old_fbs)]
+          new_upper_1_x_stand <- new_upper_1[match(replace_fbs, old_fbs)]
+          new_upper_2_x_stand <- new_upper_2[match(replace_fbs, old_fbs)]
+          new_upper_x_stand <- apply(matrix(data = c(new_upper_1_x_stand, new_upper_2_x_stand),
+                                            length(new_upper_1_x_stand), 2), 1, sample, 
+                                     size = 1)
+          
+          #Replace current fuelbeds with new ones in cases where tslt exceeds limit for 
+          #state.
+          tslt.Fuelbeds[tslt.Stands %in% replace_stands] <- new_fbs_x_stand              
+         
+          #Order tslt objects by stand number before you apply it to .List objects
+          tslt.List <- tslt.List[order(tslt.Stands)]
+          tslt.Fuelbeds <- tslt.Fuelbeds[order(tslt.Stands)]
+          tslt.Stands <- sort(tslt.Stands)
+          
+          #Apply changes to f.map and Fuelbed.List
+          vt.map <- s.map[s.map %in% tslt.Stands]
+          v.tslt <- tslt.Fuelbeds[match(vt.map, tslt.Stands)]
+          f.map[s.map %in% tslt.Stands] <- v.tslt
+          Fuelbed.List[Stand.List %in% tslt.Stands] <- tslt.Fuelbeds
+          mfri_lower.List[Stand.List %in% replace_stands] <- new_lower_x_stand
+          mfri_upper.List[Stand.List %in% replace_stands] <- new_upper_x_stand 
+          }#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>TRUE
       
       #Remove stands that have been overwritten
       tslt.List <- tslt.List[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
@@ -3796,10 +3825,6 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
                length(Fuelbed.List),
                length(mfri.List),
                length(MU.List),
-               #length(T1E.List),
-               #length(T2E.List),
-               #length(D1E.List),
-               #length(D2E.List),
                length(Area.List),
                length(mfri_lower.List),
                length(mfri_upper.List), 
@@ -3915,7 +3940,7 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
 
   #Kill model if any fuelbed numbers are < 0. This means there is an error in the lookup
   #table.
-  if(any(Fuelbed.List < 0) == T)
+  if(any(Fuelbed.List < 0) == T | is.list(Fuelbed.List) == T)
   {
     broken.stands <- Stand.List[Fuelbed.List < 0]
     f.orig <- matrix(scan(paste("inputs/sef_fmap_v2_",rows,"x",cols,".txt",
@@ -3935,11 +3960,11 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
     tm <- format(Sys.time(), format = "%H.%M.%S", 
                  tz = "", usetz = FALSE)
     
-    #write.table(s.map, file = paste(output_path, "sef_smap_run_", run, "_", 
-    #                                dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
-    #            append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
-    #            dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
-    #             c("escape", "double"))#
+    write.table(s.map, file = paste(output_path, "sef_smap_run_", run, "_", 
+                                    dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
+                append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
+                dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
+                 c("escape", "double"))#
     
     write.table(f.map, file = paste(output_path, "sef_fmap_run_", run, "_",
                                     dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
