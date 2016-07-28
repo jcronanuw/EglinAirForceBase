@@ -4,8 +4,8 @@
 #Version 2.0 (Derviced from version 17e, the most recent version withmodel 
 #documentation
 
-entireScript <- function() {
-
+#entireScript <- function() {
+TEST
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>          HOW WOULD YOU LIKE TO RUN THE FUELBED DYNAMICS MODEL?
   
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
