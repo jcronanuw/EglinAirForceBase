@@ -5,7 +5,7 @@
 #documentation
 
 #entireScript <- function() {
-TEST
+
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>          HOW WOULD YOU LIKE TO RUN THE FUELBED DYNAMICS MODEL?
   
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -522,6 +522,12 @@ TEST
   mm4 <- matrix(data = mm3, nrow = length(mm1[,1]), ncol = length(mm1[1,]))
   mfri.Matrix <- mm4
 
+  #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>------------------------------------------------------------------
+  mfri_add <- matrix(data = rep(0,length(as.vector(mfri.Matrix))), nrow = length(mfri.Matrix[,1]), 
+                     ncol = 30)
+  mfri.Matrix <- cbind(mfri_add, mfri.Matrix)
+  #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>------------------------------------------------------------------
+  
   MU.List <- read.table(paste(
     "inputs/sef_MU2List2016_",rows,"x",cols,".txt",
     sep = ""), header=TRUE, 
@@ -2001,7 +2007,7 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
   nmv <- t(new_mfri_vec)
     
   #Add a fire for stands that were prescrib burned
-  nmv[,30] <- ifelse(loopB.treat_type == 3,1,0)
+  nmv[,length(mfri.Matrix[1,])] <- ifelse(loopB.treat_type == 3,1,0)
     
   #Change stand properties as needed for treatments.
   
@@ -3439,7 +3445,7 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
     nmvd <- t(new_mfri_vec)
     
     #Add a fire for stands that were burned in wildfires
-    nmvd[,30] <- 1
+    nmvd[,length(mfri.Matrix[1,])] <- 1
   
   #Change stand properties as needed for treatments.
   #Subtract area of new stands from corresponding old stands
@@ -3477,9 +3483,16 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
   
     MU.List <- c(MU.List, smud)
     mfri.Matrix <- rbind(mfri.Matrix,nmvd)
-    mfri.List <- apply(mfri.Matrix,1,sum)
-    mfri.List <- round(30/mfri.List,0)
-    mfri.List <- ifelse(mfri.List == Inf, 32, mfri.List)
+    
+    #$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$------------------------------------------------------------
+    #mfri.List <- apply(mfri.Matrix[,1:30],1,sum)
+    #mfri.List <- ifelse(mfri.List == Inf, 32, mfri.List)
+    mfri.List <- apply(mfri.Matrix[,1:30],1,sum)
+    mfri.List <- ifelse(round(30/mfri.List,0) == Inf, 31, round(30/mfri.List,0))
+    find.tslf <- function(y) {length(mfri.Matrix[1,]) - max(ifelse(length(which(y == 1)) == 0, -1, which(y == 1)))}
+    tslf.List <- apply(mfri.Matrix,1,find.tslf)
+    
+    #$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$------------------------------------------------------------
     
     #Update
     mfri_lower.List <- c(mfri_lower.List, 
