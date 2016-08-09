@@ -31,12 +31,12 @@ entireScript <- function() {
   
   #Select a run ID, this should be a number, ideally unique that will help track this
   #run. Output files are tagged with this ID number.
-  RUN <- 182
+  RUN <- 191
   
   #Reporting interval, how often (in model years) should output maps be produced?
   #I.e., once every ... years.
   #Must be less than model run time (YEARS object)
-  Interval <- 1
+  Interval <- 10
   
   #What is your working directory. I.e. where are your input files coming from?
   input_path <- "C:/Users/jcronan/Documents/GitHub/EglinAirForceBase"     
@@ -57,16 +57,16 @@ entireScript <- function() {
   if (disturbance_regime == "MANUAL")
   {
     #Number of years the model should run for.
-    YEARS <- 5
+    YEARS <- 50
     
     #Acres thinned annually.
-    THINNING <- 5000
+    THINNING <- 500
     
     #Acres of herbicide application annually
-    HERBICIDE <- 5000
+    HERBICIDE <- 500
     
     #Acres prescribed burned annually
-    RX_FIRE <- 100000
+    RX_FIRE <- 10000
     
     #Natural fire rotation in years for:
     #Element 1 -- Eglin Air Force Base
@@ -3531,11 +3531,16 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
     , loopE_allFire$newFuelbed) %in% c(2,3,4,6,7,8)])
     
     #Remove stands from .tslt objects that have been overwritten
-      tslt.List <- tslt.List[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
-      tslt.Fuelbeds <- tslt.Fuelbeds[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
-      tslt.Stands <- tslt.Stands[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
-      
+    tslt.List <- tslt.List[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
+    tslt.Fuelbeds <- tslt.Fuelbeds[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
+    tslt.Stands <- tslt.Stands[!(is.na(match(tslt.Stands, Stand.List[Stand.List %in% tslt.Stands])))]
+    
     #Update files based on time-since-last-treatment>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    
+    #Order tslt objects by stand number before you apply it to .List objects
+    tslt.List <- tslt.List[order(tslt.Stands)]
+    tslt.Fuelbeds <- tslt.Fuelbeds[order(tslt.Stands)]
+    tslt.Stands <- sort(tslt.Stands)
     
     #Show max time-since-last-treatment before state transitions for each fuelbed
     max_tslt <- fuelbed_lut$max_tslt[fuelbed_lut$fuelbed %in% tslt.Fuelbeds]
@@ -3547,7 +3552,7 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
     max_tslt_x_stand <- max_tslt[match(tslt.Fuelbeds, max_tslt_fb)]
     
     #Crash model is Fuelbed.List turned into a list()
-    if(length(max_tslt_x_stand) != length(tslt.List))
+  if(length(max_tslt_x_stand) != length(tslt.List) | length(tslt.List[is.na(tslt.List) == T]) > 0)
     {
       r101 <- "inconcistency in tslt tracking"
       break
@@ -3571,10 +3576,7 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
     #Skip update if there are no fuelbeds that will transition
     if(length(new_fbs) == 0)
       {#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>FALSE
-      #Order tslt objects by stand number before you apply it to .List objects
-      tslt.List <- tslt.List[order(tslt.Stands)]
-      tslt.Fuelbeds <- tslt.Fuelbeds[order(tslt.Stands)]
-      tslt.Stands <- sort(tslt.Stands)
+      new_fbs <- new_fbs
       } else#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>FALSE
         {#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>TRUE
         #List unique new lower mFRI limit fuelbeds for stands that will transition.
@@ -3706,7 +3708,12 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
       mfri.List <- round(30/mfri.List,0)
       mfri.List <- ifelse(mfri.List == Inf, 32, mfri.List)
       
-    #Update files based on time-since-last-treatment>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+      #Update files based on time-since-last-treatment>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+      
+      #Order tslt objects by stand number before you apply it to .List objects
+      tslt.List <- tslt.List[order(tslt.Stands)]
+      tslt.Fuelbeds <- tslt.Fuelbeds[order(tslt.Stands)]
+      tslt.Stands <- sort(tslt.Stands)
       
       #Show max time-since-last-treatment before state transitions for each fuelbed
       max_tslt <- fuelbed_lut$max_tslt[fuelbed_lut$fuelbed %in% tslt.Fuelbeds]
@@ -3718,7 +3725,7 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
       max_tslt_x_stand <- max_tslt[match(tslt.Fuelbeds, max_tslt_fb)]
       
       #Crash model is Fuelbed.List turned into a list()
-      if(length(max_tslt_x_stand) != length(tslt.List))
+    if(length(max_tslt_x_stand) != length(tslt.List) | length(tslt.List[is.na(tslt.List) == T]) > 0)
       {
         r101 <- "inconcistency in tslt tracking"
         break
@@ -3741,10 +3748,7 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
     
       if(length(new_fbs) == 0)
         {#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>FALSE
-        #Order tslt objects by stand number before you apply it to .List objects
-        tslt.List <- tslt.List[order(tslt.Stands)]
-        tslt.Fuelbeds <- tslt.Fuelbeds[order(tslt.Stands)]
-        tslt.Stands <- sort(tslt.Stands)
+        new_fbs <- new_fbs
         } else#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>FALSE
           {#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>TRUE
           #List unique new lower mFRI limit fuelbeds for stands that will transition.
