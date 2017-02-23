@@ -57,7 +57,7 @@ entireScript <- function() {
   if (disturbance_regime == "MANUAL")
   {
     #Number of years the model should run for.
-    YEARS <- 50
+    YEARS <- 2
     
     #Acres thinned annually.
     THINNING <- 500
@@ -71,7 +71,7 @@ entireScript <- function() {
     #Natural fire rotation in years for:
     #Element 1 -- Eglin Air Force Base
     #Element 2 -- Surrounding 10-km buffer landscape
-    NATURAL_FIRE_ROTATION <- c(54.38,457.39)
+    NATURAL_FIRE_ROTATION <- c(254.38,1457.39)
     
     #Mean fire size in acres for:
     #Element 1 -- Eglin Air Force Base

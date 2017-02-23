@@ -1,0 +1,142 @@
+# -----
+# BEGIN
+# -----
+
+# Purpose: Launch instructions for Fuelbed Dynamics Model (FDM), a landscape-fire-succession model built to model fire, management disturbance, and succession at Eglin Air Force Base in Niceville, Florida, USA.
+# File written on: 16-February-2017
+# Last updated on: 16-February-2017
+# By Jim Cronan
+# Email: jcronan@fs.fed.us & jcronan@uw.edu
+# Phone: 206-732-7873
+# Address: Pacific Wildland Fire Sciences Laboratory, 400 North 34th Street, Suite 201, Seattle, WA 98122
+
+# -----
+# NOTE: this launch code is set to work with the eScience Institute AWS account. This account is only to be used for testing. Once you are ready to conduct model runs contact 
+# Bernease Herman (bernease@uw.ed) and rewrite code to communicate and launch with your Amazon Web Services (AWS) account.
+# -----
+
+# Directory
+$ ~\Documents\GitHub\EglinAirForceBase\aws-launcher
+
+# Review file that contains simulation parameters. Make any necessary changes
+$ ~\Documents\GitHub\EglinAirForceBase\aws-launcher [master = +2 ~1 -0 !]> cat .\master_sim_params.txt
+# InstancesToLaunch,use_gpu,rx_fire,install_packages,disturbance_regime
+# 1,FALSE,100000,TRUE,MANUAL
+
+# Where:
+# Arg 1: InstancesToLaunch = the number of runs
+# Arg 2: use_gpu = TRUE/FALSE; whether or not to use the graphics card processor (unless you have figured out a way to enable the GPU, which I haven't done as of 2/16/2017, this should be FALSE.
+# Arg 3: rx_fire = the annual number of acres burned by prescribed fire
+# Arg 4: install_packages = TRUE/FALSE; whether or not R should install packages. Unless you are storing the packages this should be TRUE, as of 2/26/2017, script requires this to be TRUE.
+# Arg 5: disturbance_regime = MANUAL/???; is the disturbance regime entered manually in the code or loaded from a seperate file. As of 2/16/2017 the setting should be manual. Not sure what other options
+# are. For testing this is fine, but at some point you may want to convert to an input file.
+
+# Run this script
+$ sh ./launch-simulation.sh master_sim_params.txt subnet-4aec153d escience
+
+# If model successfully launches in AWS you will see...
+
+$ ~\Documents\GitHub\EglinAirForceBase\aws-launcher [master = +1 ~1 -0 !]> sh ./launch-simulation.sh master_sim_params.txt subnet-4aec153d escience
+# NOTE: "subnet-4aec153d escience" directs launch instructions to eScience Institute's AWS account.
+#
+# Simulation "17Feb16-105103" will launch 1 EC2 instances.
+# Multiple EC2 instances will be launched and R will start running as soon as initiated.
+# Do you wish to kick off this simulation? [Y/n] y
+# {
+#    "OwnerId": "455598791984",
+#     "ReservationId": "r-0bb6aae9b9499da4a",
+#     "Groups": [],
+#     "Instances": [
+#         {
+#             "Monitoring": {
+#                 "State": "disabled"
+#             },
+#             "PublicDnsName": "",
+#             "RootDeviceType": "ebs",
+#             "State": {
+#                 "Code": 0,
+#                 "Name": "pending"
+#             },
+#             "EbsOptimized": false,
+#             "LaunchTime": "2017-02-16T18:51:17.000Z",
+#             "PrivateIpAddress": "172.30.0.42",
+#             "ProductCodes": [],
+#             "VpcId": "vpc-5301cd36",
+#             "StateTransitionReason": "",
+#             "InstanceId": "i-01e72cb82c17811a0",
+#             "ImageId": "ami-88ac6ee8",
+#             "PrivateDnsName": "ip-172-30-0-42.us-west-2.compute.internal",
+#             "KeyName": "wildfire-simulation",
+#             "SecurityGroups": [
+#                 {
+#                     "GroupName": "default",
+#                     "GroupId": "sg-45cb5620"
+#                 }
+#             ],
+#             "ClientToken": "",
+#             "SubnetId": "subnet-4aec153d",
+#             "InstanceType": "r3.large",
+#             "NetworkInterfaces": [
+#                 {
+#                     "Status": "in-use",
+#                     "MacAddress": "06:aa:dc:15:55:e7",
+#                     "SourceDestCheck": true,
+#                     "VpcId": "vpc-5301cd36",
+#                     "Description": "",
+#                     "NetworkInterfaceId": "eni-8fbb24cd",
+#                     "PrivateIpAddresses": [
+#                         {
+#                             "PrivateDnsName": "ip-172-30-0-42.us-west-2.compute.internal",
+#                             "Primary": true,
+#                             "PrivateIpAddress": "172.30.0.42"
+#                         }
+#                     ],
+#                     "PrivateDnsName": "ip-172-30-0-42.us-west-2.compute.internal",
+#                     "Attachment": {
+#                         "Status": "attaching",
+#                         "DeviceIndex": 0,
+#                         "DeleteOnTermination": true,
+#                         "AttachmentId": "eni-attach-3b20425d",
+#                         "AttachTime": "2017-02-16T18:51:17.000Z"
+#                     },
+#                     "Groups": [
+#                         {
+#                             "GroupName": "default",
+#                             "GroupId": "sg-45cb5620"
+#                         }
+#                     ],
+#                     "SubnetId": "subnet-4aec153d",
+#                     "OwnerId": "455598791984",
+#                     "PrivateIpAddress": "172.30.0.42"
+#                 }
+#             ],
+#             "SourceDestCheck": true,
+#             "Placement": {
+#                 "Tenancy": "default",
+#                 "GroupName": "",
+#                 "AvailabilityZone": "us-west-2a"
+#             },
+#             "Hypervisor": "xen",
+#             "BlockDeviceMappings": [],
+#             "Architecture": "x86_64",
+#             "StateReason": {
+#                 "Message": "pending",
+#                 "Code": "pending"
+#             },
+#             "IamInstanceProfile": {
+#                 "Id": "AIPAIMPGR6MXPJUIDZNYE",
+#                 "Arn": "arn:aws:iam::455598791984:instance-profile/wildfire-simulation"
+#             },
+#             "RootDeviceName": "/dev/sda1",
+#             "VirtualizationType": "hvm",
+#             "AmiLaunchIndex": 0
+#         }
+#     ]
+# }
+
+# NOTE: this launch code is set to work with the eScience Institute AWS account. This account is only to be used for testing. Once you are ready to conduct model runs contact 
+# Bernease Herman (bernease@uw.ed) and rewrite code to communicate and launch with your AWS account.
+
+# -----
+# END
+# -----
