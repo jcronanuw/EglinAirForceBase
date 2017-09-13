@@ -1,10 +1,14 @@
 
 ##########                          START FUELBED DYNAMICS MODEL                        ###########
+#  #Save Fuelbed Map (f.map).
+dt <- Sys.Date()
+tm <- format(Sys.time(), format = "%H.%M.%S", 
+             tz = "", usetz = FALSE)
 
 #Version 2.0 (Derviced from version 17e, the most recent version withmodel 
 #documentation
 
-entireScript <- function() {
+#entireScript <- function() {
 
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>          HOW WOULD YOU LIKE TO RUN THE FUELBED DYNAMICS MODEL?
   
@@ -27,23 +31,23 @@ entireScript <- function() {
   #Would you like to replicate this run?
   #If so use the same seed number for subsequent runs
   #SEED is the starting point for psuedo random number generator
-  SEED <- sample(1:1000000,1)
+  SEED <- 764599#sample(1:1000000,1)
   
   #Select a run ID, this should be a number, ideally unique that will help track this
   #run. Output files are tagged with this ID number.
-  RUN <- 191
+  RUN <- 236
   
   #Reporting interval, how often (in model years) should output maps be produced?
   #I.e., once every ... years.
   #Must be less than model run time (YEARS object)
-  Interval <- 10
+  Interval <- 1
   
   #What is your working directory. I.e. where are your input files coming from?
   input_path <- "C:/Users/jcronan/Documents/GitHub/EglinAirForceBase"     
   
   #What is your output directory. I.e., here do you want maps and status reports to 
   #go?
-  output_path <- "C:/usfs_sef_outputs_FDM/"
+  output_path <- paste("C:/usfs_sef_outputs_FDM/results_r", RUN, "/", sep = "")
   
   #Select pre-packaged or manually entered forest management and wildfire regime 
   #parameters + model run time (in years)
@@ -57,21 +61,21 @@ entireScript <- function() {
   if (disturbance_regime == "MANUAL")
   {
     #Number of years the model should run for.
-    YEARS <- 2
+    YEARS <- 50
     
     #Acres thinned annually.
-    THINNING <- 500
+    THINNING <- 1000
     
     #Acres of herbicide application annually
-    HERBICIDE <- 500
+    HERBICIDE <- 1000
     
     #Acres prescribed burned annually
-    RX_FIRE <- 10000
+    RX_FIRE <- 20000
     
     #Natural fire rotation in years for:
     #Element 1 -- Eglin Air Force Base
     #Element 2 -- Surrounding 10-km buffer landscape
-    NATURAL_FIRE_ROTATION <- c(254.38,1457.39)
+    NATURAL_FIRE_ROTATION <- c(54.38,457.39)
     
     #Mean fire size in acres for:
     #Element 1 -- Eglin Air Force Base
@@ -358,7 +362,6 @@ entireScript <- function() {
       library(gmatrix)#GPU package, will only work on a Linux machine
     }
   }
-  
   
   #>>>>>>>>>>>>>>>>>>>          DISTURBANCE AND MODEL RUN TIME PARAMETERS...
   
@@ -3562,10 +3565,10 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
     }
     
     #List stand numbers for stands that will transition.
-    replace_stands <- tslt.Stands[tslt.List > max_tslt_x_stand]
+    replace_stands <- tslt.Stands[tslt.List >= max_tslt_x_stand]
     
     #List fuelbeds of stands that will transition.
-    replace_fbs <- tslt.Fuelbeds[tslt.List > max_tslt_x_stand]
+    replace_fbs <- tslt.Fuelbeds[tslt.List >= max_tslt_x_stand]
     
     #List unique current fuelbeds for stands that will transition.
     old_fbs <- fuelbed_lut$fuelbed[fuelbed_lut$fuelbed %in% replace_fbs]
@@ -3735,10 +3738,10 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
       }
       
       #List stand numbers for stands that will transition.
-      replace_stands <- tslt.Stands[tslt.List > max_tslt_x_stand]
+      replace_stands <- tslt.Stands[tslt.List >= max_tslt_x_stand]
       
       #List fuelbeds of stands that will transition.
-      replace_fbs <- tslt.Fuelbeds[tslt.List > max_tslt_x_stand]
+      replace_fbs <- tslt.Fuelbeds[tslt.List >= max_tslt_x_stand]
       
       #List unique current fuelbeds for stands that will transition.
       old_fbs <- fuelbed_lut$fuelbed[fuelbed_lut$fuelbed %in% replace_fbs]
@@ -3954,30 +3957,104 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
   {
     #don't break
   }
-
-  #Create maps for interval years.
-  if((a %% Interval) == 0)
+  
+  #Create a seperate set of files for MANUAL runs where diagnostic information may be 
+  #needed to assess or test for errors.
+  if(disturbance_regime == "MANUAL")
+  {
+    if((a %% Interval) == 0)
     {
+      
+      #  #Save Fuelbed Map (f.map).
+      #dt <- Sys.Date()
+      #tm <- format(Sys.time(), format = "%H.%M.%S", 
+      #             tz = "", usetz = FALSE)
+      
+      write.table(s.map, file = paste(output_path, "sef_smap_run_", run, "_", 
+                                      dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
+                  append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
+                  dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
+                    c("escape", "double"))#
+      
+      write.table(f.map, file = paste(output_path, "sef_fmap_run_", run, "_",
+                                      dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
+                  append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
+                  dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
+                    c("escape", "double"))#   
+      write.table(Stand.List, file = paste(output_path, "sef_sl_run_", run, "_",
+                                           dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
+                  append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
+                  dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
+                    c("escape", "double"))# 
+      write.table(Fuelbed.List, file = paste(output_path, "sef_fl_run_", run, "_",
+                                             dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
+                  append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
+                  dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
+                    c("escape", "double"))# 
+      write.table(mfri.List, file = paste(output_path, "sef_mfri_run_", run, "_",
+                                          dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
+                  append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
+                  dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
+                    c("escape", "double"))# 
+      write.table(mfri_lower.List, file = paste(output_path, "sef_mfri_l_run_", run, "_",
+                                                dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
+                  append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
+                  dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
+                    c("escape", "double"))# 
+      write.table(mfri_upper.List, file = paste(output_path, "sef_mfri_u_run_", run, "_",
+                                                dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
+                  append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
+                  dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
+                    c("escape", "double"))# 
+      write.table(Age.List, file = paste(output_path, "sef_al_run_", run, "_",
+                                         dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
+                  append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
+                  dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
+                    c("escape", "double"))# 
+      write.table(tslt.List, file = paste(output_path, "sef_tsltList_run_", run, "_", 
+                                          "_Y",a,".txt",sep = ""), 
+                  append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
+                  dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
+                    c("escape", "double"))#
+      
+      write.table(tslt.Stands, file = paste(output_path, "sef_tsltStands_run_", run, "_", 
+                                            "_Y",a,".txt",sep = ""), 
+                  append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
+                  dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
+                    c("escape", "double"))#
+      
+      write.table(tslt.Fuelbeds, file = paste(output_path, "sef_tsltFuelbeds_run_", run, "_", 
+                                              "_Y",a,".txt",sep = ""), 
+                  append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
+                  dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
+                    c("escape", "double"))#   
+    }
+  } else
+  {
+    #Create maps for interval years.
+    if((a %% Interval) == 0)
+      {
+      #  #Save Fuelbed Map (f.map).
+      dt <- Sys.Date()
+      tm <- format(Sys.time(), format = "%H.%M.%S", 
+                   tz = "", usetz = FALSE)
     
-    #  #Save Fuelbed Map (f.map).
-    dt <- Sys.Date()
-    tm <- format(Sys.time(), format = "%H.%M.%S", 
-                 tz = "", usetz = FALSE)
-    
-    write.table(s.map, file = paste(output_path, "sef_smap_run_", run, "_", 
-                                    dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
-                append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
-                dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
-                 c("escape", "double"))#
-    
-    write.table(f.map, file = paste(output_path, "sef_fmap_run_", run, "_",
-                                    dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
-                append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
-                dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
-                  c("escape", "double"))#    
+      #Save stand map.
+      write.table(s.map, file = paste(output_path, "sef_smap_run_", run, "_", 
+                                      dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
+                  append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
+                  dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
+                    c("escape", "double"))#
+      #Save fuelbed map.
+      write.table(f.map, file = paste(output_path, "sef_fmap_run_", run, "_", 
+                                      dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
+                  append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA", 
+                  dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
+                    c("escape", "double"))#    
+    }
   }
   } #1.0.0 ---------------------------------------------------------------------------
   
- }
+ #}
 
-entireScript()
+#entireScript()
