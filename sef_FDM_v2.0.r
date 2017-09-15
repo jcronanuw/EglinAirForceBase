@@ -1,14 +1,10 @@
 
 ##########                          START FUELBED DYNAMICS MODEL                        ###########
-#  #Save Fuelbed Map (f.map).
-dt <- Sys.Date()
-tm <- format(Sys.time(), format = "%H.%M.%S", 
-             tz = "", usetz = FALSE)
 
 #Version 2.0 (Derviced from version 17e, the most recent version withmodel 
 #documentation
 
-#entireScript <- function() {
+entireScript <- function() {
 
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>          HOW WOULD YOU LIKE TO RUN THE FUELBED DYNAMICS MODEL?
   
@@ -31,11 +27,11 @@ tm <- format(Sys.time(), format = "%H.%M.%S",
   #Would you like to replicate this run?
   #If so use the same seed number for subsequent runs
   #SEED is the starting point for psuedo random number generator
-  SEED <- 764599#sample(1:1000000,1)
+  SEED <- sample(1:1000000,1)#764599
   
   #Select a run ID, this should be a number, ideally unique that will help track this
   #run. Output files are tagged with this ID number.
-  RUN <- 236
+  RUN <- 238
   
   #Reporting interval, how often (in model years) should output maps be produced?
   #I.e., once every ... years.
@@ -56,12 +52,12 @@ tm <- format(Sys.time(), format = "%H.%M.%S",
   # QUICK:  Testing generates small areas of presribed fire and wildfire annually 
   #       and 2 year run.
   # MANUAL: Manually enter disturbance parameters. Enter parameters below.
-  disturbance_regime <- "MANUAL"
+  disturbance_regime <- "QUICK"
   
   if (disturbance_regime == "MANUAL")
   {
     #Number of years the model should run for.
-    YEARS <- 50
+    YEARS <- 3
     
     #Acres thinned annually.
     THINNING <- 1000
@@ -70,12 +66,12 @@ tm <- format(Sys.time(), format = "%H.%M.%S",
     HERBICIDE <- 1000
     
     #Acres prescribed burned annually
-    RX_FIRE <- 20000
+    RX_FIRE <- 2000
     
     #Natural fire rotation in years for:
     #Element 1 -- Eglin Air Force Base
     #Element 2 -- Surrounding 10-km buffer landscape
-    NATURAL_FIRE_ROTATION <- c(54.38,457.39)
+    NATURAL_FIRE_ROTATION <- c(454.38,1457.39)
     
     #Mean fire size in acres for:
     #Element 1 -- Eglin Air Force Base
@@ -3966,9 +3962,9 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
     {
       
       #  #Save Fuelbed Map (f.map).
-      #dt <- Sys.Date()
-      #tm <- format(Sys.time(), format = "%H.%M.%S", 
-      #             tz = "", usetz = FALSE)
+      dt <- Sys.Date()
+      tm <- format(Sys.time(), format = "%H.%M.%S", 
+                   tz = "", usetz = FALSE)
       
       write.table(s.map, file = paste(output_path, "sef_smap_run_", run, "_", 
                                       dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".txt",sep = ""), 
@@ -4053,8 +4049,8 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
                     c("escape", "double"))#    
     }
   }
-  } #1.0.0 ---------------------------------------------------------------------------
+ } #1.0.0 ---------------------------------------------------------------------------
   
- #}
+ }
 
-#entireScript()
+entireScript()
