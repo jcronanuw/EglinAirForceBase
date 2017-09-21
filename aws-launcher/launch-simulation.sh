@@ -42,6 +42,6 @@ elif [ $2 == "escience" ]
 fi
 line=2
 tail -n +2 $1 | while IFS=',' read count params; do
-  echo "aws ec2 run-instances --image-id ami-88ac6ee8 $AWS_KEY_NAME --user-data file://$SIM_ID/user_data_$line.ud --instance-type r3.large $IAM_INSTANCE_PROFILE --count $count $SUBNET_ID $AWS_PROFILE"
+  aws ec2 run-instances --image-id ami-88ac6ee8 $AWS_KEY_NAME --user-data file://$SIM_ID/user_data_$line.ud --instance-type r3.large $IAM_INSTANCE_PROFILE --count $count $SUBNET_ID $AWS_PROFILE
   ((line++))
 done
