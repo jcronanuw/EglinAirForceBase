@@ -29,16 +29,19 @@ done
 # launches instance for each parameter set
 #MAC=`curl http://169.254.169.254/latest/meta-data/mac`
 #SUBNET_ID=`curl http://169.254.169.254/latest/meta-data/network/interfaces/macs/$MAC/subnet-id`
-if [ $2 ]
+if [ $2 == "personal" ]
   then
-    SUBNET_ID="--subnet-id $2"
-fi
-if [ $3 ]
+    AWS_KEY_NAME="--key-name EglinAirForceBase"
+    AWS_PROFILE="--profile default"
+elif [ $2 == "escience" ]
   then
-    AWS_PROFILE="--profile $3"
+    AWS_KEY_NAME="--key-name wildfire-simulation"
+    SUBNET_ID="--subnet-id subnet-4aec153d"
+    AWS_PROFILE="--profile escience"
+    IAM_INSTANCE_PROFILE="--iam-instance-profile Name=wildfire-simulation"
 fi
 line=2
 tail -n +2 $1 | while IFS=',' read count params; do
-  aws ec2 run-instances --image-id ami-88ac6ee8 --key-name wildfire-simulation --user-data file://$SIM_ID/user_data_$line.ud --instance-type r3.large --iam-instance-profile Name=wildfire-simulation --count $count $SUBNET_ID $AWS_PROFILE
+  echo "aws ec2 run-instances --image-id ami-88ac6ee8 $AWS_KEY_NAME --user-data file://$SIM_ID/user_data_$line.ud --instance-type r3.large $IAM_INSTANCE_PROFILE --count $count $SUBNET_ID $AWS_PROFILE"
   ((line++))
 done
