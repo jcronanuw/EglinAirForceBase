@@ -36,7 +36,12 @@ $ sh ./launch-simulation.sh master_sim_params.txt subnet-4aec153d escience
 
 # If model successfully launches in AWS you will see...
 
-$ ~\Documents\GitHub\EglinAirForceBase\aws-launcher [master = +1 ~1 -0 !]> sh ./launch-simulation.sh master_sim_params.txt subnet-4aec153d escience
+$ ~\Documents\GitHub\EglinAirForceBase\aws-launcher [master = +1 ~1 -0 !]> sh ./launch-simulation.sh master_sim_params.txt (either "escience" or "personal" depending on which account you want to use)
+#Get subnet from AWS instance EC2
+
+#Try this code to launch on your own personal account
+#aws ec2 run-instances --image-id ami-88ac6ee8 --key-name wildfire-simulation --instance-type r3.large --iam-instance-profile  Name=wildfire-simulation --profile escience
+
 # NOTE: "subnet-4aec153d escience" directs launch instructions to eScience Institute's AWS account.
 #
 # Simulation "17Feb16-105103" will launch 1 EC2 instances.
