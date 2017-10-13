@@ -32,7 +32,11 @@ BEGIN { instance_count = 0 }
    print "echo \"" $0 "," sim_id ",$RUN_ID,$PWD/,$output_path/\" >> host_sim_params.csv" > file;
 
    # Run R script
-   print "Rscript sef_FDM_v2.0.r" > file;
+   if (simple=="n") {
+     print "Rscript sef_FDM_v2.0.r" > file;
+   } else {
+     print "echo \"Fake results supposed to replace R script output. Launched as simple.\" > ${output_path}/test_result.txt" > file;
+   }
 
    # Check status after completion of script (0=success=true, 1=failed=false)
    print "if [ $? -eq 0 ]; then" > file;

@@ -32,7 +32,7 @@ entireScript <- function() {
   #Select a run ID, this should be a number, ideally unique that will help track this
   #run. Output files are tagged with this ID number.
   RUN <- 250
-  
+
   #Reporting interval, how often (in model years) should output maps be produced?
   #I.e., once every ... years.
   #Must be less than model run time (YEARS object)
@@ -52,13 +52,13 @@ entireScript <- function() {
   # QUICK:  Testing generates small areas of presribed fire and wildfire annually 
   #       and 2 year run.
   # MANUAL: Manually enter disturbance parameters. Enter parameters below.
-  disturbance_regime <- "QUICK"
+  disturbance_regime <- "MANUAL"
   
   if (disturbance_regime == "MANUAL")
   {
     #Number of years the model should run for.
-    YEARS <- 2
-    
+    YEARS <- 25
+
     #Acres thinned annually.
     THINNING <- 1000
     
@@ -66,22 +66,25 @@ entireScript <- function() {
     HERBICIDE <- 1000
     
     #Acres prescribed burned annually
-    RX_FIRE <- 2000
+    RX_FIRE <- 10000
     
     #Natural fire rotation in years for:
     #Element 1 -- Eglin Air Force Base
     #Element 2 -- Surrounding 10-km buffer landscape
-    NATURAL_FIRE_ROTATION <- c(454.38,1457.39)
+    NATURAL_FIRE_ROTATION <- c(54.38,1457.39)
+    #ACTUAL VALUES >> NATURAL_FIRE_ROTATION <- c(54.38,457.39)
     
     #Mean fire size in acres for:
     #Element 1 -- Eglin Air Force Base
     #Element 2 -- Surrounding 10-km buffer landscape
-    MEAN_FIRE_SIZE <- c(103.65,5.23)    
+    MEAN_FIRE_SIZE <- c(4003.65,500.23)    
+    #ACTUAL VALUES >> MEAN_FIRE_SIZE <- c(103.65,5.23) 
     
     #Standard deviation of mean fire size for:
     #Element 1 -- Eglin Air Force Base
     #Element 2 -- Surrounding 10-km buffer landscape
-    STAND_DEV_FIRE_SIZE <- c(361.12, 13.98)
+    STAND_DEV_FIRE_SIZE <- c(1361.12, 113.98)
+    #ACTUAL VALUES >> STAND_DEV_FIRE_SIZE <- c(361.12, 13.98)
   }
   
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

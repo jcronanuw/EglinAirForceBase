@@ -7,7 +7,12 @@ SIM_ID=`date +%y%b%d-%H%M%S`
 mkdir $SIM_ID
 
 # create user data files for each line of script
-awk -F, -v sim_id=$SIM_ID -f create_user_data_files.awk $1
+if [ "$3" == "simple" ]; then
+  simple="y"
+else
+  simple="n"
+fi
+awk -F, -v sim_id=$SIM_ID -v simple=$simple -f create_user_data_files.awk $1
 
 # copy the relevant launch details file to simulation folder
 cp $1 $SIM_ID/
