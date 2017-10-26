@@ -1,2 +1,0 @@
-InstancesToLaunch,seed,use_gpu,rx_fire,install_packages,disturbance_regime
-1,7654,FALSE,100000,TRUE,MANUAL
