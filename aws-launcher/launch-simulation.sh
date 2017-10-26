@@ -38,6 +38,7 @@ if [ $2 == "personal" ]
   then
     AWS_KEY_NAME="--key-name EglinAirForceBase"
     AWS_PROFILE="--profile default"
+    IAM_INSTANCE_PROFILE="--iam-instance-profile Name=wildfire-simulation"
 elif [ $2 == "escience" ]
   then
     AWS_KEY_NAME="--key-name wildfire-simulation"
