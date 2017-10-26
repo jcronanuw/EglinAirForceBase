@@ -52,7 +52,7 @@ BEGIN { instance_count = 0 }
    print "  done" > file;
 
    #   Terminate this instance (if success)
-   print "  aws ec2 terminate-instances instance-ids $(curl -s http://169.254.169.254/latest/meta-data/instance-id)" > file;
+   print "  aws ec2 terminate-instances --instance-ids $(curl -s http://169.254.169.254/latest/meta-data/instance-id) --region us-west-2" > file;
 
    print "else" > file;
 
