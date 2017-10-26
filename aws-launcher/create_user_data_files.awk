@@ -23,7 +23,7 @@ BEGIN { instance_count = 0 }
    print "RUN_ID=$(eval echo $(curl -s http://169.254.169.254/latest/meta-data/instance-id) | tail -c 5)" > file;
 
    # Change key for host in EC2
-   print "aws ec2 create-tags --resources $(eval echo $(curl -s http://169.254.169.254/latest/meta-data/instance-id)) --tags Key=Name,Value=FDM_Instance_$SIM_ID_$RUN_ID" > file;
+   print "aws ec2 create-tags --resources $(eval echo $(curl -s http://169.254.169.254/latest/meta-data/instance-id)) --tags Key=Name,Value=FDM_Instance_" sim_id "_$RUN_ID" > file;
 
    # Add appropriate folders
    print "mkdir /home/ubuntu/" sim_id > file;
