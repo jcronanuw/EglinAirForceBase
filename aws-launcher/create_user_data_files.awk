@@ -22,6 +22,9 @@ BEGIN { instance_count = 0 }
    # Create run id for each separate host
    print "RUN_ID=$(eval echo $(curl -s http://169.254.169.254/latest/meta-data/instance-id) | tail -c 5)" > file;
 
+   # Change key for host in EC2
+   print "aws ec2 create-tags --resources $(eval echo $(curl -s http://169.254.169.254/latest/meta-data/instance-id)) --tags Key=Name,Value=FDM_Instance_$SIM_ID_$RUN_ID" > file;
+
    # Add appropriate folders
    print "mkdir /home/ubuntu/" sim_id > file;
    print "mkdir /home/ubuntu/" sim_id "/$RUN_ID" > file;
@@ -49,7 +52,7 @@ BEGIN { instance_count = 0 }
    print "  done" > file;
 
    #   Terminate this instance (if success)
-   # print "  aws ec2 terminate-instances instance-ids $(curl -s http://169.254.169.254/latest/meta-data/instance-id)" > file;
+   print "  aws ec2 terminate-instances instance-ids $(curl -s http://169.254.169.254/latest/meta-data/instance-id)" > file;
 
    print "else" > file;
 
