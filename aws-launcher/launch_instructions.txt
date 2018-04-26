@@ -28,11 +28,18 @@ $ ~\Documents\GitHub\EglinAirForceBase\aws-launcher [master = +2 ~1 -0 !]> cat .
 # Arg 2: use_gpu = TRUE/FALSE; whether or not to use the graphics card processor (unless you have figured out a way to enable the GPU, which I haven't done as of 2/16/2017, this should be FALSE.
 # Arg 3: rx_fire = the annual number of acres burned by prescribed fire
 # Arg 4: install_packages = TRUE/FALSE; whether or not R should install packages. Unless you are storing the packages this should be TRUE, as of 2/26/2017, script requires this to be TRUE.
-# Arg 5: disturbance_regime = MANUAL/???; is the disturbance regime entered manually in the code or loaded from a seperate file. As of 2/16/2017 the setting should be manual. Not sure what other options
-# are. For testing this is fine, but at some point you may want to convert to an input file.
+# Arg 5: disturbance_regime = MANUAL: manually input disturbance regime parameters (sef_FDM_v2.0.r) in the r script (YEARS = number of simulation years in run; THINNING = number of acres to thin annually; HERBICIDE = 
+         number of acreas to apply herbicide to for hardwood control annually; RX_FIRE = number of acres to apply prescribed fire to annually; NATURAL_FIRE_ROTATION = two values: 1) number of years it takes 
+         for wildfires to burn 100% of acres on base and 2) number of years it takes for wildfires to burn 100% of acres in buffer zone; MEAN_FIRE_SIZE = two values: 1) average size of fire (in acres) on base 
+         and 2) average size of fires (in acres) in buffer zone; STAND_DEV_FIRE_SIZE = two values: 1) standard deviation of fire sizes on base and 2) standard deviation of fire sizes in buffer zone).
 
 # Run this script
+#eScience
 $ sh ./launch-simulation.sh master_sim_params.txt subnet-4aec153d escience
+
+#Personal AWS account
+$ sh ./launch-simulation.sh master_sim_params.txt personal
+
 
 # If model successfully launches in AWS you will see...
 
