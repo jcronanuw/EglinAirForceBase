@@ -4,14 +4,16 @@
 
 # Purpose: Launch instructions for Fuelbed Dynamics Model (FDM), a landscape-fire-succession model built to model fire, management disturbance, and succession at Eglin Air Force Base in Niceville, Florida, USA.
 # File written on: 16-February-2017
-# Last updated on: 16-February-2017
+# Last updated on: 07-March-2018
 # By Jim Cronan
 # Email: jcronan@fs.fed.us & jcronan@uw.edu
 # Phone: 206-732-7873
 # Address: Pacific Wildland Fire Sciences Laboratory, 400 North 34th Street, Suite 201, Seattle, WA 98122
 
 # -----
-# NOTE: this launch code is set to work with the eScience Institute AWS account. This account is only to be used for testing. Once you are ready to conduct model runs contact 
+# NOTE: the launch code is set to work with the eScience Institute AWS account and your personal AWS account. However, the .sh and .awk files must be handled differently.
+# Read below for differences in handling these launch files.
+# This account is only to be used for testing. Once you are ready to conduct model runs contact 
 # Bernease Herman (bernease@uw.ed) and rewrite code to communicate and launch with your Amazon Web Services (AWS) account.
 # -----
 
@@ -34,12 +36,31 @@ $ ~\Documents\GitHub\EglinAirForceBase\aws-launcher [master = +2 ~1 -0 !]> cat .
          and 2) average size of fires (in acres) in buffer zone; STAND_DEV_FIRE_SIZE = two values: 1) standard deviation of fire sizes on base and 2) standard deviation of fire sizes in buffer zone).
 
 # Run this script
+<<<<<<< HEAD
 #eScience
 $ sh ./launch-simulation.sh master_sim_params.txt subnet-4aec153d escience
 
 #Personal AWS account
 $ sh ./launch-simulation.sh master_sim_params.txt personal
 
+=======
+#Personal AWS Account -- note corresponding change must be made in .awk file
+$ sh ./launch-simulation.sh master_sim_params.txt personal
+
+# Run this script -- note corresponding change must be made in .awk file
+# eScience AWS Account
+$ sh ./launch-simulation.sh master_sim_params.txt subnet-4aec153d escience
+
+#.awk file.
+#The create_user_data_files.awk file is launched from the launch-simulation.sh file. The options for eScience and personal AWS accounts are hard coded into the file so if you want to toggle back and 
+#forth you need to manually change the code that references the S3 file path.
+
+#Personal S3 bucket
+# print "    aws s3 cp $file s3://jcronanuw-wildfire/" sim_id "/$file" > file;
+
+#eScience Institute AWS S3 bucket
+# print "    aws s3 cp $file s3://bernease/wildfire-simulation/" sim_id "/$file" > file;
+>>>>>>> da29f1dd9e46667f2197c90b144292d0721198f3
 
 # If model successfully launches in AWS you will see...
 
@@ -145,9 +166,14 @@ $ ~\Documents\GitHub\EglinAirForceBase\aws-launcher [master = +1 ~1 -0 !]> sh ./
 #         }
 #     ]
 # }
+# ~\Documents\GitHub\EglinAirForceBase\aws-launcher [master = +3 ~0 -0 !]>
 
-# NOTE: this launch code is set to work with the eScience Institute AWS account. This account is only to be used for testing. Once you are ready to conduct model runs contact 
-# Bernease Herman (bernease@uw.ed) and rewrite code to communicate and launch with your AWS account.
+# -----
+# NOTE: the launch code is set to work with the eScience Institute AWS account and your personal AWS account. However, the .sh and .awk files must be handled differently.
+# Read below for differences in handling these launch files.
+# This account is only to be used for testing. Once you are ready to conduct model runs contact 
+# Bernease Herman (bernease@uw.ed) and rewrite code to communicate and launch with your Amazon Web Services (AWS) account.
+# -----
 
 # -----
 # END
