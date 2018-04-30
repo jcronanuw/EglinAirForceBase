@@ -52,12 +52,12 @@ entireScript <- function() {
   # QUICK:  Testing generates small areas of presribed fire and wildfire annually 
   #       and 2 year run.
   # MANUAL: Manually enter disturbance parameters. Enter parameters below.
-  disturbance_regime <- "MANUAL"
+  disturbance_regime <- "FULL"
   
   if (disturbance_regime == "MANUAL")
   {
     #Number of years the model should run for.
-    YEARS <- 25
+    YEARS <- 3
 
     #Acres thinned annually.
     THINNING <- 1000
@@ -66,12 +66,12 @@ entireScript <- function() {
     HERBICIDE <- 1000
     
     #Acres prescribed burned annually
-    RX_FIRE <- 10000
+    RX_FIRE <- 2000
     
     #Natural fire rotation in years for:
     #Element 1 -- Eglin Air Force Base
     #Element 2 -- Surrounding 10-km buffer landscape
-    NATURAL_FIRE_ROTATION <- c(54.38,1457.39)
+    NATURAL_FIRE_ROTATION <- c(454.38,1457.39)
     #ACTUAL VALUES >> NATURAL_FIRE_ROTATION <- c(54.38,457.39)
     
     #Mean fire size in acres for:
@@ -368,13 +368,13 @@ entireScript <- function() {
   if(disturbance_regime == "FULL")
   {
     #Number of years the model should run for.
-    YEARS <- 50
+    YEARS <- 3#50
     
     #Acres thinned annually.
-    THINNING <- 5000
+    THINNING <- 1000#5000
     
     #Acres of herbicide application annually
-    HERBICIDE <- 5000
+    HERBICIDE <- 1000#5000
     
     #Acres prescribed burned annually
     #RX_FIRE <- 100000
@@ -396,13 +396,13 @@ entireScript <- function() {
   } else if(disturbance_regime == "QUICK")
   {
     #Number of years the model should run for.
-    YEARS <- 2
+    YEARS <- 3 #2
     
     #Acres thinned annually.
-    THINNING <- 0
+    THINNING <- 1000 #0
     
     #Acres of herbicide application annually
-    HERBICIDE <- 0
+    HERBICIDE <- 1000 #0
     
     #Acres prescribed burned annually
     #RX_FIRE <- 1000
@@ -410,7 +410,7 @@ entireScript <- function() {
     #Natural fire rotation in years for:
     #Element 1 -- Eglin Air Force Base
     #Element 2 -- Surrounding 10-km buffer landscape
-    NATURAL_FIRE_ROTATION <- c(10554.38, 10457.39)
+    NATURAL_FIRE_ROTATION <- c(54.38,457.39)#c(10554.38, 10457.39)
     
     #Mean fire size in acres for:
     #Element 1 -- Eglin Air Force Base
