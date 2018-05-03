@@ -4,7 +4,7 @@
 #Version 2.0 (Derviced from version 17e, the most recent version withmodel 
 #documentation
 
-entireScript <- function() {
+#entireScript <- function() {
 
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>          HOW WOULD YOU LIKE TO RUN THE FUELBED DYNAMICS MODEL?
   
@@ -31,12 +31,12 @@ entireScript <- function() {
   
   #Select a run ID, this should be a number, ideally unique that will help track this
   #run. Output files are tagged with this ID number.
-  RUN <- 250
+  RUN <- 885
 
   #Reporting interval, how often (in model years) should output maps be produced?
   #I.e., once every ... years.
   #Must be less than model run time (YEARS object)
-  Interval <- 1
+  Interval <- 2
   
   #What is your working directory. I.e. where are your input files coming from?
   input_path <- "C:/Users/jcronan/Documents/GitHub/EglinAirForceBase"     
@@ -57,7 +57,7 @@ entireScript <- function() {
   if (disturbance_regime == "MANUAL")
   {
     #Number of years the model should run for.
-    YEARS <- 25
+    YEARS <- 6
 
     #Acres thinned annually.
     THINNING <- 1000
@@ -66,12 +66,12 @@ entireScript <- function() {
     HERBICIDE <- 1000
     
     #Acres prescribed burned annually
-    RX_FIRE <- 10000
+    RX_FIRE <- 4000
     
     #Natural fire rotation in years for:
     #Element 1 -- Eglin Air Force Base
     #Element 2 -- Surrounding 10-km buffer landscape
-    NATURAL_FIRE_ROTATION <- c(54.38,1457.39)
+    NATURAL_FIRE_ROTATION <- c(554.38,1457.39)
     #ACTUAL VALUES >> NATURAL_FIRE_ROTATION <- c(54.38,457.39)
     
     #Mean fire size in acres for:
@@ -463,6 +463,31 @@ entireScript <- function() {
   
   l.map <- matrix(scan(paste("inputs/sef_lmap_",rows,"x",cols,".txt",
                              sep = ""),skip = lh.adj),ncol=cols,byrow=T)#20
+  
+  # NEW 3-MAY-2018 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  #                 BEGIN
+  # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
+  # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
+  # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
+  # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
+  # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
+  
+  ##Open metadata for spatial datasets
+  metadata <- read.table(paste("inputs/sef_raster_fmap_metadata.txt", sep = ""), 
+                         header=TRUE, sep=",", na.strings="NA", dec=".", strip.white=TRUE)
+  options(digits = 15)
+  
+  #Create vectors from metadata list
+  md.desc <- as.vector(unlist(metadata[,1]))
+  md.valu <- as.vector(unlist(metadata[,2]))
+  
+  # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
+  # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
+  # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
+  # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
+  # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
+  #                 END
+  # NEW 3-MAY-2018 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   
   #################################################################################################
   #################################################################################################
@@ -3324,7 +3349,7 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
   }                                                                            #
   #                                                                            #
     } #8.0.0 ------------------------------------------------------------------#
-  }                                                                            #
+  } #1.1.2 --------------------------------------------------------------------#####                                                                            #
   #
   if(r101 > 0)                                                                 #
   {                                                                            #
@@ -3959,6 +3984,28 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
   
   #Create a seperate set of files for MANUAL runs where diagnostic information may be 
   #needed to assess or test for errors.
+  
+  
+  
+  # NEW 3-MAY-2018 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  #                 BEGIN
+  # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
+  # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
+  # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
+  # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
+  # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
+  disturbance_regime <- "FULL"
+  # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
+  # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
+  # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
+  # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
+  # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
+  #                 END
+  # NEW 3-MAY-2018 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  
+  
+  
+  
   if(disturbance_regime == "MANUAL")
   {
     if((a %% Interval) == 0)
@@ -4030,13 +4077,67 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
     }
   } else
   {
-    #Create maps for interval years.
+    
     if((a %% Interval) == 0)
-      {
-      #  #Save Fuelbed Map (f.map).
-      dt <- Sys.Date()
-      tm <- format(Sys.time(), format = "%H.%M.%S", 
-                   tz = "", usetz = FALSE)
+    {
+    #  #Save Fuelbed Map (f.map).
+    dt <- Sys.Date()
+    tm <- format(Sys.time(), format = "%H.%M.%S", 
+                 tz = "", usetz = FALSE)
+    
+    
+    # NEW 3-MAY-2018 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    #                 BEGIN
+    # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
+    # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
+    # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
+    # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
+    # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
+    
+    #Seprate header metadata into seperate lines.
+    line1 <- paste(paste(md.desc[1]), paste("         ", md.valu[1]))
+    line2 <- paste(paste(md.desc[2]), paste("         ", md.valu[2]))
+    line3 <- paste(paste(md.desc[3]), paste("     ", md.valu[3]))
+    line4 <- paste(paste(md.desc[4]), paste("     ", md.valu[4]))
+    line5 <- paste(paste(md.desc[5]), paste("      ", md.valu[5]))
+    line6 <- paste(paste(md.desc[6]), paste("  ", md.valu[6]))
+    
+    #Print header information to fire progression map
+    cat(line1, 
+        file = paste(output_path, "sef_fmap_run_", run, "_", 
+                     dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".asc",sep = ""), fill = T, append = T)#
+    cat(line2, 
+        file = paste(output_path, "sef_fmap_run_", run, "_", 
+                     dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".asc",sep = ""), fill = T, append = T)#
+    cat(line3, 
+        file = paste(output_path, "sef_fmap_run_", run, "_", 
+                     dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".asc",sep = ""), fill = T, append = T)#
+    cat(line4, 
+        file = paste(output_path, "sef_fmap_run_", run, "_", 
+                     dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".asc",sep = ""), fill = T, append = T)#
+    cat(line5, 
+        file = paste(output_path, "sef_fmap_run_", run, "_", 
+                     dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".asc",sep = ""), fill = T, append = T)#
+    cat(line6, 
+        file = paste(output_path, "sef_fmap_run_", run, "_", 
+                     dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".asc",sep = ""), fill = T, append = T)#
+    
+    #Save fuelbed map.
+    cat(f.map, file = paste(output_path, "sef_fmap_run_", run, "_", 
+                            dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".asc",sep = ""), fill = T, append = T)#
+  
+    # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
+    # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
+    # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
+    # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
+    # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
+    #                 END
+    # NEW 3-MAY-2018 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    
+    #TO BE REPLACED BY TEST AREA>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    #Create maps for interval years.
+    
+      
     
       #Save stand map.
       write.table(s.map, file = paste(output_path, "sef_smap_run_", run, "_", 
@@ -4051,9 +4152,11 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
                   dec = ".", row.names = FALSE,col.names = FALSE, qmethod = 
                     c("escape", "double"))#    
     }
+    #TO BE REPLACED BY TEST AREA>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    
   }
  } #1.0.0 ---------------------------------------------------------------------------
   
- }
+ #}
 
-entireScript()
+#entireScript()
