@@ -31,7 +31,7 @@
   
   #Select a run ID, this should be a number, ideally unique that will help track this
   #run. Output files are tagged with this ID number.
-  RUN <- 885
+  RUN <- 886
 
   #Reporting interval, how often (in model years) should output maps be produced?
   #I.e., once every ... years.
@@ -52,26 +52,26 @@
   # QUICK:  Testing generates small areas of presribed fire and wildfire annually 
   #       and 2 year run.
   # MANUAL: Manually enter disturbance parameters. Enter parameters below.
-  disturbance_regime <- "FULL"
+  disturbance_regime <- "MANUAL"
   
   if (disturbance_regime == "MANUAL")
   {
     #Number of years the model should run for.
-    YEARS <- 6
+    YEARS <- 4
 
     #Acres thinned annually.
-    THINNING <- 1000
+    THINNING <- 0
     
     #Acres of herbicide application annually
-    HERBICIDE <- 1000
+    HERBICIDE <- 0
     
     #Acres prescribed burned annually
-    RX_FIRE <- 4000
+    RX_FIRE <- 2000
     
     #Natural fire rotation in years for:
     #Element 1 -- Eglin Air Force Base
     #Element 2 -- Surrounding 10-km buffer landscape
-    NATURAL_FIRE_ROTATION <- c(554.38,1457.39)
+    NATURAL_FIRE_ROTATION <- c(1054.38,1457.39)
 
     #ACTUAL VALUES >> NATURAL_FIRE_ROTATION <- c(54.38,457.39)
     
@@ -4124,7 +4124,7 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
                      dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".asc",sep = ""), fill = T, append = T)#
     
     #Save fuelbed map.
-    cat(f.map, file = paste(output_path, "sef_fmap_run_", run, "_", 
+    cat(c(t(f.map)), file = paste(output_path, "sef_fmap_run_", run, "_", 
                             dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".asc",sep = ""), fill = T, append = T)#
   
     # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
