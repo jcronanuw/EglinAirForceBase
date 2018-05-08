@@ -36,7 +36,7 @@ entireScript <- function() {
   #Reporting interval, how often (in model years) should output maps be produced?
   #I.e., once every ... years.
   #Must be less than model run time (YEARS object)
-  Interval <- 1
+  Interval <- 5
   
   #What is your working directory. I.e. where are your input files coming from?
   input_path <- "C:/Users/jcronan/Documents/GitHub/EglinAirForceBase"     
@@ -369,13 +369,13 @@ entireScript <- function() {
   if(disturbance_regime == "FULL")
   {
     #Number of years the model should run for.
-    YEARS <- 6#50
+    YEARS <- 50
     
     #Acres thinned annually.
-    THINNING <- 1000#5000
+    THINNING <- 5000
     
     #Acres of herbicide application annually
-    HERBICIDE <- 1000#5000
+    HERBICIDE <- 5000
     
     #Acres prescribed burned annually
     #RX_FIRE <- 100000
