@@ -4,7 +4,7 @@
 #Version 2.0 (Derviced from version 17e, the most recent version withmodel 
 #documentation
 
-#entireScript <- function() {
+entireScript <- function() {
 
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>          HOW WOULD YOU LIKE TO RUN THE FUELBED DYNAMICS MODEL?
   
@@ -31,7 +31,7 @@
   
   #Select a run ID, this should be a number, ideally unique that will help track this
   #run. Output files are tagged with this ID number.
-  RUN <- 885
+  RUN <- 886
 
   #Reporting interval, how often (in model years) should output maps be produced?
   #I.e., once every ... years.
@@ -397,13 +397,13 @@
   } else if(disturbance_regime == "QUICK")
   {
     #Number of years the model should run for.
-    YEARS <- 3 #2
+    YEARS <- 2
     
     #Acres thinned annually.
-    THINNING <- 1000 #0
+    THINNING <- 0
     
     #Acres of herbicide application annually
-    HERBICIDE <- 1000 #0
+    HERBICIDE <- 0
     
     #Acres prescribed burned annually
     #RX_FIRE <- 1000
@@ -411,7 +411,7 @@
     #Natural fire rotation in years for:
     #Element 1 -- Eglin Air Force Base
     #Element 2 -- Surrounding 10-km buffer landscape
-    NATURAL_FIRE_ROTATION <- c(54.38,457.39)#c(10554.38, 10457.39)
+    NATURAL_FIRE_ROTATION <- c(10554.38, 10457.39)
     
     #Mean fire size in acres for:
     #Element 1 -- Eglin Air Force Base
@@ -3985,28 +3985,6 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
   
   #Create a seperate set of files for MANUAL runs where diagnostic information may be 
   #needed to assess or test for errors.
-  
-  
-  
-  # NEW 3-MAY-2018 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  #                 BEGIN
-  # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
-  # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
-  # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
-  # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
-  # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
-  disturbance_regime <- "FULL"
-  # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
-  # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
-  # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
-  # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
-  # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
-  #                 END
-  # NEW 3-MAY-2018 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  
-  
-  
-  
   if(disturbance_regime == "MANUAL")
   {
     if((a %% Interval) == 0)
@@ -4103,7 +4081,7 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
     line5 <- paste(paste(md.desc[5]), paste("      ", md.valu[5]))
     line6 <- paste(paste(md.desc[6]), paste("  ", md.valu[6]))
     
-    #Print header information to fire progression map
+    #Print header information to fuelbed map
     cat(line1, 
         file = paste(output_path, "sef_fmap_run_", run, "_", 
                      dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".asc",sep = ""), fill = T, append = T)#
@@ -4127,6 +4105,30 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
     cat(f.map, file = paste(output_path, "sef_fmap_run_", run, "_", 
                             dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".asc",sep = ""), fill = T, append = T)#
   
+    #Print header information to stand map
+    cat(line1, 
+        file = paste(output_path, "sef_smap_run_", run, "_", 
+                     dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".asc",sep = ""), fill = T, append = T)#
+    cat(line2, 
+        file = paste(output_path, "sef_smap_run_", run, "_", 
+                     dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".asc",sep = ""), fill = T, append = T)#
+    cat(line3, 
+        file = paste(output_path, "sef_smap_run_", run, "_", 
+                     dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".asc",sep = ""), fill = T, append = T)#
+    cat(line4, 
+        file = paste(output_path, "sef_smap_run_", run, "_", 
+                     dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".asc",sep = ""), fill = T, append = T)#
+    cat(line5, 
+        file = paste(output_path, "sef_smap_run_", run, "_", 
+                     dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".asc",sep = ""), fill = T, append = T)#
+    cat(line6, 
+        file = paste(output_path, "sef_smap_run_", run, "_", 
+                     dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".asc",sep = ""), fill = T, append = T)#
+    
+    #Save stand map.
+    cat(s.map, file = paste(output_path, "sef_smap_run_", run, "_", 
+                            dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".asc",sep = ""), fill = T, append = T)#
+    
     # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
     # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
     # % % % % % % % % ------------------------------------------------------------------- % % % % % >>
@@ -4158,6 +4160,6 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
   }
  } #1.0.0 ---------------------------------------------------------------------------
   
- #}
+ }
 
-#entireScript()
+entireScript()
