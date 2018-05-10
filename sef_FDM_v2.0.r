@@ -36,7 +36,7 @@ entireScript <- function() {
   #Reporting interval, how often (in model years) should output maps be produced?
   #I.e., once every ... years.
   #Must be less than model run time (YEARS object)
-  Interval <- 5
+  Interval <- 1
   
   #What is your working directory. I.e. where are your input files coming from?
   input_path <- "C:/Users/jcronan/Documents/GitHub/EglinAirForceBase"     
@@ -618,6 +618,12 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
   #################################################################################################
   #STEP 06: Generate secondary data.
   
+  #Create prescribed fire parameter tag for output file name.
+  rx-fire_name_tag <- ifelse(meanTAP[3] < 100000, 
+                             paste("0", 
+                                   as.character(round((meanTAP[3]/100000)*100,0)), 
+                                   sep = ""), as.character(round((meanTAP[3]/100000)*100,0))) 
+
   #Temporary stand numbers
   #The first will be used to seed disturbance and the second will be used in the fire
   #loop to progressively track expansion of the fire front (allows for fire to burn
@@ -4048,6 +4054,9 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
     tm <- format(Sys.time(), format = "%H.%M.%S", 
                  tz = "", usetz = FALSE)
     
+    #Create a name tag for simulation year to add to output file name.
+    simYear_name_tag <- ifelse(a < 10, paste("0", as.character(a), sep = ""), as.character(a))
+    
     #Seprate header metadata into seperate lines.
     line1 <- paste(paste(md.desc[1]), paste("         ", md.valu[1]))
     line2 <- paste(paste(md.desc[2]), paste("         ", md.valu[2]))
@@ -4058,51 +4067,51 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
     
     #Print header information to fuelbed map
     cat(line1, 
-        file = paste(output_path, "sef_fmap_run_", run, "_", 
-                     dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".asc",sep = ""), fill = T, append = T)#
+        file = file = paste(output_path, "f", run, rx_fire_name_tag, simYear_name_tag, ".asc", sep = ""), 
+        fill = T, append = T)#
     cat(line2, 
-        file = paste(output_path, "sef_fmap_run_", run, "_", 
-                     dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".asc",sep = ""), fill = T, append = T)#
+        file = file = paste(output_path, "f", run, rx_fire_name_tag, simYear_name_tag, ".asc", sep = ""), 
+        fill = T, append = T)#
     cat(line3, 
-        file = paste(output_path, "sef_fmap_run_", run, "_", 
-                     dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".asc",sep = ""), fill = T, append = T)#
+        file = file = paste(output_path, "f", run, rx_fire_name_tag, simYear_name_tag, ".asc", sep = ""), 
+        fill = T, append = T)#
     cat(line4, 
-        file = paste(output_path, "sef_fmap_run_", run, "_", 
-                     dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".asc",sep = ""), fill = T, append = T)#
+        file = file = paste(output_path, "f", run, rx_fire_name_tag, simYear_name_tag, ".asc", sep = ""), 
+        fill = T, append = T)#
     cat(line5, 
-        file = paste(output_path, "sef_fmap_run_", run, "_", 
-                     dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".asc",sep = ""), fill = T, append = T)#
+        file = file = paste(output_path, "f", run, rx_fire_name_tag, simYear_name_tag, ".asc", sep = ""), 
+        fill = T, append = T)#
     cat(line6, 
-        file = paste(output_path, "sef_fmap_run_", run, "_", 
-                     dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".asc",sep = ""), fill = T, append = T)#
+        file = file = paste(output_path, "f", run, rx_fire_name_tag, simYear_name_tag, ".asc", sep = ""), 
+        fill = T, append = T)#
     
     #Save fuelbed map.
-    cat(c(t(f.map)), file = paste(output_path, "sef_fmap_run_", run, "_", 
-                            dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".asc",sep = ""), fill = T, append = T)#
+    cat(c(t(f.map)), file = file = paste(output_path, "f", run, rx_fire_name_tag, simYear_name_tag, 
+                                         ".asc", sep = ""), fill = T, append = T)#
   
     #Print header information to stand map
     cat(line1, 
-        file = paste(output_path, "sef_smap_run_", run, "_", 
-                     dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".asc",sep = ""), fill = T, append = T)#
+        file = paste(output_path, "s", run, rx_fire_name_tag, simYear_name_tag, ".asc", sep = ""), 
+        fill = T, append = T)#
     cat(line2, 
-        file = paste(output_path, "sef_smap_run_", run, "_", 
-                     dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".asc",sep = ""), fill = T, append = T)#
+        file = paste(output_path, "s", run, rx_fire_name_tag, simYear_name_tag, ".asc", sep = ""), 
+        fill = T, append = T)#
     cat(line3, 
-        file = paste(output_path, "sef_smap_run_", run, "_", 
-                     dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".asc",sep = ""), fill = T, append = T)#
+        file = file = paste(output_path, "s", run, rx_fire_name_tag, simYear_name_tag, ".asc", sep = ""), 
+        fill = T, append = T)#
     cat(line4, 
-        file = paste(output_path, "sef_smap_run_", run, "_", 
-                     dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".asc",sep = ""), fill = T, append = T)#
+        file = file = paste(output_path, "s", run, rx_fire_name_tag, simYear_name_tag, ".asc", sep = ""), 
+        fill = T, append = T)#
     cat(line5, 
-        file = paste(output_path, "sef_smap_run_", run, "_", 
-                     dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".asc",sep = ""), fill = T, append = T)#
+        file = file = paste(output_path, "s", run, rx_fire_name_tag, simYear_name_tag, ".asc", sep = ""), 
+        fill = T, append = T)#
     cat(line6, 
-        file = paste(output_path, "sef_smap_run_", run, "_", 
-                     dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".asc",sep = ""), fill = T, append = T)#
+        file = file = paste(output_path, "s", run, rx_fire_name_tag, simYear_name_tag, ".asc", sep = ""), 
+        fill = T, append = T)#
     
     #Save stand map.
-    cat(c(t(s.map)), file = paste(output_path, "sef_smap_run_", run, "_", 
-                            dt,"_",tm,"_R",rows,"xC",cols,"_Y",a,".asc",sep = ""), fill = T, append = T)#
+    cat(c(t(s.map)), file = file = paste(output_path, "s", run, rx_fire_name_tag, simYear_name_tag, 
+                                         ".asc", sep = ""), fill = T, append = T)#
     }
   }
  } #1.0.0 ---------------------------------------------------------------------------
