@@ -36,7 +36,7 @@ done
 #SUBNET_ID=`curl http://169.254.169.254/latest/meta-data/network/interfaces/macs/$MAC/subnet-id`
 if [ $2 == "personal" ]
   then
-    AWS_KEY_NAME="--key-name cronan"
+    AWS_KEY_NAME="--key-name EglinAirForceBase"
     AWS_PROFILE="--profile default"
     IAM_INSTANCE_PROFILE="--iam-instance-profile Name=wildfire-simulation"
 elif [ $2 == "escience" ]

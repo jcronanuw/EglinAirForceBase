@@ -1,3 +1,0 @@
-InstancesToLaunch,use_gpu,rx_fire,install_packages,disturbance_regime
-1,FALSE,100000,TRUE,FULL
-

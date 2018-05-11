@@ -4,7 +4,7 @@
 #Version 2.0 (Derviced from version 17e, the most recent version withmodel 
 #documentation
 
-#entireScript <- function() {
+entireScript <- function() {
 
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>          HOW WOULD YOU LIKE TO RUN THE FUELBED DYNAMICS MODEL?
   
@@ -36,7 +36,7 @@
   #Reporting interval, how often (in model years) should output maps be produced?
   #I.e., once every ... years.
   #Must be less than model run time (YEARS object)
-  Interval <- 1
+  Interval <- 5
   
   #What is your working directory. I.e. where are your input files coming from?
   input_path <- "C:/Users/jcronan/Documents/GitHub/EglinAirForceBase"     
@@ -52,7 +52,7 @@
   # QUICK:  Testing generates small areas of presribed fire and wildfire annually 
   #       and 2 year run.
   # MANUAL: Manually enter disturbance parameters. Enter parameters below.
-  disturbance_regime <- "MANUAL"
+  disturbance_regime <- "FULL"
   
   if (disturbance_regime == "MANUAL")
   {
@@ -4116,6 +4116,6 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
   }
  } #1.0.0 ---------------------------------------------------------------------------
   
- #}
+ }
 
-#entireScript()
+entireScript()
