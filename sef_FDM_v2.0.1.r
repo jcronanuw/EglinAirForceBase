@@ -4,7 +4,7 @@
 #Version 2.0 (Derviced from version 17e, the most recent version withmodel 
 #documentation
 
-entireScript <- function() {
+#entireScript <- function() {
 
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>          HOW WOULD YOU LIKE TO RUN THE FUELBED DYNAMICS MODEL?
   
@@ -31,7 +31,7 @@ entireScript <- function() {
   
   #Select a run ID, this should be a number, ideally unique that will help track this
   #run. Output files are tagged with this ID number.
-  RUN <- 894
+  RUN <- 893
 
   #Reporting interval, how often (in model years) should output maps be produced?
   #I.e., once every ... years.
@@ -52,12 +52,12 @@ entireScript <- function() {
   # QUICK:  Testing generates small areas of presribed fire and wildfire annually 
   #       and 2 year run.
   # MANUAL: Manually enter disturbance parameters. Enter parameters below.
-  disturbance_regime <- "FULL"
+  disturbance_regime <- "MANUAL"
   
   if (disturbance_regime == "MANUAL")
   {
     #Number of years the model should run for.
-    YEARS <- 4
+    YEARS <- 2
 
     #Acres thinned annually.
     THINNING <- 0
@@ -66,7 +66,7 @@ entireScript <- function() {
     HERBICIDE <- 0
     
     #Acres prescribed burned annually
-    RX_FIRE <- 2000
+    RX_FIRE <- 1000
     
     #Natural fire rotation in years for:
     #Element 1 -- Eglin Air Force Base
@@ -378,7 +378,7 @@ entireScript <- function() {
     HERBICIDE <- 5000
     
     #Acres prescribed burned annually
-    RX_FIRE <- 100000
+    #RX_FIRE <- 100000
     
     #Natural fire rotation in years for:
     #Element 1 -- Eglin Air Force Base
@@ -618,11 +618,11 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
   #################################################################################################
   #STEP 06: Generate secondary data.
   
-#Create prescribed fire parameter tag for output file name.
-rx_fire_name_tag <- ifelse(meanTAP[3] < 100000, 
-                           paste("0", 
-                                 as.character(round((meanTAP[3]/100000)*100,0)), 
-                                 sep = ""), as.character(round((meanTAP[3]/100000)*100,0))) 
+  #Create prescribed fire parameter tag for output file name.
+  rx_fire_name_tag <- ifelse(meanTAP[3] < 100000, 
+                             paste("0", 
+                                   as.character(round((meanTAP[3]/100000)*100,0)), 
+                                   sep = ""), as.character(round((meanTAP[3]/100000)*100,0))) 
 
   #Temporary stand numbers
   #The first will be used to seed disturbance and the second will be used in the fire
@@ -3975,6 +3975,7 @@ rx_fire_name_tag <- ifelse(meanTAP[3] < 100000,
   
   #Create a seperate set of files for MANUAL runs where diagnostic information may be 
   #needed to assess or test for errors.
+  disturbance_regime <- "QUICK"
   if(disturbance_regime == "MANUAL")
   {
     if((a %% Interval) == 0)
@@ -4087,8 +4088,8 @@ rx_fire_name_tag <- ifelse(meanTAP[3] < 100000,
     
     #Save fuelbed map.
     cat(c(t(f.map)), file = paste(output_path, "f", run, rx_fire_name_tag, simYear_name_tag, 
-                                  ".asc", sep = ""), fill = T, append = T)#
-    
+                                         ".asc", sep = ""), fill = T, append = T)#
+  
     #Print header information to stand map
     cat(line1, 
         file = paste(output_path, "s", run, rx_fire_name_tag, simYear_name_tag, ".asc", sep = ""), 
@@ -4111,11 +4112,11 @@ rx_fire_name_tag <- ifelse(meanTAP[3] < 100000,
     
     #Save stand map.
     cat(c(t(s.map)), file = paste(output_path, "s", run, rx_fire_name_tag, simYear_name_tag, 
-                                  ".asc", sep = ""), fill = T, append = T)#
+                                         ".asc", sep = ""), fill = T, append = T)#
     }
   }
  } #1.0.0 ---------------------------------------------------------------------------
   
- }
+ #}
 
-entireScript()
+#entireScript()
