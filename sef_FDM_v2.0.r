@@ -36,7 +36,7 @@ entireScript <- function() {
   #Reporting interval, how often (in model years) should output maps be produced?
   #I.e., once every ... years.
   #Must be less than model run time (YEARS object)
-  Interval <- 1
+  Interval <- 5
   
   #What is your working directory. I.e. where are your input files coming from?
   input_path <- "C:/Users/jcronan/Documents/GitHub/EglinAirForceBase"     
@@ -57,7 +57,7 @@ entireScript <- function() {
   if (disturbance_regime == "MANUAL")
   {
     #Number of years the model should run for.
-    YEARS <- 4
+    YEARS <- 2
 
     #Acres thinned annually.
     THINNING <- 0
@@ -66,7 +66,7 @@ entireScript <- function() {
     HERBICIDE <- 0
     
     #Acres prescribed burned annually
-    RX_FIRE <- 2000
+    RX_FIRE <- 1000
     
     #Natural fire rotation in years for:
     #Element 1 -- Eglin Air Force Base
@@ -617,12 +617,12 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
   #################################################################################################
   #################################################################################################
   #STEP 06: Generate secondary data.
-  
-#Create prescribed fire parameter tag for output file name.
-rx_fire_name_tag <- ifelse(meanTAP[3] < 100000, 
-                           paste("0", 
-                                 as.character(round((meanTAP[3]/100000)*100,0)), 
-                                 sep = ""), as.character(round((meanTAP[3]/100000)*100,0))) 
+
+  #Create prescribed fire parameter tag for output file name.
+  rx_fire_name_tag <- ifelse(meanTAP[3] < 100000, 
+                             paste("0", 
+                                   as.character(round((meanTAP[3]/100000)*100,0)), 
+                                   sep = ""), as.character(round((meanTAP[3]/100000)*100,0))) 
 
   #Temporary stand numbers
   #The first will be used to seed disturbance and the second will be used in the fire
@@ -4112,6 +4112,7 @@ rx_fire_name_tag <- ifelse(meanTAP[3] < 100000,
     #Save stand map.
     cat(c(t(s.map)), file = paste(output_path, "s", run, rx_fire_name_tag, simYear_name_tag, 
                                   ".asc", sep = ""), fill = T, append = T)#
+
     }
   }
  } #1.0.0 ---------------------------------------------------------------------------

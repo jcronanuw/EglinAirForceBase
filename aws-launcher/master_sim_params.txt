@@ -1,3 +1,3 @@
 InstancesToLaunch,use_gpu,rx_fire,install_packages,disturbance_regime
-2,FALSE,10000,TRUE,MANUAL
+1,FALSE,50000,TRUE,FULL
 
