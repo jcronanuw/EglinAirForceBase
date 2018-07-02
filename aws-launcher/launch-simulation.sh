@@ -45,6 +45,12 @@ elif [ $2 == "escience" ]
     SUBNET_ID="--subnet-id subnet-4aec153d"
     AWS_PROFILE="--profile escience"
     IAM_INSTANCE_PROFILE="--iam-instance-profile Name=wildfire-simulation"
+elif [ $2 == "airfire" ]
+  then
+    AWS_KEY_NAME="--key-name cronan"
+    SUBNET_ID="--subnet-id subnet-15284970"
+    AWS_PROFILE="--profile airfire"
+    IAM_INSTANCE_PROFILE="--iam-instance-profile Name=wildfire-simulation"
 fi
 line=2
 tail -n +2 $1 | while IFS=',' read count params; do
