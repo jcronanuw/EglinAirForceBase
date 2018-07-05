@@ -4,7 +4,7 @@
 #Version 2.0 (Derviced from version 17e, the most recent version withmodel 
 #documentation
 
-entireScript <- function() {
+#entireScript <- function() {
 
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>          HOW WOULD YOU LIKE TO RUN THE FUELBED DYNAMICS MODEL?
   
@@ -31,12 +31,12 @@ entireScript <- function() {
   
   #Select a run ID, this should be a number, ideally unique that will help track this
   #run. Output files are tagged with this ID number.
-  RUN <- 894
+  RUN <- 3003
 
   #Reporting interval, how often (in model years) should output maps be produced?
   #I.e., once every ... years.
   #Must be less than model run time (YEARS object)
-  Interval <- 5
+  Interval <- 1
   
   #What is your working directory. I.e. where are your input files coming from?
   input_path <- "C:/Users/jcronan/Documents/GitHub/EglinAirForceBase"     
@@ -52,12 +52,12 @@ entireScript <- function() {
   # QUICK:  Testing generates small areas of presribed fire and wildfire annually 
   #       and 2 year run.
   # MANUAL: Manually enter disturbance parameters. Enter parameters below.
-  disturbance_regime <- "FULL"
+  disturbance_regime <- "MANUAL"
   
   if (disturbance_regime == "MANUAL")
   {
     #Number of years the model should run for.
-    YEARS <- 2
+    YEARS <- 1
 
     #Acres thinned annually.
     THINNING <- 0
@@ -71,7 +71,7 @@ entireScript <- function() {
     #Natural fire rotation in years for:
     #Element 1 -- Eglin Air Force Base
     #Element 2 -- Surrounding 10-km buffer landscape
-    NATURAL_FIRE_ROTATION <- c(1054.38,1457.39)
+    NATURAL_FIRE_ROTATION <- c(2054.38,2457.39)
 
     #ACTUAL VALUES >> NATURAL_FIRE_ROTATION <- c(54.38,457.39)
     
@@ -327,16 +327,15 @@ entireScript <- function() {
     #Install packages
     install.packages("Hmisc", repos="http://cran.fhcrc.org/")
     install.packages("GenKern", repos="http://cran.fhcrc.org/")
-    install.packages("SDMTools", repos="http://cran.fhcrc.org/")
     install.packages("gtools", repos="http://cran.fhcrc.org/")
     install.packages("stringr", repos="http://cran.fhcrc.org/")
     #Open libraries
+    library(stringr)#for str_pad()
     library(Hmisc) #for summarize()
     library(GenKern)#for nearest()
-    library(SDMTools)
     library(gtools)  #for combinations()ge
     library(utils)#for Rprof()
-    library(stringr)#for str_pad()
+
     if(USE_GPU == T)
     {
       #Install GPU package
@@ -350,12 +349,12 @@ entireScript <- function() {
   } else
   {
     #Open libraries
+    library(stringr)#for str_pad()
     library(Hmisc) #for summarize()
     library(GenKern)#for nearest()
-    library(SDMTools)
     library(gtools)  #for combinations()ge
     library(utils)#for Rprof()
-    library(stringr)#for str_pad()
+    
     if(USE_GPU == T)
     {
       #Open GPU library
@@ -4117,6 +4116,6 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
   }
  } #1.0.0 ---------------------------------------------------------------------------
   
- }
+ #}
 
-entireScript()
+#entireScript()
