@@ -1,9 +1,9 @@
 BEGIN { 
   instance_count = 0
-  slash = "\\"
+  slash = "\\\\"
   home_dir = slash "Users" slash "Administrator" slash
-  r_dir = "\"\\Program Files\\R\\R-3.4.2\\bin\\\""
-  bash_dir = "\\cygwin64\\bin\\"
+  r_dir = "\"" slash "Program Files" slash "R" slash "R-3.4.2" slash "bin" slash "\""
+  bash_dir = slash "cygwin64" slash "bin" slash
 }
 
 { if (NR==1) {
@@ -34,16 +34,16 @@ BEGIN {
    # Add appropriate folders
    print "mkdir " home_dir sim_id > file;
    print "mkdir " home_dir sim_id slash "$RUN_ID" > file;
-   print "input_path=" home_dir sim_id > file;
-   print "output_path=" home_dir sim_id slash "$RUN_ID" > file;
+   print "input_path=" home_dir sim_id slash > file;
+   print "output_path=" home_dir sim_id slash "$RUN_ID" slash> file;
 
    # Create host-specific simulation parameters csv file
    print "echo \"" header ",sim_id,run_id,input_path,output_path\" > host_sim_params.csv" > file;
-   print "echo \"" $0 "," sim_id ",$RUN_ID,$input_path" slash ",$output_path" slash "\" >> host_sim_params.csv" > file;
+   print "echo \"" $0 "," sim_id ",$RUN_ID,$input_path,$output_path\" >> host_sim_params.csv" > file;
 
    # Run R script
    if (simple=="n") {
-     print "Rscript sef_FDM_v2.0.r" > file;
+     print r_dir "Rscript sef_FDM_v2.0.r" > file;
    } else {
      print "echo \"Fake results supposed to replace R script output. Launched as simple.\" > ${output_path}/test_result.txt" > file;
    }
