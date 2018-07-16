@@ -1,7 +1,7 @@
 
 ##########                          START FUELBED DYNAMICS MODEL                        ###########
 
-#Version 2.0 (Derviced from version 17e, the most recent version withmodel 
+#Version 2.0 (Derived from version 17e, the most recent version with model 
 #documentation
 
 entireScript <- function() {
