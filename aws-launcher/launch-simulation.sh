@@ -42,7 +42,7 @@ if [ $2 == "personal" ]
 elif [ $2 == "escience" ]
   then
     AWS_KEY_NAME="--key-name wildfire-simulation"
-    SUBNET_ID="--subnet-id subnet-4aec153d"
+    SUBNET_ID="--subnet-id subnet-ae1370f4"
     AWS_PROFILE="--profile escience"
     IAM_INSTANCE_PROFILE="--iam-instance-profile Name=wildfire-simulation"
 elif [ $2 == "airfire" ]
