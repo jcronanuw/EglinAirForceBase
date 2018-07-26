@@ -54,7 +54,8 @@ BEGIN {
    #   Result folder pushed to S3 (if success)
    print "  cd " home_dir sim_id slash "$RUN_ID" > file;
    print "  for file in *; do " > file;
-   print "    aws s3 cp $file s3://jcronanuw-wildfire/" sim_id "/$RUN_ID/$file" > file;
+   print "    aws s3 cp $file s3://cronan-fdm-eglin-simulations/" sim_id "/$RUN_ID/$file" > file;
+   #print "    aws s3 cp $file s3://jcronanuw-wildfire/" sim_id "/$RUN_ID/$file" > file;
    # print "    aws s3 cp $file s3://bernease/wildfire-simulation/" sim_id  "/$RUN_ID/$file" > file;
    print "  done" > file;
 
