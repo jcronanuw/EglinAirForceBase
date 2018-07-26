@@ -2,8 +2,10 @@ BEGIN {
   instance_count = 0
   slash = "\\\\"
   home_dir = slash "Users" slash "Administrator" slash
-  r_dir = "\"" slash "Program Files" slash "R" slash "R-3.4.2" slash "bin" slash "\""
+  r_dir = ""
+  # r_dir = "\"" slash "Program Files" slash "R" slash "R-3.4.2" slash "bin" slash "\""
   bash_dir = slash "cygwin64" slash "bin" slash
+  s3_dir = "s3://cronan-fdm-eglin-simulations/"
 }
 
 { if (NR==1) {
@@ -14,6 +16,10 @@ BEGIN {
 
    print "#!" bash_dir "bash" > file;
 
+   # If Windows, print <script> tag
+   # https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/ec2-windows-user-data.html
+   print "<script>" > file;
+
    # Export environmental variables
    print "export LC_ALL=en_US.UTF-8" > file;  # https://bugs.python.org/issue18378
    print "export LANG=en_US.UTF-8" > file;    # see above
@@ -21,7 +27,7 @@ BEGIN {
 
    # Pulls repo from Github
    print "cd " home_dir > file;
-   print "curl -L https://www.github.com/jcronanuw/EglinAirForceBase/archive/master.zip > /home/ubuntu/eafb.zip" > file;
+   print "curl -L https://www.github.com/jcronanuw/EglinAirForceBase/archive/master.zip > " home_dir "eafb.zip" > file;
    print "unzip " home_dir "eafb.zip" > file;
    print "cd " home_dir "EglinAirForceBase-master" > file;
 
@@ -54,9 +60,9 @@ BEGIN {
    #   Result folder pushed to S3 (if success)
    print "  cd " home_dir sim_id slash "$RUN_ID" > file;
    print "  for file in *; do " > file;
-   print "    aws s3 cp $file s3://cronan-fdm-eglin-simulations/" sim_id "/$RUN_ID/$file" > file;
-   #print "    aws s3 cp $file s3://jcronanuw-wildfire/" sim_id "/$RUN_ID/$file" > file;
-   # print "    aws s3 cp $file s3://bernease/wildfire-simulation/" sim_id  "/$RUN_ID/$file" > file;
+
+   print "    aws s3 cp $file " s3_dir sim_id "/$RUN_ID/$file" > file;
+
    print "  done" > file;
 
    #   Terminate this instance (if success)
@@ -70,6 +76,9 @@ BEGIN {
    #   Stop instance (if fail)
    # print "  aws ec2 stop-instances --instance-ids $(curl -s http://169.254.169.254/latest/meta-data/instance-id)" > file;
    print "fi" > file;
+
+   # Print end script tag for Windows
+   print "</script>" > file;
   }
 }
 

@@ -29,7 +29,7 @@ while true; do
 done
 
 # create S3 bucket to hold this simulation's results
-# aws s3 mb s3://jcronanuw-wildfire/
+# aws s3 mb s3://cronan-fdm-eglin-simulations/
 
 # launches instance for each parameter set
 #MAC=`curl http://169.254.169.254/latest/meta-data/mac`
@@ -42,7 +42,7 @@ if [ $2 == "personal" ]
 elif [ $2 == "escience" ]
   then
     AWS_KEY_NAME="--key-name wildfire-simulation"
-    SUBNET_ID="--subnet-id subnet-4aec153d"
+    SUBNET_ID="--subnet-id subnet-ae1370f4"
     AWS_PROFILE="--profile escience"
     IAM_INSTANCE_PROFILE="--iam-instance-profile Name=wildfire-simulation"
 elif [ $2 == "airfire" ]
@@ -50,10 +50,10 @@ elif [ $2 == "airfire" ]
     AWS_KEY_NAME="--key-name cronan"
     SUBNET_ID="--subnet-id subnet-15284970"
     AWS_PROFILE="--profile airfire"
-    IAM_INSTANCE_PROFILE="--iam-instance-profile Name=wildfire-simulation"
+    IAM_INSTANCE_PROFILE="--iam-instance-profile Name=cronan-fdm-eglin-simulations"
 fi
 line=2
 tail -n +2 $1 | while IFS=',' read count params; do
-  aws ec2 run-instances --image-id ami-88ac6ee8 $AWS_KEY_NAME --user-data file://$SIM_ID/user_data_$line.ud --instance-type r3.large $IAM_INSTANCE_PROFILE --count $count $SUBNET_ID $AWS_PROFILE
+  aws ec2 run-instances --image-id ami-0737f76801ad02f03 $AWS_KEY_NAME --user-data file://$SIM_ID/user_data_$line.ud --instance-type r3.large $IAM_INSTANCE_PROFILE --count $count $SUBNET_ID $AWS_PROFILE
   ((line++))
 done
