@@ -35,21 +35,16 @@ $ ~\Documents\GitHub\EglinAirForceBase\aws-launcher [master = +2 ~1 -0 !]> cat .
          for wildfires to burn 100% of acres on base and 2) number of years it takes for wildfires to burn 100% of acres in buffer zone; MEAN_FIRE_SIZE = two values: 1) average size of fire (in acres) on base 
          and 2) average size of fires (in acres) in buffer zone; STAND_DEV_FIRE_SIZE = two values: 1) standard deviation of fire sizes on base and 2) standard deviation of fire sizes in buffer zone).
 
-# Run this script
-<<<<<<< HEAD
-#eScience
-$ sh ./launch-simulation.sh master_sim_params.txt subnet-4aec153d escience
+#Run this script -- note corresponding change must be made in .awk file
 
-#Personal AWS account
-$ sh ./launch-simulation.sh master_sim_params.txt personal
-
-=======
 #Personal AWS Account -- note corresponding change must be made in .awk file
 $ sh ./launch-simulation.sh master_sim_params.txt personal
 
-# Run this script -- note corresponding change must be made in .awk file
 # eScience AWS Account
 $ sh ./launch-simulation.sh master_sim_params.txt subnet-4aec153d escience
+
+#AirFire AWS account
+$ sh ./launch-simulation.sh master_sim_params.txt airfire #subnet-15284970 (do not use in launch code).
 
 #.awk file.
 #The create_user_data_files.awk file is launched from the launch-simulation.sh file. The options for eScience and personal AWS accounts are hard coded into the file so if you want to toggle back and 
