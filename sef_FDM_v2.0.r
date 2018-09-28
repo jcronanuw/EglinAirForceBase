@@ -71,7 +71,7 @@ entireScript <- function() {
     #Natural fire rotation in years for:
     #Element 1 -- Eglin Air Force Base
     #Element 2 -- Surrounding 10-km buffer landscape
-    NATURAL_FIRE_ROTATION <- c(2054.38,2457.39)
+    NATURAL_FIRE_ROTATION <- c(999954.38,9999457.39)
 
     #ACTUAL VALUES >> NATURAL_FIRE_ROTATION <- c(54.38,457.39)
     
@@ -410,7 +410,7 @@ entireScript <- function() {
     #Natural fire rotation in years for:
     #Element 1 -- Eglin Air Force Base
     #Element 2 -- Surrounding 10-km buffer landscape
-    NATURAL_FIRE_ROTATION <- c(10554.38, 10457.39)
+    NATURAL_FIRE_ROTATION <- c(999954.38, 9999457.39)
     
     #Mean fire size in acres for:
     #Element 1 -- Eglin Air Force Base
