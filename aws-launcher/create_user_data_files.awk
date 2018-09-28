@@ -14,11 +14,11 @@ BEGIN {
    file = sim_id"/user_data_"NR".ud"
    instance_count = instance_count + $1
 
-   print "#!" bash_dir "bash" > file;
-
    # If Windows, print <script> tag
    # https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/ec2-windows-user-data.html
    print "<script>" > file;
+
+   print "#!" bash_dir "bash" > file;
 
    # Export environmental variables
    print "export LC_ALL=en_US.UTF-8" > file;  # https://bugs.python.org/issue18378
