@@ -34,18 +34,19 @@ BEGIN {
    # Create run id for each separate host
    print "RUN_ID=$(eval echo $(curl -s http://169.254.169.254/latest/meta-data/instance-id) | tail -c 5)" > file;
 
-   # Test push to S3 bucket
-   print "This is a test file to check S3 for run $RUN_ID > initial-s3-test.txt";
-   print "aws s3 cp initial-s3-test.txt " s3_dir "/" sim_id "/$RUN_ID/initial-s3-test.txt" > file;
-
    # Change key for host in EC2
    print "aws ec2 create-tags --resources $(eval echo $(curl -s http://169.254.169.254/latest/meta-data/instance-id)) --tags Key=Name,Value=FDM_Instance_" sim_id "_$RUN_ID" > file;
 
    # Add appropriate folders
    print "mkdir " home_dir slash sim_id > file;
    print "mkdir " home_dir slash sim_id slash "$RUN_ID" > file;
-   print "input_path=" home_dir slash sim_id slash > file;
-   print "output_path=" home_dir slash sim_id slash "$RUN_ID" slash> file;
+   print "input_path=" home_dir slash "EglinAirForceBase-master slash  > file;
+   print "output_path=" home_dir slash sim_id slash "$RUN_ID" slash > file;
+
+   # Test push to S3 bucket
+   print "This is a test file to check S3 for run $RUN_ID, simulation " sim_id ".\" > initial-s3-test.txt" > file;
+   print "aws s3 cp initial-s3-test.txt " s3_dir "/" sim_id "/$RUN_ID/initial-s3-test.txt" > file;
+   print "rm initial-s3-test.txt" > file;
 
    # Create host-specific simulation parameters csv file
    print "echo \"" header ",sim_id,run_id,input_path,output_path\" > host_sim_params.csv" > file;
