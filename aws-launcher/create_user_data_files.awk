@@ -42,6 +42,7 @@ BEGIN {
    print "mkdir " home_dir slash sim_id slash "$RUN_ID" > file;
    print "input_path=" home_dir slash "EglinAirForceBase-master slash  > file;
    print "output_path=" home_dir slash sim_id slash "$RUN_ID" slash > file;
+   print "r_output_path=" home_dir slash sim_id slash "$RUN_ID" slash > file;
 
    # Test push to S3 bucket
    print "This is a test file to check S3 for run $RUN_ID, simulation " sim_id ".\" > initial-s3-test.txt" > file;
@@ -49,8 +50,8 @@ BEGIN {
    print "rm initial-s3-test.txt" > file;
 
    # Create host-specific simulation parameters csv file
-   print "echo \"" header ",sim_id,run_id,input_path,output_path\" > host_sim_params.csv" > file;
-   print "echo \"" $0 "," sim_id ",$RUN_ID,$input_path,$output_path\" >> host_sim_params.csv" > file;
+   print "echo \"" header ",sim_id,run_id,input_path,output_path,r_output_path\" > host_sim_params.csv" > file;
+   print "echo \"" $0 "," sim_id ",$RUN_ID,$input_path,$output_path,$r_output_path\" >> host_sim_params.csv" > file;
 
    # Run R script
    if (simple=="n") {
