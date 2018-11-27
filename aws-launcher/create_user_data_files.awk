@@ -1,11 +1,11 @@
-BEGIN { 
+BEGIN {
   instance_count = 0
-  slash = "\\\\"
-  home_dir = slash "Users" slash "Administrator" slash
+  slash = "/"
+  home_dir = "~"
   r_dir = ""
-  # r_dir = "\"" slash "Program Files" slash "R" slash "R-3.4.2" slash "bin" slash "\""
-  bash_dir = slash "cygwin64" slash "bin" slash
-  s3_dir = "s3://fdm-wildfire-simulation/"
+  # WINDOWS: r_dir = "\"" slash "Program Files" slash "R" slash "R-3.4.2" slash "bin" slash "\""
+  bash_dir = slash "bin" slash "bash" slash
+  s3_dir = "s3://fdm-wildfire-simulation"
 }
 
 { if (NR==1) {
@@ -16,9 +16,9 @@ BEGIN {
 
    # If Windows, print <script> tag
    # https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/ec2-windows-user-data.html
-   print "<script>" > file;
+   # print "<script>" > file;
 
-   print "#!" bash_dir "bash" > file;
+   print "#!" bash_dir > file;
 
    # Export environmental variables
    print "export LC_ALL=en_US.UTF-8" > file;  # https://bugs.python.org/issue18378
@@ -27,21 +27,25 @@ BEGIN {
 
    # Pulls repo from Github
    print "cd " home_dir > file;
-   print "curl -L https://www.github.com/jcronanuw/EglinAirForceBase/archive/master.zip > " home_dir "eafb.zip" > file;
-   print "unzip " home_dir "eafb.zip" > file;
-   print "cd " home_dir "EglinAirForceBase-master" > file;
+   print "curl -L https://www.github.com/jcronanuw/EglinAirForceBase/archive/master.zip > " home_dir slash "eafb.zip" > file;
+   print "unzip " home_dir slash "eafb.zip" > file;
+   print "cd " home_dir slash "EglinAirForceBase-master" > file;
 
    # Create run id for each separate host
    print "RUN_ID=$(eval echo $(curl -s http://169.254.169.254/latest/meta-data/instance-id) | tail -c 5)" > file;
+
+   # Test push to S3 bucket
+   print "This is a test file to check S3 for run $RUN_ID > initial-s3-test.txt";
+   print "aws s3 cp initial-s3-test.txt " s3_dir "/" sim_id "/$RUN_ID/initial-s3-test.txt" > file;
 
    # Change key for host in EC2
    print "aws ec2 create-tags --resources $(eval echo $(curl -s http://169.254.169.254/latest/meta-data/instance-id)) --tags Key=Name,Value=FDM_Instance_" sim_id "_$RUN_ID" > file;
 
    # Add appropriate folders
-   print "mkdir " home_dir sim_id > file;
-   print "mkdir " home_dir sim_id slash "$RUN_ID" > file;
-   print "input_path=" home_dir sim_id slash > file;
-   print "output_path=" home_dir sim_id slash "$RUN_ID" slash> file;
+   print "mkdir " home_dir slash sim_id > file;
+   print "mkdir " home_dir slash sim_id slash "$RUN_ID" > file;
+   print "input_path=" home_dir slash sim_id slash > file;
+   print "output_path=" home_dir slash sim_id slash "$RUN_ID" slash> file;
 
    # Create host-specific simulation parameters csv file
    print "echo \"" header ",sim_id,run_id,input_path,output_path\" > host_sim_params.csv" > file;
@@ -51,17 +55,17 @@ BEGIN {
    if (simple=="n") {
      print r_dir "Rscript sef_FDM_v2.0.r" > file;
    } else {
-     print "echo \"Fake results supposed to replace R script output. Launched as simple.\" > ${output_path}/test_result.txt" > file;
+     print "echo \"Fake results supposed to replace R script output for simulation " sim_id ", run $RUN_ID. Launched as simple.\" > ${output_path}" slash "test_result.txt" > file;
    }
 
    # Check status after completion of script (0=success=true, 1=failed=false)
    print "if [ $? -eq 0 ]; then" > file;
 
    #   Result folder pushed to S3 (if success)
-   print "  cd " home_dir sim_id slash "$RUN_ID" > file;
+   print "  cd " home_dir slash sim_id slash "$RUN_ID" > file;
    print "  for file in *; do " > file;
 
-   print "    aws s3 cp $file " s3_dir sim_id "/$RUN_ID/$file" > file;
+   print "    aws s3 cp $file " s3_dir "/" sim_id "/$RUN_ID/$file" > file;
 
    print "  done" > file;
 
@@ -78,7 +82,7 @@ BEGIN {
    print "fi" > file;
 
    # Print end script tag for Windows
-   print "</script>" > file;
+   # WINDOWS: print "</script>" > file;
   }
 }
 
