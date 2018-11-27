@@ -54,6 +54,6 @@ elif [ $2 == "airfire" ]
 fi
 line=2
 tail -n +2 $1 | while IFS=',' read count params; do
-  aws ec2 run-instances --image-id ami-06775690a658b0847 $AWS_KEY_NAME --user-data file://$SIM_ID/user_data_$line.ud --instance-type r3.large $IAM_INSTANCE_PROFILE --count $count $SUBNET_ID $AWS_PROFILE
+  aws ec2 run-instances --image-id ami-06775690a658b0847 $AWS_KEY_NAME --user-data file://$SIM_ID/user_data_$line.ud --instance-type r3.large $IAM_INSTANCE_PROFILE --count $count $SUBNET_ID $AWS_PROFILE --security-group-ids "sg-06cb1607a02875a8e"
   ((line++))
 done
