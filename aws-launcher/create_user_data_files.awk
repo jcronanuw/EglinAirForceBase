@@ -40,7 +40,7 @@ BEGIN {
    # Add appropriate folders
    print "mkdir " home_dir slash sim_id > file;
    print "mkdir " home_dir slash sim_id slash "$RUN_ID" > file;
-   print "input_path=" home_dir slash "EglinAirForceBase-master slash  > file;
+   print "input_path=" home_dir slash "EglinAirForceBase-master" slash  > file;
    print "output_path=" home_dir slash sim_id slash "$RUN_ID" slash > file;
    print "r_output_path=" home_dir slash sim_id slash "$RUN_ID" slash > file;
 
