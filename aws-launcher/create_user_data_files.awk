@@ -42,7 +42,7 @@ BEGIN {
    print "mkdir " home_dir slash sim_id slash "$RUN_ID" > file;
    print "input_path=" home_dir slash "EglinAirForceBase-master" slash  > file;
    print "output_path=" home_dir slash sim_id slash "$RUN_ID" slash > file;
-   print "r_output_path=" home_dir slash sim_id slash "$RUN_ID" slash R.out > file;
+   print "r_output_path=" home_dir slash sim_id slash "$RUN_ID" slash "R.out" > file;
 
    # Test push to S3 bucket
    print "echo \"This is a test file to check S3 for run $RUN_ID, simulation " sim_id ".\" > initial-s3-test.txt" > file;
