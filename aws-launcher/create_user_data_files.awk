@@ -5,7 +5,7 @@ BEGIN {
   r_dir = ""
   # WINDOWS: r_dir = "\"" slash "Program Files" slash "R" slash "R-3.4.2" slash "bin" slash "\""
   bash_dir = slash "bin" slash "bash" slash
-  s3_dir = "s3://fdm-wildfire-simulation"
+  s3_dir = "s3://cronan-fdm-eglin-simulations"
 }
 
 { if (NR==1) {
