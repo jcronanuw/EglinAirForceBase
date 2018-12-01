@@ -73,15 +73,11 @@ BEGIN {
    print "echo \"Starting R script...\" >> " ud_log_path > file;
 
    # Run R script
-   if (simple=="n") {
-     print r_dir "Rscript sef_FDM_v2.0.r" > file;
-     print "echo \"Finished R script...\" >> " ud_log_path > file;
-   } else {
-     print "echo \"Fake results supposed to replace R script output for simulation " sim_id ", run $RUN_ID. Launched as simple.\" > ${output_path}" slash "test_result.txt" > file;
-   }
+   print r_dir "Rscript sef_FDM_v2.0.r" > file;
+   print "r_success=$?" > file;
+   print "echo \"Finished R script...\" >> " ud_log_path > file;
 
    # Check status after completion of script (0=success=true, 1=failed=false)
-   print "r_success=$?" > file;
 
    print "echo \"R script exit code:\" $r_success >> " ud_log_path > file;
 
