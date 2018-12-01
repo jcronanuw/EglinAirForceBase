@@ -60,7 +60,9 @@ BEGIN {
    print "input_path=" home_dir slash "EglinAirForceBase-master" slash  > file;
    print "output_path=" home_dir slash sim_id slash "$RUN_ID" slash > file;
    print "r_output_path=" home_dir slash sim_id slash "$RUN_ID" slash "r_log.txt" > file;
+   temp_ud_log_path = ud_log_path
    ud_log_path = home_dir slash sim_id slash "$RUN_ID" slash raw_ud_log_path
+   print "mv " temp_ud_log_path " " ud_log_path > file;
 
    print "echo \"Created appropriate folders and moved user data log file...\" >> " ud_log_path > file;
 
@@ -91,7 +93,7 @@ BEGIN {
 
    print "if [ $r_success -eq 0 ]; then" > file;
 
-   print "echo \"R script success, terminating instance...\" >> " ud_log_path > file;
+   print "  echo \"R script success, terminating instance...\" >> " ud_log_path > file;
 
    #   Terminate this instance (if success)
    print "  aws ec2 terminate-instances --instance-ids $(curl -s http://169.254.169.254/latest/meta-data/instance-id) --region us-west-2" > file;
