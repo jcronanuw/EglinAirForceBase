@@ -3,7 +3,7 @@ BEGIN {
   slash = "/"
   home_dir = "~" # Should be absolute, not relative
   r_dir = ""
-  bash_dir = slash "bin" slash "bash" slash
+  bash_dir = slash "bin" slash "bash"
   s3_dir = "s3://cronan-fdm-eglin-simulations"
   raw_ud_log_path = "user_data_log.txt"
 
@@ -11,7 +11,7 @@ BEGIN {
   instance_count = 0
   ud_log_path = home_dir slash raw_ud_log_path
 
-  # WINDOWS: r_dir = "\"" slash "Program Files" slash "R" slash "R-3.4.2" slash "bin" slash "\""
+  # WINDOWS: r_dir = "\"" slash "Program Files" slash "R" slash "R-3.4.2" slash "bin" slash "bash.exe"
 
 }
 
