@@ -73,10 +73,13 @@ BEGIN {
    print "echo \"Created host sim parameter file...\" >> " ud_log_path > file;
 
    print "echo \"Starting R script...\" >> " ud_log_path > file;
+   print "echo >> " ud_log_path > file;
+   print "echo \"Errors from R (stderr stream):\" >> " ud_log_path > file;
 
    # Run R script
    print r_dir "Rscript sef_FDM_v2.0.r >> " ud_log_path " 2>&1" > file;
    print "r_success=$?" > file;
+   print "echo >> " ud_log_path > file;
    print "echo \"Finished R script...\" >> " ud_log_path > file;
 
    # Check status after completion of script (0=success=true, 1=failed=false)
