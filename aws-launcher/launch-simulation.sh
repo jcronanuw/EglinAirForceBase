@@ -20,11 +20,12 @@ cp $1 $SIM_ID/
 # prompt user to accept job before starting
 while true; do
   echo "Multiple EC2 instances will be launched and R will start running as soon as initiated."
-  read -p "Do you wish to kick off this simulation? [Y/n] " response
+  read -p "Do you wish to kick off this simulation? [Y/n/D (dryrun)] " response
   case $response in
-    [Yy]* ) break;;  # continues after while loop
+    [Yy]* ) dryrun=false; break;;  # continues after while loop
+    [Dd]* ) dryrun=true; break;;  # continues after while loop
     [Nn]* ) rm -rf $SIM_ID; exit;;  # ends script
-    * ) echo "\nPlease answer with \"Y[es]\" or \"N[o]\".";;
+    * ) echo "\nPlease answer with \"Y[es]\" or \"N[o]\" or \"D[ryrun]\".";;
   esac
 done
 
@@ -54,6 +55,8 @@ elif [ $2 == "airfire" ]
 fi
 line=2
 tail -n +2 $1 | while IFS=',' read count params; do
-  aws ec2 run-instances --image-id ami-06775690a658b0847 $AWS_KEY_NAME --user-data file://$SIM_ID/user_data_$line.ud --instance-type r3.large $IAM_INSTANCE_PROFILE --count $count $SUBNET_ID $AWS_PROFILE --security-group-ids "sg-06cb1607a02875a8e"
+  if [ ! $dryrun ]; then
+    aws ec2 run-instances --image-id ami-06775690a658b0847 $AWS_KEY_NAME --user-data file://$SIM_ID/user_data_$line.ud --instance-type r3.large $IAM_INSTANCE_PROFILE --count $count $SUBNET_ID $AWS_PROFILE --security-group-ids "sg-06cb1607a02875a8e"
+  fi
   ((line++))
 done
