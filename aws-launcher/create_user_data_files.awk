@@ -75,7 +75,7 @@ BEGIN {
    print "echo \"Starting R script...\" >> " ud_log_path > file;
 
    # Run R script
-   print r_dir "Rscript sef_FDM_v2.0.r" > file;
+   print r_dir "Rscript sef_FDM_v2.0.r >> " ud_log_path " 2>&1" > file;
    print "r_success=$?" > file;
    print "echo \"Finished R script...\" >> " ud_log_path > file;
 
