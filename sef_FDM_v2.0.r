@@ -274,7 +274,7 @@ entireScript <- function() {
     r_output_path <- as.character(host_sim_params$r_output_path)
   }
 
-  sink(r_output_path, append = TRUE, type = "message")
+  sink(file(r_output_path, open = "a"), append = TRUE, type = c("output", message"))
 
   if (exists("host_sim_params") && "run_id" %in% colnames(host_sim_params)) {
     # from AWS user data
@@ -4125,4 +4125,4 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
  }
 
 entireScript()
-sink()
+sink(NULL)
