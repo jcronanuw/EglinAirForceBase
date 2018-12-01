@@ -274,10 +274,7 @@ entireScript <- function() {
     r_output_path <- as.character(host_sim_params$r_output_path)
   }
 
-  sink(r_output_path, append = TRUE)
-  cat("INPUT PATH: %s", input_path)
-  cat("OUTPUT PATH: %s", output_path)
-  cat("R OUTPUT PATH: %s", r_output_path)
+  sink(r_output_path, append = TRUE, type = "message")
 
   if (exists("host_sim_params") && "run_id" %in% colnames(host_sim_params)) {
     # from AWS user data
