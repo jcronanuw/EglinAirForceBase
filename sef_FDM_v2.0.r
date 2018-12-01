@@ -334,7 +334,7 @@ entireScript <- function() {
   if(INSTALL_PACKAGES == TRUE)
   {
     #Install packages
-    install.packages("Hmisc", repos="http://cran.fhcrc.org/")
+    install.packages("Hmisc", repos="http://cran.fhcrc.org/", type="binary")
     install.packages("GenKern", repos="http://cran.fhcrc.org/")
     install.packages("gtools", repos="http://cran.fhcrc.org/")
     install.packages("stringr", repos="http://cran.fhcrc.org/")
