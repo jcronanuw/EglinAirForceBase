@@ -22,8 +22,8 @@ while true; do
   echo "Multiple EC2 instances will be launched and R will start running as soon as initiated."
   read -p "Do you wish to kick off this simulation? [Y/n/D (dryrun)] " response
   case $response in
-    [Yy]* ) dryrun=false; break;;  # continues after while loop
-    [Dd]* ) dryrun=true; break;;  # continues after while loop
+    [Yy]* ) break;;  # continues after while loop
+    [Dd]* ) dryrun=TRUE; break;;  # continues after while loop
     [Nn]* ) rm -rf $SIM_ID; exit;;  # ends script
     * ) echo "\nPlease answer with \"Y[es]\" or \"N[o]\" or \"D[ryrun]\".";;
   esac
