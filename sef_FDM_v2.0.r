@@ -274,7 +274,10 @@ entireScript <- function() {
     r_output_path <- as.character(host_sim_params$r_output_path)
   }
 
-  sink(file(r_output_path, open = "a"), append = TRUE, type = c("output", message"))
+  if (exists("host_sim_params") && "log" %in% colnames(host_sim_params) &&
+        host_sim_params$log == TRUE) {
+    sink(file(r_output_path, open = "a"), append = TRUE, type = c("output", "message"))
+  }
 
   if (exists("host_sim_params") && "run_id" %in% colnames(host_sim_params)) {
     # from AWS user data
