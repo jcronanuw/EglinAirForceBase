@@ -54,22 +54,15 @@ BEGIN {
 
    print "echo \"Tagged EC2 instance...\" >> " ud_log_path > file;
 
-   # Add appropriate folders
+   # Add appropriate folders and move log file
    print "mkdir " home_dir slash sim_id > file;
    print "mkdir " home_dir slash sim_id slash "$RUN_ID" > file;
    print "input_path=" home_dir slash "EglinAirForceBase-master" slash  > file;
    print "output_path=" home_dir slash sim_id slash "$RUN_ID" slash > file;
+   print "r_output_path=" home_dir slash sim_id slash "$RUN_ID" slash "r_log.txt" > file;
    ud_log_path = home_dir slash sim_id slash "$RUN_ID" slash raw_ud_log_path
-   print "r_output_path=" ud_log_path > file;
 
-   print "echo \"Created appropriate folders...\" >> " ud_log_path > file;
-
-   # Test push to S3 bucket
-   print "echo \"This is a test file to check S3 for run $RUN_ID, simulation " sim_id ".\" > initial-s3-test.txt" > file;
-   print "aws s3 cp initial-s3-test.txt " s3_dir "/" sim_id "/$RUN_ID/initial-s3-test.txt" > file;
-   print "rm initial-s3-test.txt" > file;
-
-   print "echo \"Sent test push to S3 bucket...\" >> " ud_log_path > file;
+   print "echo \"Created appropriate folders and moved user data log file...\" >> " ud_log_path > file;
 
    # Create host-specific simulation parameters csv file
    print "echo \"" header ",sim_id,run_id,input_path,output_path,r_output_path\" > host_sim_params.csv" > file;
@@ -78,21 +71,14 @@ BEGIN {
    print "echo \"Created host sim parameter file...\" >> " ud_log_path > file;
 
    print "echo \"Starting R script...\" >> " ud_log_path > file;
-   print "echo >> " ud_log_path > file;  # empty line
-   print "echo \"----------\" >> " ud_log_path > file;
-   print "echo \"R SCRIPT MESSAGES:\" >> " ud_log_path > file;
-   print "echo >> " ud_log_path > file;  # empty line
 
    # Run R script
    if (simple=="n") {
      print r_dir "Rscript sef_FDM_v2.0.r" > file;
+     print "echo \"Finished R script...\" >> " ud_log_path > file;
    } else {
      print "echo \"Fake results supposed to replace R script output for simulation " sim_id ", run $RUN_ID. Launched as simple.\" > ${output_path}" slash "test_result.txt" > file;
    }
-
-   print "echo >> " ud_log_path > file;  # empty line
-   print "echo \"----------\" >> " ud_log_path > file;
-   print "echo >> " ud_log_path > file;  # empty line
 
    # Check status after completion of script (0=success=true, 1=failed=false)
    print "r_success=$?" > file;
@@ -120,7 +106,7 @@ BEGIN {
    print "  aws ses send-email --subject \"R Failure for Simulation $RUN_ID " sim_id "\" --text \"There was an error for $RUN_ID and the R script stopped. To access this simulation use: ssh -i wildfire-simulation.pem ubuntu@$(curl -s http://169.254.169.254/latest/meta-data/public-hostname). Access log in " s3_dir "/$RUN_ID/" sim_id ". Disturbance loop variables are: years: a; treatment number: b; treatment block: cc; treatment expansion: d; wildfire number: e; wildfire block: f; unsuppressed wildfire expansion: g; block and burn expansion number: h.  \" --to jcronan@uw.edu --from jcronan@uw.edu" > file;
 
    print "echo \"Sent failure email...\" >> " ud_log_path > file;
-   print "echo \"R script failure, stopping (but not terminating) instance for later analysis\" >> " ud_log_path > file;
+   print "echo \"R script failure, stopping (but not terminating) instance for later analysis...\" >> " ud_log_path > file;
 
    #   Stop instance (if fail)
    # print "  aws ec2 stop-instances --instance-ids $(curl -s http://169.254.169.254/latest/meta-data/instance-id)" > file;
