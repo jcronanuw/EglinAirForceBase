@@ -16,6 +16,8 @@ entireScript <- function() {
   #/usr/bin/ld: cannot find -lquadmath
   #Ideally this should be fixed in AMI, but I do not know how to do this.
   #system("sudo apt-get install r-base-dev", wait = TRUE)
+  system("sudo ln -s /usr/lib/x86_64-linux-gnu/libgfortran.so.3 /usr/lib/libgfortran.so", wait = TRUE)
+  system("sudo ln -s /usr/lib/x86_64-linux-gnu/libquadmath.so.0 /usr/lib/libquadmath.so", wait = TRUE)
   
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>          COMPUTING PARAMETERS...
 
