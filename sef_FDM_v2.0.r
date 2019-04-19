@@ -15,7 +15,7 @@ entireScript <- function() {
   #/usr/bin/ld: cannot find -lgfortran
   #/usr/bin/ld: cannot find -lquadmath
   #Ideally this should be fixed in AMI, but I do not know how to do this.
-  system("sudo apt-get install r-base-dev", wait = TRUE)
+  #system("sudo apt-get install r-base-dev", wait = TRUE)
   
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>          COMPUTING PARAMETERS...
 
