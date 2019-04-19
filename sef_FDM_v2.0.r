@@ -11,6 +11,12 @@ entireScript <- function() {
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+  #Fix to this error message from AWS error log pertaining to R install on AMI:
+  #/usr/bin/ld: cannot find -lgfortran
+  #/usr/bin/ld: cannot find -lquadmath
+  #Ideally this should be fixed in AMI, but I do not know how to do this.
+  system("sudo apt-get install r-base-dev", wait = TRUE)
+  
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>          COMPUTING PARAMETERS...
 
   #Do you want to install required R packages on this machine?
