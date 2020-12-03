@@ -2,7 +2,8 @@
 # BEGIN
 # -----
 
-# Purpose: Launch instructions for Fuelbed Dynamics Model (FDM), a landscape-fire-succession model built to model fire, management disturbance, and succession at Eglin Air Force Base in Niceville, Florida, USA.
+# Purpose: Launch instructions for Fuelbed Dynamics Model (FDM), a landscape-fire-succession model built to model fire, 
+# management disturbance, and succession at Eglin Air Force Base in Niceville, Florida, USA.
 # File written on: 16-February-2017
 # Last updated on: 07-March-2018
 # By Jim Cronan
@@ -11,7 +12,8 @@
 # Address: Pacific Wildland Fire Sciences Laboratory, 400 North 34th Street, Suite 201, Seattle, WA 98122
 
 # -----
-# NOTE: the launch code is set to work with the eScience Institute AWS account and your personal AWS account. However, the .sh and .awk files must be handled differently.
+# NOTE: the launch code is set to work with the eScience Institute AWS account and your personal AWS account. 
+# However, the .sh and .awk files must be handled differently.
 # Read below for differences in handling these launch files.
 # This account is only to be used for testing. Once you are ready to conduct model runs contact 
 # Bernease Herman (bernease@uw.ed) and rewrite code to communicate and launch with your Amazon Web Services (AWS) account.
