@@ -2,8 +2,11 @@
 # BEGIN
 # -----
 
+
 # Purpose: Launch instructions for Fuelbed Dynamics Model (FDM), a landscape-fire-succession model built to model fire, 
 # management disturbance, and succession at Eglin Air Force Base in Niceville, Florida, USA.
+=======
+
 # File written on: 16-February-2017
 # Last updated on: 07-March-2018
 # By Jim Cronan
