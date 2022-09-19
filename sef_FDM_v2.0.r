@@ -345,7 +345,7 @@ entireScript <- function() {
   {
     #Install packages
     install.packages("Hmisc", repos="http://cran.fhcrc.org/")
-    install.packages("GenKern", repos="http://cran.fhcrc.org/")
+    install.packages("KernSmooth", repos="http://cran.fhcrc.org/")
     install.packages("gtools", repos="http://cran.fhcrc.org/")
     install.packages("stringr", repos="http://cran.fhcrc.org/")
     #Open libraries
