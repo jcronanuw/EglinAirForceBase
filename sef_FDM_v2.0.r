@@ -369,7 +369,7 @@ entireScript <- function() {
   {
     #Open libraries
     library(stringr)#for str_pad()
-    library(Hmisc) #for summarize()
+    #library(Hmisc) #for summarize()
     library(GenKern)#for nearest()
     library(gtools)  #for combinations()ge
     library(utils)#for Rprof()
