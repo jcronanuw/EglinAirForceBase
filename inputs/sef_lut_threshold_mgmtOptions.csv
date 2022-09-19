@@ -1,0 +1,21 @@
+treatment_type,t_code,level,perc_level,management_type,m_code,perc_mgmt,mfriCats_min,mfriCats_max,perc_cats
+thin,1,1,1,Burn Annually NSA,1,0,1,31,0
+thin,1,1,1,Burn Annually NSA,1,0,32,99,0
+thin,1,1,1,Core Conserv Area,2,1,1,31,1
+thin,1,1,1,Core Conserv Area,2,1,32,99,0
+thin,1,1,1,Outside Mgmt Area,3,0,1,31,0
+thin,1,1,1,Outside Mgmt Area,3,0,32,99,0
+herb,2,1,1,Burn Annually NSA,1,0,1,31,0
+herb,2,1,1,Burn Annually NSA,1,0,32,99,0
+herb,2,1,1,Core Conserv Area,2,1,1,31,1
+herb,2,1,1,Core Conserv Area,2,1,32,99,0
+herb,2,1,1,Outside Mgmt Area,3,0,1,31,0
+herb,2,1,1,Outside Mgmt Area,3,0,32,99,0
+rxfire,3,1,NA,Burn Annually NSA,1,1,1,5,1
+rxfire,3,1,NA,Burn Annually NSA,1,1,6,99,0
+rxfire,3,2,NA,Core Conserv Area,2,0.9,1,1,0.1
+rxfire,3,2,NA,Core Conserv Area,2,0.9,2,5,0.9
+rxfire,3,2,NA,Core Conserv Area,2,0.9,6,99,0
+rxfire,3,2,NA,Outside Mgmt Area,3,0.1,1,1,0
+rxfire,3,2,NA,Outside Mgmt Area,3,0.1,2,5,1
+rxfire,3,2,NA,Outside Mgmt Area,3,0.1,6,99,0
