@@ -344,13 +344,13 @@ entireScript <- function() {
   if(INSTALL_PACKAGES == TRUE)
   {
     #Install packages
-    install.packages("Hmisc", repos="http://cran.fhcrc.org/")
+    #install.packages("Hmisc", repos="http://cran.fhcrc.org/")
     install.packages("KernSmooth", repos="http://cran.fhcrc.org/")
     install.packages("gtools", repos="http://cran.fhcrc.org/")
     install.packages("stringr", repos="http://cran.fhcrc.org/")
     #Open libraries
     library(stringr)#for str_pad()
-    library(Hmisc) #for summarize()
+    #library(Hmisc) #for summarize()
     library(GenKern)#for nearest()
     library(gtools)  #for combinations()ge
     library(utils)#for Rprof()
