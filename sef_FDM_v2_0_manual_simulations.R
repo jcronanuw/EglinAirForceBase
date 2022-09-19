@@ -41,7 +41,7 @@ entireScript <- function() {
 
   #Select a run ID, this should be a number, ideally unique that will help track this
   #run. Output files are tagged with this ID number.
-  RUN <- 3013
+  RUN <- 1001
 
   #Reporting interval, how often (in model years) should output maps be produced?
   #I.e., once every ... years.
@@ -49,7 +49,7 @@ entireScript <- function() {
   Interval <- 1
 
   #What is your working directory. I.e. where are your input files coming from?
-  input_path <- "C:/Users/jcronan/Documents/GitHub/EglinAirForceBase"
+  input_path <- "C:/Users/jcronan/OneDrive - USDA/Documents/GitHub/EglinAirForceBase"
 
   #What is your output directory. I.e., here do you want maps and status reports to
   #go?
