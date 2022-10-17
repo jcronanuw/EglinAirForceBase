@@ -4,7 +4,7 @@
 #Version 2.0 (Derived from version 17e, the most recent version with model
 #documentation
 
-entireScript <- function() {
+#entireScript <- function() {
 
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>          HOW WOULD YOU LIKE TO RUN THE FUELBED DYNAMICS MODEL?
 
@@ -37,24 +37,38 @@ entireScript <- function() {
   #Would you like to replicate this run?
   #If so use the same seed number for subsequent runs
   #SEED is the starting point for psuedo random number generator
-  SEED <- 764599#sample(1:1000000,1)#
+  SEED <- sample(1:1000000,1)#
 
   #Select a run ID, this should be a number, ideally unique that will help track this
   #run. Output files are tagged with this ID number.
-  RUN <- 3013
-
+  RUN <- "ab_050k_001"
+  
   #Reporting interval, how often (in model years) should output maps be produced?
   #I.e., once every ... years.
   #Must be less than model run time (YEARS object)
-  Interval <- 1
+  Interval <- 10
 
   #What is your working directory. I.e. where are your input files coming from?
-  input_path <- "C:/Users/jcronan/Documents/GitHub/EglinAirForceBase"
+  input_path <- "C:/Users/jcron/Documents/GitHub/EglinAirForceBase"
 
   #What is your output directory. I.e., here do you want maps and status reports to
   #go?
-  output_path <- paste("C:/usfs_sef_outputs_FDM/results_r", RUN, "/", sep = "")
+  output_path <- paste("C:/Users/jcron/Documents/usfs_sef_outputs_FDM/results_r", RUN, "/", sep = "")
 
+  #Create directory for out_put files
+  setwd("C:/Users/jcron/Documents/usfs_sef_outputs_FDM")
+  folder <- paste("results_r", RUN, "/", sep = "")
+  
+  if (file.exists(folder)) {
+    
+    cat("The folder already exists")
+    
+  } else {
+    
+    dir.create(folder)
+    
+  }
+  
   #Select pre-packaged or manually entered forest management and wildfire regime
   #parameters + model run time (in years)
   # FULL:   Actual paramater values derived from forest operations and wildfire data
@@ -62,7 +76,7 @@ entireScript <- function() {
   # QUICK:  Testing generates small areas of presribed fire and wildfire annually
   #       and 2 year run.
   # MANUAL: Manually enter disturbance parameters. Enter parameters below.
-  disturbance_regime <- "MANUAL"
+  disturbance_regime <- "FULL"
 
   if (disturbance_regime == "MANUAL")
   {
@@ -268,73 +282,82 @@ entireScript <- function() {
   # Reads mutable parameters from AWS user data
   host_sim_params <- read.csv("host_sim_params.csv")
 
-  if (exists("host_sim_params") && "input_path" %in% colnames(host_sim_params)) {
+  if (exists("host_sim_params") && "input_path" %in% colnames(host_sim_params)) 
+    {
     # from AWS user data
     input_path <- as.character(host_sim_params$input_path)
-  }
-  setwd(input_path)  # set working directory
+    } else 
+    {
+      setwd(input_path)  # set working directory
+    }
 
-  if (exists("host_sim_params") && "output_path" %in% colnames(host_sim_params)) {
+  if (exists("host_sim_params") && "output_path" %in% colnames(host_sim_params)) {#1
     # from AWS user data
     output_path <- as.character(host_sim_params$output_path)
-  }
+  }#1
 
-  if (exists("host_sim_params") && "r_output_path" %in% colnames(host_sim_params)) {
+  if (exists("host_sim_params") && "r_output_path" %in% colnames(host_sim_params)) {#2
     # from AWS user data
     r_output_path <- as.character(host_sim_params$r_output_path)
-  }
+  }#2
 
   if (exists("host_sim_params") && "log" %in% colnames(host_sim_params) &&
-        host_sim_params$log == TRUE) {
+        host_sim_params$log == TRUE) {#3
     sink(file(r_output_path, open = "a"), append = TRUE, type = c("output", "message"))
-  }
+  }#3
 
-  if (exists("host_sim_params") && "run_id" %in% colnames(host_sim_params)) {
+  if (exists("host_sim_params") && "run_id" %in% colnames(host_sim_params)) {#4
     # from AWS user data
     run <- as.character(host_sim_params$run_id)
-  } else if (exists("RUN")) {
+  } else if (exists("RUN")) #4
+    {#5
     # manual
     run <- RUN
-  } else {
+  } else #5 
+    {#6
     stop("No run id present.")
-  }
+  }#6
 
-  if (exists("host_sim_params") && "seed" %in% colnames(host_sim_params)) {
+  if (exists("host_sim_params") && "seed" %in% colnames(host_sim_params)) {#7
     # from AWS user data
     set.seed(host_sim_params$seed)
-  } else if (exists("SEED")) {
+  } else if (exists("SEED")) #7
+    {#8
     # manual
     set.seed(SEED)
-  } else {
+  } else #8 
+    { #9
     set.seed(NULL)
     seed <- runif(1)*2e9
     cat("Random seed used: ", seed, file=paste(run, "_dump.txt"))
     set.seed(seed)  # replace seed with manual seed if desired
-  }
+  } #9
 
-  if (exists("host_sim_params") && "rx_fire" %in% colnames(host_sim_params)) {
+  if (exists("host_sim_params") && "rx_fire" %in% colnames(host_sim_params)) {#10
     # from AWS user data
     RX_FIRE <- host_sim_params$rx_fire
-  }
+  }#10
 
-  if (exists("host_sim_params") && "use_gpu" %in% colnames(host_sim_params)) {
+  if (exists("host_sim_params") && "use_gpu" %in% colnames(host_sim_params)) { #11
     # from AWS user data
     USE_GPU <- host_sim_params$use_gpu
-  } else if (exists("USE_GPU")) {
+  } else if (exists("USE_GPU")) #11
+    { #12
     # manual, no need to do anything
-  } else {
+  } else #12 
+    { #13
     USE_GPU <- FALSE
-  }
+  } #13
 
-  if (exists("host_sim_params") && "install_packages" %in% colnames(host_sim_params)) {
+  if (exists("host_sim_params") && "install_packages" %in% colnames(host_sim_params)) { #14
     # from AWS user data
     INSTALL_PACKAGES <- host_sim_params$install_packages
-  }
+  } #14
 
-  if (exists("host_sim_params") && "disturbance_regime" %in% colnames(host_sim_params)) {
+  if (exists("host_sim_params") && "disturbance_regime" %in% colnames(host_sim_params)) { #15
     # from AWS user data
     disturbance_regime <- as.character(host_sim_params$disturbance_regime)
-  }
+  } #15
 
 
 
@@ -369,7 +392,7 @@ entireScript <- function() {
   {
     #Open libraries
     library(stringr)#for str_pad()
-    #library(Hmisc) #for summarize()
+    library(Hmisc) #for summarize()
     library(GenKern)#for nearest()
     library(gtools)  #for combinations()ge
     library(utils)#for Rprof()
@@ -1040,9 +1063,9 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
         ifelse(wildfire.count == 1, paste("  ", str_pad(ja, 3, pad = " "), "  "), "         "), #Simulation Year
         paste("     ", str_pad(round(((which(j_tdn[j_tdy == ja] == e)/length(j_tdn[j_tdy == ja]))*100),0),
                                3, pad = " "), "    "), #Percent Complete For Year
-        paste("       ", str_pad(e, 3, pad = " "),  "    "), #Wildfire Number
-        paste("       ", wildfire.name, "     "), #Wildfire Type
-        ifelse(j_tdc[je] == 1, "      Eglin Air F. Base ", "      10 km Buffer Zone "),  #Landscape Section
+        paste("        ", str_pad(e, 3, pad = " "),  "    "), #Wildfire Number
+        paste("      ", wildfire.name, "     "), #Wildfire Type
+        ifelse(j_tdc[je] == 1, "     Eglin Air F. Base ", "      10 km Buffer Zone "),  #Landscape Section
         paste("     ", burn.type, " "), #Burn Pattern
         paste("        ", str_pad(round((desa * MapRes),0), 5, pad = " "),
               "     "), #Expected Area to be Burned (Acres)
@@ -1146,6 +1169,33 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
   #Loop 1 (by year). This loop encases the entire expression that maps regimes.
   for(a in 1:YEARS)#a <- 1
   { #1.0.0 ---------------------------------------------------------------------------
+    
+    
+    #Update run status.
+    if( a == 1)
+    {
+      dt <- Sys.Date()
+      tm <- format(Sys.time(), format = "%H.%M.%S",
+                 tz = "", usetz = FALSE)
+      cat(paste("  < Date > ", "   < Time > ", " < Sim Year >", " < Notes >", sep = ""), 
+        file = paste(output_path, "run_", run, "_disturbances.txt", sep = ""),
+        fill = T, append = T)#)
+      cat(paste(" ", dt, "  ", " ", tm, " ", "     ", str_pad(a, 3, pad = " "), "  ", "        ", 
+              "Initiating simulation for year ", a, ".", 
+              sep = ""),
+        file = paste(output_path, "run_", run, "_disturbances.txt", sep = ""),
+        fill = T, append = T)#
+    } else
+    {
+      dt <- Sys.Date()
+      tm <- format(Sys.time(), format = "%H.%M.%S",
+                   tz = "", usetz = FALSE)
+      cat(paste(" ", dt, "  ", " ", tm, " ", "     ", str_pad(a, 3, pad = " "), "  ", "        ", 
+                "Initiating simulation for year ", a, ".", 
+                sep = ""),
+          file = paste(output_path, "run_", run, "_disturbances.txt", sep = ""),
+          fill = T, append = T)#
+    }
 
     #Default value for error code
     r101 <- 0
@@ -3372,6 +3422,19 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
   ##############################################################################
   ##############################################################################
 
+  #Update run status
+  dt <- Sys.Date()
+  tm <- format(Sys.time(), format = "%H.%M.%S",
+               tz = "", usetz = FALSE)
+  cat(paste("  < Date > ", "   < Time > ", " < Sim Year >", " < Notes >", sep = ""), 
+      file = paste(output_path, "run_", run, "_disturbances.txt", sep = ""),
+      fill = T, append = T)#)
+  cat(paste(" ", dt, "  ", " ", tm, " ", "     ", str_pad(a, 3, pad = " "), "  ", "        ", 
+            "Disturbance simulations complete for year ", 
+            a, ". Post processing...", sep = ""),
+      file = paste(output_path, "run_", run, "_disturbances.txt", sep = ""),
+      fill = T, append = T)#
+  
   #Post-wildfire processing >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   #Update files if there were disturbances in year[a].
   if(length(loopE.NewStand) > 0)
@@ -3991,6 +4054,30 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
     #don't break
   }
 
+  #Update run status
+  if(a %% Interval == 0)
+  {
+    dt <- Sys.Date()
+    tm <- format(Sys.time(), format = "%H.%M.%S",
+               tz = "", usetz = FALSE)
+    cat(paste(" ", dt, "  ", " ", tm, " ", "     ", str_pad(a, 3, pad = " "), "  ", "        ", 
+              "Post-processing complete for year ", a, " Saving output files...", 
+              sep = ""),
+        file = paste(output_path, "run_", run, "_disturbances.txt", sep = ""),
+        fill = T, append = T)#
+  }
+    else 
+    {
+      dt <- Sys.Date()
+      tm <- format(Sys.time(), format = "%H.%M.%S",
+                   tz = "", usetz = FALSE)
+      cat(paste(" ", dt, "  ", " ", tm, " ", "     ", str_pad(a, 3, pad = " "), "  ", "        ", 
+      "Post-processing complete for year ", a, " Skip saving output files", 
+                sep = ""),
+          file = paste(output_path, "run_", run, "_disturbances.txt", sep = ""),
+          fill = T, append = T)#
+    }
+
   #Create a seperate set of files for MANUAL runs where diagnostic information may be
   #needed to assess or test for errors.
   if(disturbance_regime == "MANUAL")
@@ -4135,7 +4222,15 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
   }
  } #1.0.0 ---------------------------------------------------------------------------
 
- }
+  #Update run status
+  dt <- Sys.Date()
+  tm <- format(Sys.time(), format = "%H.%M.%S",
+               tz = "", usetz = FALSE)
+  cat(paste(" ", dt, "  ", " ", tm, " ", "     ", str_pad(a, 3, pad = " "), "  ", "        ", 
+  "Simulation complete. R stopped.", sep = ""),
+      file = paste(output_path, "run_", run, "_disturbances.txt", sep = ""),
+      fill = T, append = T)#
+# }
 
-entireScript()
-sink(NULL)
+#entireScript()
+#sink(NULL)
