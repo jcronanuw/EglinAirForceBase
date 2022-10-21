@@ -41,12 +41,12 @@
 
   #Select a run ID, this should be a number, ideally unique that will help track this
   #run. Output files are tagged with this ID number.
-  RUN <- "ab_050k_001"
+  RUN <- "ab_050k_002"
   
   #Reporting interval, how often (in model years) should output maps be produced?
   #I.e., once every ... years.
   #Must be less than model run time (YEARS object)
-  Interval <- 10
+  Interval <- 5
 
   #What is your working directory. I.e. where are your input files coming from?
   input_path <- "C:/Users/jcron/Documents/GitHub/EglinAirForceBase"
@@ -112,6 +112,17 @@
     #ACTUAL VALUES >> STAND_DEV_FIRE_SIZE <- c(361.12, 13.98)
   }
 
+  
+  #Set up a file to record simulation parameters
+  r_object = vector(mode = "character")
+  value = vector(mode = "numeric")
+
+  #Add simulation info
+  r_object <- "SEED"
+  value <- SEED
+  r_object[length(r_object) + 1] <- "Interval"
+  value[length(value) + 1] <- Interval
+ 
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -419,7 +430,7 @@
     HERBICIDE <- 5000
 
     #Acres prescribed burned annually
-    RX_FIRE <- 100000
+    RX_FIRE <- 50000
 
     #Natural fire rotation in years for:
     #Element 1 -- Eglin Air Force Base
@@ -465,6 +476,37 @@
     STAND_DEV_FIRE_SIZE <- c(361.12, 13.98)
   }
 
+  #Add simulation info
+  r_object[length(r_object) + 1] <- "YEARS"
+  value[length(value) + 1] <- YEARS
+  r_object[length(r_object) + 1] <- "THINNING"
+  value[length(value) + 1] <- THINNING
+  r_object[length(r_object) + 1] <- "HERBICIDE"
+  value[length(value) + 1] <- HERBICIDE
+  r_object[length(r_object) + 1] <- "NATURAL_FIRE_ROTATION[1]"
+  value[length(value) + 1] <- NATURAL_FIRE_ROTATION[1]
+  r_object[length(r_object) + 1] <- "NATURAL_FIRE_ROTATION[2]"
+  value[length(value) + 1] <- NATURAL_FIRE_ROTATION[2]
+  r_object[length(r_object) + 1] <- "MEAN_FIRE_SIZE[1]"
+  value[length(value) + 1] <- MEAN_FIRE_SIZE[1]
+  r_object[length(r_object) + 1] <- "MEAN_FIRE_SIZE[2]"
+  value[length(value) + 1] <- MEAN_FIRE_SIZE[2]
+  r_object[length(r_object) + 1] <- "STAND_DEV_FIRE_SIZE[1]"
+  value[length(value) + 1] <- STAND_DEV_FIRE_SIZE[1]
+  r_object[length(r_object) + 1] <- "STAND_DEV_FIRE_SIZE[2]"
+  value[length(value) + 1] <- STAND_DEV_FIRE_SIZE[2]
+
+  #Create data frame of simulation parameters
+  sim.params <- data.frame(r_object = r_object, 
+                           value = value)
+  
+  #Save simulation parameters
+  write.table(sim.params, file = paste(output_path, "run_", 
+                                       run,"_simulation_parameters.txt",sep = ""),
+              append = FALSE, quote = TRUE, sep = " ", eol = "\n", na = "NA",
+              dec = ".", row.names = FALSE,col.names = FALSE, qmethod =
+                c("escape", "double"))#
+  rm(sim.params)
 
   #################################################################################################
   #################################################################################################
@@ -1169,7 +1211,6 @@ tslt.Fuelbeds <- tslt.Fuelbeds[,-1]
   #Loop 1 (by year). This loop encases the entire expression that maps regimes.
   for(a in 1:YEARS)#a <- 1
   { #1.0.0 ---------------------------------------------------------------------------
-    
     
     #Update run status.
     if( a == 1)
