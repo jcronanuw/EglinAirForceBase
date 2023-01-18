@@ -41,7 +41,7 @@
 
   #Select a run ID, this should be a number, ideally unique that will help track this
   #run. Output files are tagged with this ID number.
-  RUN <- "ab_050k_002"
+  RUN <- "ab_125k_008"
   
   #Reporting interval, how often (in model years) should output maps be produced?
   #I.e., once every ... years.
@@ -430,7 +430,7 @@
     HERBICIDE <- 5000
 
     #Acres prescribed burned annually
-    RX_FIRE <- 50000
+    RX_FIRE <- 125000
 
     #Natural fire rotation in years for:
     #Element 1 -- Eglin Air Force Base
